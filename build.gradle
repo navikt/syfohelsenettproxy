@@ -1,0 +1,53 @@
+buildscript {
+    ext.ktor_version = '1.2.0'
+    ext.logback_version = '1.2.3'
+    ext.logstash_encoder_version = '5.1'
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.40'
+    id("com.diffplug.gradle.spotless") version "3.14.0"
+    id("com.github.johnrengelman.shadow") version "4.0.3"
+}
+
+group 'no.nav.syfo'
+version '1.0'
+
+jar.manifest.attributes("Main-Class" : "no.nav.syfo.BootstrapKt")
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://dl.bintray.com/kotlin/ktor" }
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines 'spek2'
+    }
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "net.logstash.logback:logstash-logback-encoder:$logstash_encoder_version"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+task printVersion() {
+    doLast {
+        println(version)
+    }
+}
