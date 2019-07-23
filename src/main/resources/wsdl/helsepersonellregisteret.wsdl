@@ -1,0 +1,2548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions name="HPRService2" targetNamespace="http://schemas.nhn.no/reg/HPRv2" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://schemas.nhn.no/reg/HPRv2" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing">
+
+    <wsdl:types>
+        <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.nhn.no/reg/HPRv2" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:import namespace="http://schemas.nhn.no/reg/Common/no"/>
+            <xs:import namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+            <xs:element name="HentPerson">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                        <xs:element minOccurs="0" name="påTidspunkt" nillable="true" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentPersonResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="Person">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="AlternativeIder" nillable="true" type="tns:ArrayOfAlternativId"/>
+                    <xs:element minOccurs="0" name="Dødsdato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ErstattetAvHprNummer" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Etternavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Fornavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="FysiskeAdresser" nillable="true" type="q1:ArrayOfFysiskAdresse" xmlns:q1="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Fødselsdato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="Godkjenninger" nillable="true" type="tns:ArrayOfGodkjenning"/>
+                    <xs:element minOccurs="0" name="HPRNummer" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Kjønn" nillable="true" type="q2:Kode" xmlns:q2="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="ManglerNIN" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="Mellomnavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="SistOppdatert" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="Statsborgerskap" nillable="true" type="q3:Kode" xmlns:q3="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Utdannelser" nillable="true" type="tns:ArrayOfUtdannelse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Person" nillable="true" type="tns:Person"/>
+            <xs:complexType name="ArrayOfAlternativId">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="AlternativId" nillable="true" type="tns:AlternativId"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfAlternativId" nillable="true" type="tns:ArrayOfAlternativId"/>
+            <xs:complexType name="AlternativId">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q4:Kode" xmlns:q4="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Verdi" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="AlternativId" nillable="true" type="tns:AlternativId"/>
+            <xs:complexType name="ArrayOfGodkjenning">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Godkjenning" nillable="true" type="tns:Godkjenning"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfGodkjenning" nillable="true" type="tns:ArrayOfGodkjenning"/>
+            <xs:complexType name="Godkjenning">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Autorisasjon" nillable="true" type="q5:Kode" xmlns:q5="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="AvsluttetStatus" nillable="true" type="q6:Kode" xmlns:q6="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="GodkjentTurnus" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="Gyldig" nillable="true" type="q7:Periode" xmlns:q7="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Helsepersonellkategori" nillable="true" type="q8:Kode" xmlns:q8="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="KonvertertFraLand" nillable="true" type="q9:Kode" xmlns:q9="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Rekvisisjonsretter" nillable="true" type="tns:ArrayOfRekvisisjonsrett"/>
+                    <xs:element minOccurs="0" name="Spesialiteter" nillable="true" type="tns:ArrayOfSpesialitet"/>
+                    <xs:element minOccurs="0" name="Suspensjonsperioder" nillable="true" type="tns:ArrayOfSuspensjonsperiode"/>
+                    <xs:element minOccurs="0" name="Tilleggskompetanser" nillable="true" type="tns:ArrayOfTilleggskompetanse"/>
+                    <xs:element minOccurs="0" name="Utdannelser" nillable="true" type="tns:ArrayOfUtdannelse"/>
+                    <xs:element minOccurs="0" name="Vilkår" nillable="true" type="tns:ArrayOfVilkår"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Godkjenning" nillable="true" type="tns:Godkjenning"/>
+            <xs:complexType name="ArrayOfRekvisisjonsrett">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Rekvisisjonsrett" nillable="true" type="tns:Rekvisisjonsrett"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfRekvisisjonsrett" nillable="true" type="tns:ArrayOfRekvisisjonsrett"/>
+            <xs:complexType name="Rekvisisjonsrett">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="AvsluttetStatus" nillable="true" type="q10:Kode" xmlns:q10="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Gyldig" nillable="true" type="q11:Periode" xmlns:q11="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Suspensjonsperioder" nillable="true" type="tns:ArrayOfSuspensjonsperiode"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q12:Kode" xmlns:q12="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Rekvisisjonsrett" nillable="true" type="tns:Rekvisisjonsrett"/>
+            <xs:complexType name="ArrayOfSuspensjonsperiode">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Suspensjonsperiode" nillable="true" type="tns:Suspensjonsperiode"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfSuspensjonsperiode" nillable="true" type="tns:ArrayOfSuspensjonsperiode"/>
+            <xs:complexType name="Suspensjonsperiode">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Periode" nillable="true" type="q13:Periode" xmlns:q13="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Suspensjonsperiode" nillable="true" type="tns:Suspensjonsperiode"/>
+            <xs:complexType name="ArrayOfSpesialitet">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Spesialitet" nillable="true" type="tns:Spesialitet"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfSpesialitet" nillable="true" type="tns:ArrayOfSpesialitet"/>
+            <xs:complexType name="Spesialitet">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="AvsluttetStatus" nillable="true" type="q14:Kode" xmlns:q14="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Gyldig" nillable="true" type="q15:Periode" xmlns:q15="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="KonvertertFraLand" nillable="true" type="q16:Kode" xmlns:q16="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Suspensjonsperioder" nillable="true" type="tns:ArrayOfSuspensjonsperiode"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q17:Kode" xmlns:q17="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Spesialitet" nillable="true" type="tns:Spesialitet"/>
+            <xs:complexType name="ArrayOfTilleggskompetanse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Tilleggskompetanse" nillable="true" type="tns:Tilleggskompetanse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfTilleggskompetanse" nillable="true" type="tns:ArrayOfTilleggskompetanse"/>
+            <xs:complexType name="Tilleggskompetanse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="AvsluttetStatus" nillable="true" type="q18:Kode" xmlns:q18="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Gyldig" nillable="true" type="q19:Periode" xmlns:q19="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q20:Kode" xmlns:q20="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Tilleggskompetanse" nillable="true" type="tns:Tilleggskompetanse"/>
+            <xs:complexType name="ArrayOfUtdannelse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Utdannelse" nillable="true" type="tns:Utdannelse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfUtdannelse" nillable="true" type="tns:ArrayOfUtdannelse"/>
+            <xs:complexType name="Utdannelse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Institution" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                    <xs:element minOccurs="0" name="Land" nillable="true" type="q21:Kode" xmlns:q21="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q22:Kode" xmlns:q22="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Vitnemålsdato" nillable="true" type="xs:dateTime"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Utdannelse" nillable="true" type="tns:Utdannelse"/>
+            <xs:complexType name="Utdanningsinstitusjon">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="FysiskeAdresser" nillable="true" type="q23:ArrayOfFysiskAdresse" xmlns:q23="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Navn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Organisasjonsnummer" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q24:Kode" xmlns:q24="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Utdanningsinstitusjonshistorikk" nillable="true" type="tns:ArrayOfUtdanningsinstitusjonshistorikk"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Utdanningsinstitusjon" nillable="true" type="tns:Utdanningsinstitusjon"/>
+            <xs:complexType name="ArrayOfUtdanningsinstitusjonshistorikk">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Utdanningsinstitusjonshistorikk" nillable="true" type="tns:Utdanningsinstitusjonshistorikk"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfUtdanningsinstitusjonshistorikk" nillable="true" type="tns:ArrayOfUtdanningsinstitusjonshistorikk"/>
+            <xs:complexType name="Utdanningsinstitusjonshistorikk">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Gyldig" nillable="true" type="q25:Periode" xmlns:q25="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Navn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Organisasjonsnummer" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q26:Kode" xmlns:q26="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="YtterligereInformasjon" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Utdanningsinstitusjonshistorikk" nillable="true" type="tns:Utdanningsinstitusjonshistorikk"/>
+            <xs:complexType name="ArrayOfVilkår">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Vilkår" nillable="true" type="tns:Vilkår"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfVilkår" nillable="true" type="tns:ArrayOfVilkår"/>
+            <xs:complexType name="Vilkår">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ETag" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Fritekst" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="q27:Kode" xmlns:q27="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Vilkår" nillable="true" type="tns:Vilkår"/>
+            <xs:element name="HentPersonMedHistorikk">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersonMedHistorikkResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentPersonMedHistorikkResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersonMedPersonnummer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="personNummer" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="påTidspunkt" nillable="true" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersonMedPersonnummerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentPersonMedPersonnummerResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersoner">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" nillable="true" type="q28:ArrayOfint" xmlns:q28="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                        <xs:element minOccurs="0" name="medAdresser" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="påTidspunkt" nillable="true" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentPersonerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentPersonerResult" nillable="true" type="tns:ArrayOfPerson"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="ArrayOfPerson">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Person" nillable="true" type="tns:Person"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfPerson" nillable="true" type="tns:ArrayOfPerson"/>
+            <xs:element name="Søk">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="search" nillable="true" type="tns:Søkeparametre"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="Søkeparametre">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Adresse" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="AlternativeIder" nillable="true" type="q29:ArrayOfstring" xmlns:q29="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="Autorisasjoner" nillable="true" type="q30:ArrayOfstring" xmlns:q30="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="AvsluttetGodkjenningStatus" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="AvsluttetRekvisisjonsrettStatus" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="AvsluttetSpesialitetStatus" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="AvsluttetTilleggskompetanseStatus" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Dødsdato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="DødsdatoPeriode" nillable="true" type="q31:Periode" xmlns:q31="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Etternavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Fornavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="FullTekst" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Fødselsdato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="FødselsdatoPeriode" nillable="true" type="q32:Periode" xmlns:q32="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="GodkjenningFraDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="GodkjenningFraPeriode" nillable="true" type="q33:Periode" xmlns:q33="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="GodkjenningTilDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="GodkjenningTilPeriode" nillable="true" type="q34:Periode" xmlns:q34="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="GodkjenningType" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="GodkjentTurnus" nillable="true" type="q35:Periode" xmlns:q35="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Helsepersonellkategorier" nillable="true" type="q36:ArrayOfstring" xmlns:q36="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="HprNummer" nillable="true" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Kjønn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="KunBasisData" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="Mellomnavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="NIN" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Navn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Periode" nillable="true" type="q37:Periode" xmlns:q37="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="PredefinertSøkId" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="RekvisisjonsrettFraDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="RekvisisjonsrettFraPeriode" nillable="true" type="q38:Periode" xmlns:q38="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="RekvisisjonsrettPeriode" nillable="true" type="q39:Periode" xmlns:q39="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="RekvisisjonsrettTilDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="RekvisisjonsrettTilPeriode" nillable="true" type="q40:Periode" xmlns:q40="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Rekvisisjonsretter" nillable="true" type="q41:ArrayOfstring" xmlns:q41="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="ResultaterPerSide" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Side" type="xs:int"/>
+                    <xs:element minOccurs="0" name="SistEndretPeriode" nillable="true" type="q42:Periode" xmlns:q42="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="SpesialitetFraDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="SpesialitetFraPeriode" nillable="true" type="q43:Periode" xmlns:q43="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="SpesialitetPeriode" nillable="true" type="q44:Periode" xmlns:q44="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="SpesialitetTilDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="SpesialitetTilPeriode" nillable="true" type="q45:Periode" xmlns:q45="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Spesialiteter" nillable="true" type="q46:ArrayOfstring" xmlns:q46="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="Statsborgerskap" nillable="true" type="q47:ArrayOfstring" xmlns:q47="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="SuspansjonsDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="SuspansjonsPeriode" nillable="true" type="q48:Periode" xmlns:q48="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="TilleggskompetanseFraDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="TilleggskompetanseFraPeriode" nillable="true" type="q49:Periode" xmlns:q49="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="TilleggskompetansePeriode" nillable="true" type="q50:Periode" xmlns:q50="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="TilleggskompetanseTilDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="TilleggskompetanseTilPeriode" nillable="true" type="q51:Periode" xmlns:q51="http://schemas.nhn.no/reg/Common/no"/>
+                    <xs:element minOccurs="0" name="Tilleggskompetanser" nillable="true" type="q52:ArrayOfstring" xmlns:q52="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="UtdanningsNivå" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="UtdanningsinstutisjonsIder" nillable="true" type="q53:ArrayOfint" xmlns:q53="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="Utdanningsland" nillable="true" type="q54:ArrayOfstring" xmlns:q54="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="Vilkår" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="VitnemålsDato" nillable="true" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="VitnemålsDatoPeriode" nillable="true" type="q55:Periode" xmlns:q55="http://schemas.nhn.no/reg/Common/no"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Søkeparametre" nillable="true" type="tns:Søkeparametre"/>
+            <xs:element name="SøkResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="SøkResult" nillable="true" type="tns:ArrayOfPerson"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Søk2">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="search" nillable="true" type="tns:Søkeparametre"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Søk2Response">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="Søk2Result" nillable="true" type="tns:PaginertResultatsett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="PaginertResultatsett">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Personer" nillable="true" type="tns:ArrayOfPerson"/>
+                    <xs:element minOccurs="0" name="ResultaterPerSide" type="xs:int"/>
+                    <xs:element minOccurs="0" name="ResultaterTotalt" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Side" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="PaginertResultatsett" nillable="true" type="tns:PaginertResultatsett"/>
+            <xs:element name="OpprettPerson">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="person" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettPersonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettPersonResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterPerson">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="person" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterPersonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterPersonResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettPerson">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettPersonResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ReserverHPRNummerliste">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="antall" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ReserverHPRNummerlisteResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="ReserverHPRNummerlisteResult" nillable="true" type="q56:ArrayOfint" xmlns:q56="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="FrigiHPRNummerliste">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" nillable="true" type="q57:ArrayOfint" xmlns:q57="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="FrigiHPRNummerlisteResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentReserverteHPRNummer">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentReserverteHPRNummerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentReserverteHPRNummerResult" nillable="true" type="q58:ArrayOfint" xmlns:q58="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentGodkjenning">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="påTidspunkt" nillable="true" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentGodkjenningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentGodkjenningResult" nillable="true" type="tns:Godkjenning"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettGodkjenning">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                        <xs:element minOccurs="0" name="godkjenning" nillable="true" type="tns:Godkjenning"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettGodkjenningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettGodkjenningResult" nillable="true" type="tns:Godkjenning"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterGodkjenning">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenning" nillable="true" type="tns:Godkjenning"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterGodkjenningResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterGodkjenningResult" nillable="true" type="tns:Godkjenning"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettGodkjenning">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettGodkjenningResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilGodkjenningSuspensjonsperiode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="suspensjonsPeriode" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilGodkjenningSuspensjonsperiodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="LeggTilGodkjenningSuspensjonsperiodeResult" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilUtdannelsePåGodkjenning">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="utdannelseId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilUtdannelsePåGodkjenningResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentHelsepersonellkategorierSomTillaterTurnus">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentHelsepersonellkategorierSomTillaterTurnusResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentHelsepersonellkategorierSomTillaterTurnusResult" nillable="true" type="q59:ArrayOfKode" xmlns:q59="http://schemas.nhn.no/reg/Common/no"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SettTurnusTillattflaggPåHelsepersonellkategori">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="kategori" nillable="true" type="xs:string"/>
+                        <xs:element minOccurs="0" name="flagg" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SettTurnusTillattflaggPåHelsepersonellkategoriResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettRekvisisjonsrett">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="rekvisisjonsrett" nillable="true" type="tns:Rekvisisjonsrett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettRekvisisjonsrettResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettRekvisisjonsrettResult" nillable="true" type="tns:Rekvisisjonsrett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterRekvisisjonsrett">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="rekvisisjonsrett" nillable="true" type="tns:Rekvisisjonsrett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterRekvisisjonsrettResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterRekvisisjonsrettResult" nillable="true" type="tns:Rekvisisjonsrett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilRekvisisjonsrettSuspensjonsperiode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="rekvisisjonsrettId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="suspensjonsperiode" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilRekvisisjonsrettSuspensjonsperiodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="LeggTilRekvisisjonsrettSuspensjonsperiodeResult" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettRekvisisjonsrett">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="rekvisisjonsrettId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettRekvisisjonsrettResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettSpesialitet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="spesialitet" nillable="true" type="tns:Spesialitet"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettSpesialitetResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettSpesialitetResult" nillable="true" type="tns:Spesialitet"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterSpesialitet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="spesialitet" nillable="true" type="tns:Spesialitet"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterSpesialitetResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterSpesialitetResult" nillable="true" type="tns:Spesialitet"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilSpesialitetSuspensjonsperiode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="spesialitetsId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="suspensjonsperiode" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilSpesialitetSuspensjonsperiodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="LeggTilSpesialitetSuspensjonsperiodeResult" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettSpesialitet">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="spesialitetId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettSpesialitetResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettTilleggskompetanse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="tilleggskompetanse" nillable="true" type="tns:Tilleggskompetanse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettTilleggskompetanseResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettTilleggskompetanseResult" nillable="true" type="tns:Tilleggskompetanse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterTilleggskompetanse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="tilleggskompetanse" nillable="true" type="tns:Tilleggskompetanse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterTilleggskompetanseResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterTilleggskompetanseResult" nillable="true" type="tns:Tilleggskompetanse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettTilleggskompetanse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="tilleggskompetanseId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettTilleggskompetanseResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettUtdannelse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                        <xs:element minOccurs="0" name="utdannelse" nillable="true" type="tns:Utdannelse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettUtdannelseResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettUtdannelseResult" nillable="true" type="tns:Utdannelse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterUtdannelse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="utdannelse" nillable="true" type="tns:Utdannelse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterUtdannelseResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterUtdannelseResult" nillable="true" type="tns:Utdannelse"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettUtdannelse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="utdannelseId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettUtdannelseResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentUtdanningsinstitusjoner">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentUtdanningsinstitusjonerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentUtdanningsinstitusjonerResult" nillable="true" type="tns:ArrayOfUtdanningsinstitusjon"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="ArrayOfUtdanningsinstitusjon">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Utdanningsinstitusjon" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfUtdanningsinstitusjon" nillable="true" type="tns:ArrayOfUtdanningsinstitusjon"/>
+            <xs:element name="OpprettUtdanningsinstitusjon">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="utdanningsinstitusjon" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OpprettUtdanningsinstitusjonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OpprettUtdanningsinstitusjonResult" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterUtdanningsinstitusjon">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="utdanningsinstitusjon" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterUtdanningsinstitusjonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterUtdanningsinstitusjonResult" nillable="true" type="tns:Utdanningsinstitusjon"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettUtdanningsinstitusjon">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="utdanningsinstitusjonId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettUtdanningsinstitusjonResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilAlternativId">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                        <xs:element minOccurs="0" name="alternativId" nillable="true" type="tns:AlternativId"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilAlternativIdResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="LeggTilAlternativIdResult" nillable="true" type="tns:AlternativId"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterAlternativId">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="alternativId" nillable="true" type="tns:AlternativId"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterAlternativIdResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterAlternativIdResult" nillable="true" type="tns:AlternativId"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettAlternativId">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="alternativIdId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettAlternativIdResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterSuspensjonsperiode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="suspensjonsperiode" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterSuspensjonsperiodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterSuspensjonsperiodeResult" nillable="true" type="tns:Suspensjonsperiode"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettSuspensjonsperiode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="suspensjonsperiodeId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettSuspensjonsperiodeResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilGodkjenningVilkår">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="godkjenningId" type="xs:int"/>
+                        <xs:element minOccurs="0" name="vilkår" nillable="true" type="tns:Vilkår"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="LeggTilGodkjenningVilkårResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="LeggTilGodkjenningVilkårResult" nillable="true" type="tns:Vilkår"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettGodkjenningVilkår">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="vilkårId" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlettGodkjenningVilkårResponse">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterGodkjenningVilkår">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="vilkår" nillable="true" type="tns:Vilkår"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OppdaterGodkjenningVilkårResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="OppdaterGodkjenningVilkårResult" nillable="true" type="tns:Vilkår"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentEndringerForPerson">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprNummer" type="xs:int"/>
+                        <xs:element minOccurs="0" name="fra" type="xs:dateTime"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentEndringerForPersonResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentEndringerForPersonResult" nillable="true" type="tns:ArrayOfEndringslogginnslag"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="ArrayOfEndringslogginnslag">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Endringslogginnslag" nillable="true" type="tns:Endringslogginnslag"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfEndringslogginnslag" nillable="true" type="tns:ArrayOfEndringslogginnslag"/>
+            <xs:complexType name="Endringslogginnslag">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="BrukersVirksomhet" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="EndredeEntiteter" nillable="true" type="tns:ArrayOfEndretEntitet"/>
+                    <xs:element minOccurs="0" name="FaktiskBruker" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Sporingsgruppe" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Sporingsveri" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Tidspunkt" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="Tjenestebruker" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Endringslogginnslag" nillable="true" type="tns:Endringslogginnslag"/>
+            <xs:complexType name="ArrayOfEndretEntitet">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="EndretEntitet" nillable="true" type="tns:EndretEntitet"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfEndretEntitet" nillable="true" type="tns:ArrayOfEndretEntitet"/>
+            <xs:complexType name="EndretEntitet">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="EndredeVerdier" nillable="true" type="tns:ArrayOfEndretVerdi"/>
+                    <xs:element minOccurs="0" name="EndringsType" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="EntitetsIder" nillable="true" type="q60:ArrayOfstring" xmlns:q60="http://schemas.microsoft.com/2003/10/Serialization/Arrays"/>
+                    <xs:element minOccurs="0" name="EntitetsType" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="EndretEntitet" nillable="true" type="tns:EndretEntitet"/>
+            <xs:complexType name="ArrayOfEndretVerdi">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="EndretVerdi" nillable="true" type="tns:EndretVerdi"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfEndretVerdi" nillable="true" type="tns:ArrayOfEndretVerdi"/>
+            <xs:complexType name="EndretVerdi">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="GammelVerdi" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Id" type="xs:int"/>
+                    <xs:element minOccurs="0" name="NyVerdi" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="VerdiNavn" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="EndretVerdi" nillable="true" type="tns:EndretVerdi"/>
+            <xs:element name="HentLagretSøk">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="id" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentLagretSøkResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentLagretSøkResult" nillable="true" type="tns:EksportData"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="EksportData">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Format" nillable="true" type="tns:EksportFormat"/>
+                    <xs:element minOccurs="0" name="Parametre" nillable="true" type="tns:Søkeparametre"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="EksportData" nillable="true" type="tns:EksportData"/>
+            <xs:complexType name="EksportFormat">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Versjon" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="EksportFormat" nillable="true" type="tns:EksportFormat"/>
+            <xs:element name="HentLagredeSøk">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentLagredeSøkResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentLagredeSøkResult" nillable="true" type="tns:ArrayOfLagretSøk"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="ArrayOfLagretSøk">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="LagretSøk" nillable="true" type="tns:LagretSøk"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfLagretSøk" nillable="true" type="tns:ArrayOfLagretSøk"/>
+            <xs:complexType name="LagretSøk">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Eier" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="EksportData" nillable="true" type="tns:EksportData"/>
+                    <xs:element minOccurs="0" name="Navn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="TilknyttetOrganisasjon" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="LagretSøk" nillable="true" type="tns:LagretSøk"/>
+            <xs:element name="Ping">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="requestId" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="PingResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="PingResult" nillable="true" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentRegisterEndringer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="fra" type="xs:dateTime"/>
+                        <xs:element minOccurs="0" name="til" type="xs:dateTime"/>
+                        <xs:element minOccurs="0" name="side" type="xs:int"/>
+                        <xs:element minOccurs="0" name="resultaterPerSide" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="HentRegisterEndringerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="HentRegisterEndringerResult" nillable="true" type="tns:PaginertResultatsett"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlåSammen">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="hprDestinasjon" type="xs:int"/>
+                        <xs:element minOccurs="0" name="hprUtgår" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="SlåSammenResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0" name="SlåSammenResult" nillable="true" type="tns:Person"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+        <xs:schema attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
+            <xs:element name="anyType" nillable="true" type="xs:anyType"/>
+            <xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
+            <xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
+            <xs:element name="boolean" nillable="true" type="xs:boolean"/>
+            <xs:element name="byte" nillable="true" type="xs:byte"/>
+            <xs:element name="dateTime" nillable="true" type="xs:dateTime"/>
+            <xs:element name="decimal" nillable="true" type="xs:decimal"/>
+            <xs:element name="double" nillable="true" type="xs:double"/>
+            <xs:element name="float" nillable="true" type="xs:float"/>
+            <xs:element name="int" nillable="true" type="xs:int"/>
+            <xs:element name="long" nillable="true" type="xs:long"/>
+            <xs:element name="QName" nillable="true" type="xs:QName"/>
+            <xs:element name="short" nillable="true" type="xs:short"/>
+            <xs:element name="string" nillable="true" type="xs:string"/>
+            <xs:element name="unsignedByte" nillable="true" type="xs:unsignedByte"/>
+            <xs:element name="unsignedInt" nillable="true" type="xs:unsignedInt"/>
+            <xs:element name="unsignedLong" nillable="true" type="xs:unsignedLong"/>
+            <xs:element name="unsignedShort" nillable="true" type="xs:unsignedShort"/>
+            <xs:element name="char" nillable="true" type="tns:char"/>
+            <xs:simpleType name="char">
+                <xs:restriction base="xs:int"/>
+            </xs:simpleType>
+            <xs:element name="duration" nillable="true" type="tns:duration"/>
+            <xs:simpleType name="duration">
+                <xs:restriction base="xs:duration">
+                    <xs:pattern value="\-?P(\d*D)?(T(\d*H)?(\d*M)?(\d*(\.\d*)?S)?)?"/>
+                    <xs:minInclusive value="-P10675199DT2H48M5.4775808S"/>
+                    <xs:maxInclusive value="P10675199DT2H48M5.4775807S"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:element name="guid" nillable="true" type="tns:guid"/>
+            <xs:simpleType name="guid">
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:attribute name="FactoryType" type="xs:QName"/>
+            <xs:attribute name="Id" type="xs:ID"/>
+            <xs:attribute name="Ref" type="xs:IDREF"/>
+        </xs:schema>
+        <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.nhn.no/reg/Common/no" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.nhn.no/reg/Common/no">
+            <xs:complexType name="Kode">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Aktiv" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="Beskrivelse" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Kodegruppenavn" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="OID" type="xs:int"/>
+                    <xs:element minOccurs="0" name="Verdi" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Kode" nillable="true" type="tns:Kode"/>
+            <xs:complexType name="ArrayOfFysiskAdresse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="FysiskAdresse" nillable="true" type="tns:FysiskAdresse"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfFysiskAdresse" nillable="true" type="tns:ArrayOfFysiskAdresse"/>
+            <xs:complexType name="FysiskAdresse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Arvet" type="xs:boolean"/>
+                    <xs:element minOccurs="0" name="Beskrivelse" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Gateadresse" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Land" nillable="true" type="tns:Kode"/>
+                    <xs:element minOccurs="0" name="Postboks" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Postkode" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Poststed" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Type" nillable="true" type="tns:Kode"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="FysiskAdresse" nillable="true" type="tns:FysiskAdresse"/>
+            <xs:complexType name="Periode">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="Fra" type="xs:dateTime"/>
+                    <xs:element minOccurs="0" name="Til" nillable="true" type="xs:dateTime"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="Periode" nillable="true" type="tns:Periode"/>
+            <xs:complexType name="ArrayOfKode">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="Kode" nillable="true" type="tns:Kode"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfKode" nillable="true" type="tns:ArrayOfKode"/>
+        </xs:schema>
+        <xs:schema elementFormDefault="qualified" targetNamespace="http://register.nhn.no/Common" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://register.nhn.no/Common">
+            <xs:complexType name="GenericFault">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="ErrorCode" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="GenericFault" nillable="true" type="tns:GenericFault"/>
+        </xs:schema>
+        <xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            <xs:complexType name="ArrayOfint">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="int" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfint" nillable="true" type="tns:ArrayOfint"/>
+            <xs:complexType name="ArrayOfstring">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="unbounded" name="string" nillable="true" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="ArrayOfstring" nillable="true" type="tns:ArrayOfstring"/>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="IHPR2Service_HentPerson_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentPerson"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPerson_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPerson_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q1:GenericFault" xmlns:q1="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedHistorikk_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonMedHistorikk"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedHistorikk_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonMedHistorikkResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedHistorikk_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q2:GenericFault" xmlns:q2="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedPersonnummer_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonMedPersonnummer"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedPersonnummer_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonMedPersonnummerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersonMedPersonnummer_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q3:GenericFault" xmlns:q3="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersoner_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersoner"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersoner_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentPersonerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentPersoner_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q4:GenericFault" xmlns:q4="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk_InputMessage">
+        <wsdl:part name="parameters" element="tns:Søk"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SøkResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q5:GenericFault" xmlns:q5="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk2_InputMessage">
+        <wsdl:part name="parameters" element="tns:Søk2"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk2_OutputMessage">
+        <wsdl:part name="parameters" element="tns:Søk2Response"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Søk2_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q6:GenericFault" xmlns:q6="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettPerson_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettPerson"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettPerson_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettPersonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettPerson_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q7:GenericFault" xmlns:q7="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterPerson_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterPerson"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterPerson_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterPersonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterPerson_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q8:GenericFault" xmlns:q8="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettPerson_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettPerson"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettPerson_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettPersonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettPerson_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q9:GenericFault" xmlns:q9="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_ReserverHPRNummerliste_InputMessage">
+        <wsdl:part name="parameters" element="tns:ReserverHPRNummerliste"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_ReserverHPRNummerliste_OutputMessage">
+        <wsdl:part name="parameters" element="tns:ReserverHPRNummerlisteResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_ReserverHPRNummerliste_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q10:GenericFault" xmlns:q10="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_FrigiHPRNummerliste_InputMessage">
+        <wsdl:part name="parameters" element="tns:FrigiHPRNummerliste"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_FrigiHPRNummerliste_OutputMessage">
+        <wsdl:part name="parameters" element="tns:FrigiHPRNummerlisteResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_FrigiHPRNummerliste_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q11:GenericFault" xmlns:q11="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentReserverteHPRNummer_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentReserverteHPRNummer"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentReserverteHPRNummer_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentReserverteHPRNummerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentReserverteHPRNummer_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q12:GenericFault" xmlns:q12="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentGodkjenning_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentGodkjenning"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentGodkjenning_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentGodkjenningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentGodkjenning_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q13:GenericFault" xmlns:q13="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettGodkjenning_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettGodkjenning"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettGodkjenning_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettGodkjenningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettGodkjenning_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q14:GenericFault" xmlns:q14="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenning_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterGodkjenning"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenning_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterGodkjenningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenning_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q15:GenericFault" xmlns:q15="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenning_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettGodkjenning"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenning_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettGodkjenningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenning_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q16:GenericFault" xmlns:q16="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilGodkjenningSuspensjonsperiode"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilGodkjenningSuspensjonsperiodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q17:GenericFault" xmlns:q17="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilUtdannelsePåGodkjenning_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilUtdannelsePåGodkjenning"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilUtdannelsePåGodkjenning_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilUtdannelsePåGodkjenningResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilUtdannelsePåGodkjenning_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q18:GenericFault" xmlns:q18="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentHelsepersonellkategorierSomTillaterTurnus"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentHelsepersonellkategorierSomTillaterTurnusResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q19:GenericFault" xmlns:q19="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_InputMessage">
+        <wsdl:part name="parameters" element="tns:SettTurnusTillattflaggPåHelsepersonellkategori"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SettTurnusTillattflaggPåHelsepersonellkategoriResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q20:GenericFault" xmlns:q20="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettRekvisisjonsrett_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettRekvisisjonsrett"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettRekvisisjonsrett_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettRekvisisjonsrettResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettRekvisisjonsrett_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q21:GenericFault" xmlns:q21="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterRekvisisjonsrett_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterRekvisisjonsrett"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterRekvisisjonsrett_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterRekvisisjonsrettResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterRekvisisjonsrett_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q22:GenericFault" xmlns:q22="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilRekvisisjonsrettSuspensjonsperiode"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilRekvisisjonsrettSuspensjonsperiodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q23:GenericFault" xmlns:q23="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettRekvisisjonsrett_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettRekvisisjonsrett"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettRekvisisjonsrett_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettRekvisisjonsrettResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettRekvisisjonsrett_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q24:GenericFault" xmlns:q24="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettSpesialitet_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettSpesialitet"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettSpesialitet_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettSpesialitetResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettSpesialitet_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q25:GenericFault" xmlns:q25="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSpesialitet_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterSpesialitet"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSpesialitet_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterSpesialitetResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSpesialitet_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q26:GenericFault" xmlns:q26="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilSpesialitetSuspensjonsperiode"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilSpesialitetSuspensjonsperiodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q27:GenericFault" xmlns:q27="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSpesialitet_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettSpesialitet"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSpesialitet_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettSpesialitetResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSpesialitet_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q28:GenericFault" xmlns:q28="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettTilleggskompetanse_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettTilleggskompetanse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettTilleggskompetanse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettTilleggskompetanseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettTilleggskompetanse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q29:GenericFault" xmlns:q29="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterTilleggskompetanse_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterTilleggskompetanse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterTilleggskompetanse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterTilleggskompetanseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterTilleggskompetanse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q30:GenericFault" xmlns:q30="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettTilleggskompetanse_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettTilleggskompetanse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettTilleggskompetanse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettTilleggskompetanseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettTilleggskompetanse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q31:GenericFault" xmlns:q31="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdannelse_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettUtdannelse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdannelse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettUtdannelseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdannelse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q32:GenericFault" xmlns:q32="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdannelse_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterUtdannelse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdannelse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterUtdannelseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdannelse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q33:GenericFault" xmlns:q33="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdannelse_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettUtdannelse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdannelse_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettUtdannelseResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdannelse_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q34:GenericFault" xmlns:q34="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentUtdanningsinstitusjoner_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentUtdanningsinstitusjoner"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentUtdanningsinstitusjoner_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentUtdanningsinstitusjonerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentUtdanningsinstitusjoner_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q35:GenericFault" xmlns:q35="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdanningsinstitusjon_InputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettUtdanningsinstitusjon"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdanningsinstitusjon_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OpprettUtdanningsinstitusjonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OpprettUtdanningsinstitusjon_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q36:GenericFault" xmlns:q36="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdanningsinstitusjon_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterUtdanningsinstitusjon"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdanningsinstitusjon_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterUtdanningsinstitusjonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterUtdanningsinstitusjon_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q37:GenericFault" xmlns:q37="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdanningsinstitusjon_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettUtdanningsinstitusjon"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdanningsinstitusjon_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettUtdanningsinstitusjonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettUtdanningsinstitusjon_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q38:GenericFault" xmlns:q38="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilAlternativId_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilAlternativId"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilAlternativId_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilAlternativIdResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilAlternativId_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q39:GenericFault" xmlns:q39="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterAlternativId_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterAlternativId"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterAlternativId_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterAlternativIdResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterAlternativId_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q40:GenericFault" xmlns:q40="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettAlternativId_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettAlternativId"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettAlternativId_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettAlternativIdResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettAlternativId_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q41:GenericFault" xmlns:q41="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSuspensjonsperiode_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterSuspensjonsperiode"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSuspensjonsperiode_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterSuspensjonsperiodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterSuspensjonsperiode_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q42:GenericFault" xmlns:q42="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSuspensjonsperiode_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettSuspensjonsperiode"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSuspensjonsperiode_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettSuspensjonsperiodeResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettSuspensjonsperiode_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q43:GenericFault" xmlns:q43="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningVilkår_InputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilGodkjenningVilkår"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningVilkår_OutputMessage">
+        <wsdl:part name="parameters" element="tns:LeggTilGodkjenningVilkårResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_LeggTilGodkjenningVilkår_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q44:GenericFault" xmlns:q44="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenningVilkår_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlettGodkjenningVilkår"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenningVilkår_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlettGodkjenningVilkårResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlettGodkjenningVilkår_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q45:GenericFault" xmlns:q45="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenningVilkår_InputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterGodkjenningVilkår"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenningVilkår_OutputMessage">
+        <wsdl:part name="parameters" element="tns:OppdaterGodkjenningVilkårResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_OppdaterGodkjenningVilkår_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q46:GenericFault" xmlns:q46="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentEndringerForPerson_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentEndringerForPerson"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentEndringerForPerson_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentEndringerForPersonResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentEndringerForPerson_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q47:GenericFault" xmlns:q47="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagretSøk_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentLagretSøk"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagretSøk_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentLagretSøkResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagretSøk_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q48:GenericFault" xmlns:q48="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagredeSøk_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentLagredeSøk"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagredeSøk_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentLagredeSøkResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentLagredeSøk_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q49:GenericFault" xmlns:q49="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Ping_InputMessage">
+        <wsdl:part name="parameters" element="tns:Ping"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Ping_OutputMessage">
+        <wsdl:part name="parameters" element="tns:PingResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_Ping_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q50:GenericFault" xmlns:q50="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentRegisterEndringer_InputMessage">
+        <wsdl:part name="parameters" element="tns:HentRegisterEndringer"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentRegisterEndringer_OutputMessage">
+        <wsdl:part name="parameters" element="tns:HentRegisterEndringerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_HentRegisterEndringer_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q51:GenericFault" xmlns:q51="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlåSammen_InputMessage">
+        <wsdl:part name="parameters" element="tns:SlåSammen"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlåSammen_OutputMessage">
+        <wsdl:part name="parameters" element="tns:SlåSammenResponse"/>
+    </wsdl:message>
+    <wsdl:message name="IHPR2Service_SlåSammen_GenericFaultFault_FaultMessage">
+        <wsdl:part name="detail" element="q52:GenericFault" xmlns:q52="http://register.nhn.no/Common"/>
+    </wsdl:message>
+    <wsdl:portType name="IHPR2Service">
+        <wsdl:operation name="HentPerson">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPerson" message="tns:IHPR2Service_HentPerson_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonResponse" message="tns:IHPR2Service_HentPerson_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentPerson_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersonMedHistorikk">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedHistorikk" message="tns:IHPR2Service_HentPersonMedHistorikk_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedHistorikkResponse" message="tns:IHPR2Service_HentPersonMedHistorikk_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedHistorikkGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentPersonMedHistorikk_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersonMedPersonnummer">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedPersonnummer" message="tns:IHPR2Service_HentPersonMedPersonnummer_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedPersonnummerResponse" message="tns:IHPR2Service_HentPersonMedPersonnummer_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedPersonnummerGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentPersonMedPersonnummer_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersoner">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersoner" message="tns:IHPR2Service_HentPersoner_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonerResponse" message="tns:IHPR2Service_HentPersoner_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonerGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentPersoner_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="Søk">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk" message="tns:IHPR2Service_Søk_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SøkResponse" message="tns:IHPR2Service_Søk_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SøkGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_Søk_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="Søk2">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk2" message="tns:IHPR2Service_Søk2_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk2Response" message="tns:IHPR2Service_Søk2_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk2GenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_Søk2_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettPerson">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettPerson" message="tns:IHPR2Service_OpprettPerson_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettPersonResponse" message="tns:IHPR2Service_OpprettPerson_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettPersonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettPerson_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterPerson">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterPerson" message="tns:IHPR2Service_OppdaterPerson_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterPersonResponse" message="tns:IHPR2Service_OppdaterPerson_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterPersonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterPerson_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettPerson">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettPerson" message="tns:IHPR2Service_SlettPerson_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettPersonResponse" message="tns:IHPR2Service_SlettPerson_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettPersonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettPerson_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="ReserverHPRNummerliste">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/ReserverHPRNummerliste" message="tns:IHPR2Service_ReserverHPRNummerliste_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/ReserverHPRNummerlisteResponse" message="tns:IHPR2Service_ReserverHPRNummerliste_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/ReserverHPRNummerlisteGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_ReserverHPRNummerliste_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="FrigiHPRNummerliste">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/FrigiHPRNummerliste" message="tns:IHPR2Service_FrigiHPRNummerliste_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/FrigiHPRNummerlisteResponse" message="tns:IHPR2Service_FrigiHPRNummerliste_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/FrigiHPRNummerlisteGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_FrigiHPRNummerliste_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentReserverteHPRNummer">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentReserverteHPRNummer" message="tns:IHPR2Service_HentReserverteHPRNummer_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentReserverteHPRNummerResponse" message="tns:IHPR2Service_HentReserverteHPRNummer_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentReserverteHPRNummerGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentReserverteHPRNummer_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentGodkjenning">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentGodkjenning" message="tns:IHPR2Service_HentGodkjenning_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentGodkjenningResponse" message="tns:IHPR2Service_HentGodkjenning_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentGodkjenningGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentGodkjenning_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettGodkjenning">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettGodkjenning" message="tns:IHPR2Service_OpprettGodkjenning_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettGodkjenningResponse" message="tns:IHPR2Service_OpprettGodkjenning_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettGodkjenningGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettGodkjenning_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterGodkjenning">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenning" message="tns:IHPR2Service_OppdaterGodkjenning_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningResponse" message="tns:IHPR2Service_OppdaterGodkjenning_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterGodkjenning_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettGodkjenning">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenning" message="tns:IHPR2Service_SlettGodkjenning_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningResponse" message="tns:IHPR2Service_SlettGodkjenning_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettGodkjenning_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilGodkjenningSuspensjonsperiode">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningSuspensjonsperiode" message="tns:IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningSuspensjonsperiodeResponse" message="tns:IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningSuspensjonsperiodeGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilGodkjenningSuspensjonsperiode_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilUtdannelsePåGodkjenning">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilUtdannelsePåGodkjenning" message="tns:IHPR2Service_LeggTilUtdannelsePåGodkjenning_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilUtdannelsePåGodkjenningResponse" message="tns:IHPR2Service_LeggTilUtdannelsePåGodkjenning_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilUtdannelsePåGodkjenningGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilUtdannelsePåGodkjenning_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentHelsepersonellkategorierSomTillaterTurnus">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentHelsepersonellkategorierSomTillaterTurnus" message="tns:IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentHelsepersonellkategorierSomTillaterTurnusResponse" message="tns:IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentHelsepersonellkategorierSomTillaterTurnusGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentHelsepersonellkategorierSomTillaterTurnus_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SettTurnusTillattflaggPåHelsepersonellkategori">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SettTurnusTillattflaggPåHelsepersonellkategori" message="tns:IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SettTurnusTillattflaggPåHelsepersonellkategoriResponse" message="tns:IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SettTurnusTillattflaggPåHelsepersonellkategoriGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SettTurnusTillattflaggPåHelsepersonellkategori_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettRekvisisjonsrett">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettRekvisisjonsrett" message="tns:IHPR2Service_OpprettRekvisisjonsrett_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettRekvisisjonsrettResponse" message="tns:IHPR2Service_OpprettRekvisisjonsrett_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettRekvisisjonsrettGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettRekvisisjonsrett_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterRekvisisjonsrett">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterRekvisisjonsrett" message="tns:IHPR2Service_OppdaterRekvisisjonsrett_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterRekvisisjonsrettResponse" message="tns:IHPR2Service_OppdaterRekvisisjonsrett_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterRekvisisjonsrettGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterRekvisisjonsrett_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilRekvisisjonsrettSuspensjonsperiode">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilRekvisisjonsrettSuspensjonsperiode" message="tns:IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilRekvisisjonsrettSuspensjonsperiodeResponse" message="tns:IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilRekvisisjonsrettSuspensjonsperiodeGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilRekvisisjonsrettSuspensjonsperiode_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettRekvisisjonsrett">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettRekvisisjonsrett" message="tns:IHPR2Service_SlettRekvisisjonsrett_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettRekvisisjonsrettResponse" message="tns:IHPR2Service_SlettRekvisisjonsrett_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettRekvisisjonsrettGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettRekvisisjonsrett_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettSpesialitet">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettSpesialitet" message="tns:IHPR2Service_OpprettSpesialitet_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettSpesialitetResponse" message="tns:IHPR2Service_OpprettSpesialitet_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettSpesialitetGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettSpesialitet_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterSpesialitet">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSpesialitet" message="tns:IHPR2Service_OppdaterSpesialitet_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSpesialitetResponse" message="tns:IHPR2Service_OppdaterSpesialitet_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSpesialitetGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterSpesialitet_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilSpesialitetSuspensjonsperiode">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilSpesialitetSuspensjonsperiode" message="tns:IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilSpesialitetSuspensjonsperiodeResponse" message="tns:IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilSpesialitetSuspensjonsperiodeGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilSpesialitetSuspensjonsperiode_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettSpesialitet">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSpesialitet" message="tns:IHPR2Service_SlettSpesialitet_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSpesialitetResponse" message="tns:IHPR2Service_SlettSpesialitet_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSpesialitetGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettSpesialitet_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettTilleggskompetanse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettTilleggskompetanse" message="tns:IHPR2Service_OpprettTilleggskompetanse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettTilleggskompetanseResponse" message="tns:IHPR2Service_OpprettTilleggskompetanse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettTilleggskompetanseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettTilleggskompetanse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterTilleggskompetanse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterTilleggskompetanse" message="tns:IHPR2Service_OppdaterTilleggskompetanse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterTilleggskompetanseResponse" message="tns:IHPR2Service_OppdaterTilleggskompetanse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterTilleggskompetanseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterTilleggskompetanse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettTilleggskompetanse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettTilleggskompetanse" message="tns:IHPR2Service_SlettTilleggskompetanse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettTilleggskompetanseResponse" message="tns:IHPR2Service_SlettTilleggskompetanse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettTilleggskompetanseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettTilleggskompetanse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettUtdannelse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdannelse" message="tns:IHPR2Service_OpprettUtdannelse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdannelseResponse" message="tns:IHPR2Service_OpprettUtdannelse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdannelseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettUtdannelse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterUtdannelse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdannelse" message="tns:IHPR2Service_OppdaterUtdannelse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdannelseResponse" message="tns:IHPR2Service_OppdaterUtdannelse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdannelseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterUtdannelse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettUtdannelse">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdannelse" message="tns:IHPR2Service_SlettUtdannelse_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdannelseResponse" message="tns:IHPR2Service_SlettUtdannelse_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdannelseGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettUtdannelse_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentUtdanningsinstitusjoner">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentUtdanningsinstitusjoner" message="tns:IHPR2Service_HentUtdanningsinstitusjoner_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentUtdanningsinstitusjonerResponse" message="tns:IHPR2Service_HentUtdanningsinstitusjoner_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentUtdanningsinstitusjonerGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentUtdanningsinstitusjoner_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettUtdanningsinstitusjon">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdanningsinstitusjon" message="tns:IHPR2Service_OpprettUtdanningsinstitusjon_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdanningsinstitusjonResponse" message="tns:IHPR2Service_OpprettUtdanningsinstitusjon_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdanningsinstitusjonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OpprettUtdanningsinstitusjon_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterUtdanningsinstitusjon">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdanningsinstitusjon" message="tns:IHPR2Service_OppdaterUtdanningsinstitusjon_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdanningsinstitusjonResponse" message="tns:IHPR2Service_OppdaterUtdanningsinstitusjon_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdanningsinstitusjonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterUtdanningsinstitusjon_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettUtdanningsinstitusjon">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdanningsinstitusjon" message="tns:IHPR2Service_SlettUtdanningsinstitusjon_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdanningsinstitusjonResponse" message="tns:IHPR2Service_SlettUtdanningsinstitusjon_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdanningsinstitusjonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettUtdanningsinstitusjon_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilAlternativId">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilAlternativId" message="tns:IHPR2Service_LeggTilAlternativId_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilAlternativIdResponse" message="tns:IHPR2Service_LeggTilAlternativId_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilAlternativIdGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilAlternativId_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterAlternativId">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterAlternativId" message="tns:IHPR2Service_OppdaterAlternativId_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterAlternativIdResponse" message="tns:IHPR2Service_OppdaterAlternativId_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterAlternativIdGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterAlternativId_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettAlternativId">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettAlternativId" message="tns:IHPR2Service_SlettAlternativId_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettAlternativIdResponse" message="tns:IHPR2Service_SlettAlternativId_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettAlternativIdGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettAlternativId_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterSuspensjonsperiode">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSuspensjonsperiode" message="tns:IHPR2Service_OppdaterSuspensjonsperiode_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSuspensjonsperiodeResponse" message="tns:IHPR2Service_OppdaterSuspensjonsperiode_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSuspensjonsperiodeGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterSuspensjonsperiode_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettSuspensjonsperiode">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSuspensjonsperiode" message="tns:IHPR2Service_SlettSuspensjonsperiode_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSuspensjonsperiodeResponse" message="tns:IHPR2Service_SlettSuspensjonsperiode_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSuspensjonsperiodeGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettSuspensjonsperiode_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilGodkjenningVilkår">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningVilkår" message="tns:IHPR2Service_LeggTilGodkjenningVilkår_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningVilkårResponse" message="tns:IHPR2Service_LeggTilGodkjenningVilkår_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningVilkårGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_LeggTilGodkjenningVilkår_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlettGodkjenningVilkår">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningVilkår" message="tns:IHPR2Service_SlettGodkjenningVilkår_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningVilkårResponse" message="tns:IHPR2Service_SlettGodkjenningVilkår_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningVilkårGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlettGodkjenningVilkår_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterGodkjenningVilkår">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningVilkår" message="tns:IHPR2Service_OppdaterGodkjenningVilkår_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningVilkårResponse" message="tns:IHPR2Service_OppdaterGodkjenningVilkår_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningVilkårGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_OppdaterGodkjenningVilkår_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentEndringerForPerson">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentEndringerForPerson" message="tns:IHPR2Service_HentEndringerForPerson_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentEndringerForPersonResponse" message="tns:IHPR2Service_HentEndringerForPerson_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentEndringerForPersonGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentEndringerForPerson_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentLagretSøk">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagretSøk" message="tns:IHPR2Service_HentLagretSøk_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagretSøkResponse" message="tns:IHPR2Service_HentLagretSøk_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagretSøkGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentLagretSøk_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentLagredeSøk">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagredeSøk" message="tns:IHPR2Service_HentLagredeSøk_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagredeSøkResponse" message="tns:IHPR2Service_HentLagredeSøk_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagredeSøkGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentLagredeSøk_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="Ping">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Ping" message="tns:IHPR2Service_Ping_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/PingResponse" message="tns:IHPR2Service_Ping_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/PingGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_Ping_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="HentRegisterEndringer">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentRegisterEndringer" message="tns:IHPR2Service_HentRegisterEndringer_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentRegisterEndringerResponse" message="tns:IHPR2Service_HentRegisterEndringer_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentRegisterEndringerGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_HentRegisterEndringer_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+        <wsdl:operation name="SlåSammen">
+            <wsdl:input wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlåSammen" message="tns:IHPR2Service_SlåSammen_InputMessage"/>
+            <wsdl:output wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlåSammenResponse" message="tns:IHPR2Service_SlåSammen_OutputMessage"/>
+            <wsdl:fault wsam:Action="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlåSammenGenericFaultFault" name="GenericFaultFault" message="tns:IHPR2Service_SlåSammen_GenericFaultFault_FaultMessage"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="BasicHttpBinding_IHPR2Service" type="tns:IHPR2Service">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="HentPerson">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPerson" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersonMedHistorikk">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedHistorikk" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersonMedPersonnummer">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersonMedPersonnummer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentPersoner">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentPersoner" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Søk">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Søk2">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Søk2" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettPerson">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettPerson" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterPerson">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterPerson" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettPerson">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettPerson" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="ReserverHPRNummerliste">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/ReserverHPRNummerliste" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="FrigiHPRNummerliste">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/FrigiHPRNummerliste" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentReserverteHPRNummer">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentReserverteHPRNummer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentGodkjenning">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentGodkjenning" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettGodkjenning">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettGodkjenning" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterGodkjenning">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenning" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettGodkjenning">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenning" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilGodkjenningSuspensjonsperiode">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningSuspensjonsperiode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilUtdannelsePåGodkjenning">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilUtdannelsePåGodkjenning" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentHelsepersonellkategorierSomTillaterTurnus">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentHelsepersonellkategorierSomTillaterTurnus" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SettTurnusTillattflaggPåHelsepersonellkategori">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SettTurnusTillattflaggPåHelsepersonellkategori" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettRekvisisjonsrett">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettRekvisisjonsrett" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterRekvisisjonsrett">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterRekvisisjonsrett" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilRekvisisjonsrettSuspensjonsperiode">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilRekvisisjonsrettSuspensjonsperiode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettRekvisisjonsrett">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettRekvisisjonsrett" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettSpesialitet">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettSpesialitet" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterSpesialitet">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSpesialitet" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilSpesialitetSuspensjonsperiode">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilSpesialitetSuspensjonsperiode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettSpesialitet">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSpesialitet" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettTilleggskompetanse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettTilleggskompetanse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterTilleggskompetanse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterTilleggskompetanse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettTilleggskompetanse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettTilleggskompetanse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettUtdannelse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdannelse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterUtdannelse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdannelse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettUtdannelse">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdannelse" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentUtdanningsinstitusjoner">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentUtdanningsinstitusjoner" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OpprettUtdanningsinstitusjon">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OpprettUtdanningsinstitusjon" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterUtdanningsinstitusjon">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterUtdanningsinstitusjon" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettUtdanningsinstitusjon">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettUtdanningsinstitusjon" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilAlternativId">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilAlternativId" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterAlternativId">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterAlternativId" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettAlternativId">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettAlternativId" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterSuspensjonsperiode">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterSuspensjonsperiode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettSuspensjonsperiode">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettSuspensjonsperiode" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="LeggTilGodkjenningVilkår">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/LeggTilGodkjenningVilkår" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlettGodkjenningVilkår">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlettGodkjenningVilkår" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="OppdaterGodkjenningVilkår">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/OppdaterGodkjenningVilkår" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentEndringerForPerson">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentEndringerForPerson" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentLagretSøk">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagretSøk" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentLagredeSøk">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentLagredeSøk" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="Ping">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/Ping" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="HentRegisterEndringer">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/HentRegisterEndringer" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="SlåSammen">
+            <soap:operation soapAction="http://schemas.nhn.no/reg/HPRv2/IHPR2Service/SlåSammen" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="GenericFaultFault">
+                <soap:fault use="literal" name="GenericFaultFault" namespace=""/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="HPRService2">
+        <wsdl:port name="BasicHttpBinding_IHPR2Service" binding="tns:BasicHttpBinding_IHPR2Service">
+            <soap:address location="https://ws.nhn.no/v2/HPR/Basic"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
