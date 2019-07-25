@@ -88,13 +88,16 @@ dependencies {
     implementation(kotlin("stdlib"))
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation ("io.prometheus:simpleclient_hotspot:$prometheusVersion")
-    implementation ("io.prometheus:simpleclient_common:$prometheusVersion")
+    implementation ("io.ktor:ktor-metrics-micrometer:$ktorVersion")
+    implementation ("io.micrometer:micrometer-registry-prometheus:1.1.4")
 
     implementation ("io.ktor:ktor-server-netty:$ktorVersion")
     implementation ("io.ktor:ktor-client-apache:$ktorVersion")
     implementation ("io.ktor:ktor-client-auth-basic:$ktorVersion")
     implementation ("io.ktor:ktor-client-jackson:$ktorVersion")
+    implementation ("io.ktor:ktor-jackson:$ktorVersion")
+    implementation ("io.ktor:ktor-auth:$ktorVersion")
+    implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
 
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -132,6 +135,8 @@ dependencies {
 
     testImplementation ("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
+    testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
+    testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty") // conflicts with WireMock
     }
