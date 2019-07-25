@@ -116,7 +116,7 @@ fun Application.setupAuth(
 
 fun Route.setupBehandlerApi(helsepersonellService: HelsepersonellService) {
     get("/behandler") {
-//        withTraceInterceptor {
+        withTraceInterceptor {
             val fnr = call.request.header("behandlerFnr") ?: throw RuntimeException()
 
             when (val behandler = helsepersonellService.finnBehandler(fnr)) {
@@ -124,6 +124,6 @@ fun Route.setupBehandlerApi(helsepersonellService: HelsepersonellService) {
                 else -> {
                     call.respond(behandler) }
             }
-//        }
+        }
     }
 }
