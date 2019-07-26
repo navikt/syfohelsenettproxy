@@ -77,9 +77,6 @@ dependencies {
     implementation ("io.micrometer:micrometer-registry-prometheus:$micrometerRegistryPrometheusVersion")
 
     implementation ("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation ("io.ktor:ktor-client-apache:$ktorVersion")
-    implementation ("io.ktor:ktor-client-auth-basic:$ktorVersion")
-    implementation ("io.ktor:ktor-client-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
