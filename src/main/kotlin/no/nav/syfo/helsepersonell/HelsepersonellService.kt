@@ -1,8 +1,6 @@
 package no.nav.syfo.helsepersonell
 
 import com.ctc.wstx.exc.WstxException
-import kotlinx.coroutines.slf4j.MDCContext
-import kotlinx.coroutines.withContext
 import no.nav.syfo.NAV_CALLID
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.log
@@ -15,7 +13,6 @@ import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
-import org.slf4j.MDC
 import java.io.IOException
 import java.time.LocalDate
 
@@ -26,13 +23,9 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             retryIntervals = arrayOf(500L, 1000L, 3000L, 5000L, 10000L),
             legalExceptions = *arrayOf(IOException::class, WstxException::class)
         ) {
-            withContext(MDCContext()) {
-                helsepersonellV1.hentPersonMedPersonnummer(
+            helsepersonellV1.hentPersonMedPersonnummer(
                     behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
-                ).let {
-                    log.info(MDC.get(NAV_CALLID))
-                    ws2Behandler(it) }
-            }
+            ).let { ws2Behandler(it) }
         }
 }
 

@@ -24,7 +24,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.21"
+val smCommonVersion = "1.0.22"
 val micrometerRegistryPrometheusVersion = "1.1.5"
 
 plugins {
@@ -48,12 +48,10 @@ buildscript {
 }
 
 repositories {
-    maven (url= "https://repo.adeo.no/repository/maven-snapshots/")
-    maven (url= "https://repo.adeo.no/repository/maven-releases/")
-    maven (url= "https://dl.bintray.com/kotlin/ktor")
-    maven (url= "https://dl.bintray.com/spekframework/spek-dev")
-    maven (url= "http://packages.confluent.io/maven/")
-    maven (url= "https://kotlin.bintray.com/kotlinx")
+    maven(url = "https://dl.bintray.com/kotlin/ktor")
+    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
+    maven(url = "http://packages.confluent.io/maven/")
+    maven(url = "https://kotlin.bintray.com/kotlinx")
     mavenCentral()
     jcenter()
 }
@@ -114,9 +112,7 @@ dependencies {
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
     testImplementation("io.mockk:mockk:1.9.3")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
-        exclude(group = "org.eclipse.jetty") // conflicts with WireMock
-    }
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")

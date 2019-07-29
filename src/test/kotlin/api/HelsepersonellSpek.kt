@@ -7,11 +7,9 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.syfo.*
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.HelsepersonellService
-import no.nav.syfo.objectMapper
-import no.nav.syfo.registerBehandlerApi
-import no.nav.syfo.setupContentNegotiation
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
 import no.nhn.schemas.reg.hprv2.Godkjenning
@@ -53,8 +51,10 @@ object HelsepersonellSpek : Spek({
         val engine = TestApplicationEngine()
         engine.start(wait = false)
         engine.application.apply {
+            callLogging()
             setupContentNegotiation()
             routing {
+                enforceCallId()
                 registerBehandlerApi(helsePersonService)
             }
         }
@@ -81,6 +81,14 @@ object HelsepersonellSpek : Spek({
                 behandler.godkjenninger[0].autorisasjon?.aktiv.shouldEqual(true)
                 behandler.godkjenninger[0].autorisasjon?.oid.shouldEqual(7704)
                 behandler.godkjenninger[0].autorisasjon?.verdi.shouldEqual("1")
+            }
+        }
+
+        it("Enforces callid when interceptor is installed") {
+            with(engine.handleRequest(HttpMethod.Get, "/behandler") {
+                addHeader("behandlerFnr", "fnr")
+            }) {
+                response.status() shouldEqual HttpStatusCode.BadRequest
             }
         }
     }
