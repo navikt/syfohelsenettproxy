@@ -87,8 +87,7 @@ fun Route.enforceCallId() {
     intercept(ApplicationCallPipeline.Setup) {
         if (call.request.header(NAV_CALLID).isNullOrBlank()) {
             call.respond(BadRequest, "Mangler header `$NAV_CALLID`")
-            finish()
-            return@intercept
+            return@intercept finish()
         }
     }
 }
