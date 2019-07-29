@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.Application
-import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -21,7 +20,6 @@ import io.ktor.jackson.jackson
 import io.ktor.request.header
 import io.ktor.response.respond
 import io.ktor.routing.Route
-import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -29,7 +27,6 @@ import io.ktor.server.netty.Netty
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import org.slf4j.LoggerFactory
-import org.slf4j.MDC
 import java.net.URL
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
@@ -67,7 +64,6 @@ fun main() {
         setupContentNegotiation()
 
         routing {
-            registerCallIdInterceptor()
             registerNaisApi(readynessCheck = { applicationState.ready }, livenessCheck = { applicationState.running })
             authenticate {
                 registerBehandlerApi(helsepersonellService)
@@ -84,18 +80,6 @@ fun main() {
     })
 }
 
-private fun Routing.registerCallIdInterceptor() {
-    intercept(ApplicationCallPipeline.Setup) {
-        call.request.header(NAV_CALLID)
-            ?.let { MDC.put(NAV_CALLID, it) }
-            ?: run {
-                log.warn("Kall mangler Call Id")
-                call.respond(BadRequest, "Mangler header `NAV_CALLID`")
-                return@intercept
-            }
-    }
-}
-
 fun Application.setupContentNegotiation() {
     install(ContentNegotiation) {
         jackson {
@@ -106,10 +90,7 @@ fun Application.setupContentNegotiation() {
     }
 }
 
-fun Application.setupAuth(
-    environment: Environment,
-    authorizedUsers: List<String>
-) {
+fun Application.setupAuth(environment: Environment, authorizedUsers: List<String>) {
     install(Authentication) {
         jwt {
             verifier(

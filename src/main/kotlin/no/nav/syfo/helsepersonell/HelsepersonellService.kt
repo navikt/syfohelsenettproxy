@@ -5,6 +5,7 @@ import kotlinx.coroutines.slf4j.MDCContext
 import kotlinx.coroutines.withContext
 import no.nav.syfo.NAV_CALLID
 import no.nav.syfo.helpers.retry
+import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.Person
@@ -14,13 +15,9 @@ import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
+import org.slf4j.MDC
 import java.io.IOException
 import java.time.LocalDate
-import no.nav.syfo.log
-import org.apache.cxf.headers.Header
-import org.slf4j.MDC
-import java.util.UUID
-import javax.xml.namespace.QName
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
     suspend fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
@@ -87,21 +84,9 @@ fun helsepersonellV1(
             }
         }
         inInterceptors.add(interceptor)
-        outInterceptors.add(CallIdOutInterceptor())
         inFaultInterceptors.add(interceptor)
         features.add(WSAddressingFeature())
     }
 
     port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
-}
-
-class CallIdOutInterceptor : AbstractSoapInterceptor(Phase.WRITE) {
-    override fun handleMessage(message: SoapMessage?) {
-        val callId = MDC.get(NAV_CALLID) ?: run {
-            UUID.randomUUID().toString()
-                .also { log.info("Fant ikke callId på kall. Lager ny: $id") }
-        }
-
-        message?.headers?.add(Header(QName("callId"), callId))
-    }
 }
