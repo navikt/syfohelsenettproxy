@@ -5,7 +5,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
-import io.ktor.util.InternalAPI
 import io.mockk.every
 import io.mockk.mockk
 import no.nav.syfo.*
@@ -23,7 +22,6 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.util.concurrent.TimeUnit
 
-@InternalAPI
 object HelsepersonellSpek : Spek({
 
     val wsMock = mockk<IHPR2Service>()
