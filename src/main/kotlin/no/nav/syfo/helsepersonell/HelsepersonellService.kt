@@ -1,6 +1,9 @@
 package no.nav.syfo.helsepersonell
 
 import com.ctc.wstx.exc.WstxException
+import kotlinx.coroutines.slf4j.MDCContext
+import kotlinx.coroutines.withContext
+import no.nav.syfo.NAV_CALLID
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -13,6 +16,11 @@ import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
 import java.io.IOException
 import java.time.LocalDate
+import no.nav.syfo.log
+import org.apache.cxf.headers.Header
+import org.slf4j.MDC
+import java.util.UUID
+import javax.xml.namespace.QName
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
     suspend fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
@@ -21,9 +29,13 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             retryIntervals = arrayOf(500L, 1000L, 3000L, 5000L, 10000L),
             legalExceptions = *arrayOf(IOException::class, WstxException::class)
         ) {
-            helsepersonellV1.hentPersonMedPersonnummer(
-                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
-            ).let { ws2Behandler(it) }
+            withContext(MDCContext()) {
+                helsepersonellV1.hentPersonMedPersonnummer(
+                    behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
+                ).let {
+                    log.info(MDC.get(NAV_CALLID))
+                    ws2Behandler(it) }
+            }
         }
 }
 
@@ -75,9 +87,21 @@ fun helsepersonellV1(
             }
         }
         inInterceptors.add(interceptor)
+        outInterceptors.add(CallIdOutInterceptor())
         inFaultInterceptors.add(interceptor)
         features.add(WSAddressingFeature())
     }
 
     port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
+}
+
+class CallIdOutInterceptor : AbstractSoapInterceptor(Phase.WRITE) {
+    override fun handleMessage(message: SoapMessage?) {
+        val callId = MDC.get(NAV_CALLID) ?: run {
+            UUID.randomUUID().toString()
+                .also { log.info("Fant ikke callId på kall. Lager ny: $id") }
+        }
+
+        message?.headers?.add(Header(QName("callId"), callId))
+    }
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -14,12 +15,13 @@ import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.ContentNegotiation
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.jackson.jackson
 import io.ktor.request.header
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.Route
+import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
@@ -27,6 +29,7 @@ import io.ktor.server.netty.Netty
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import org.slf4j.LoggerFactory
+import org.slf4j.MDC
 import java.net.URL
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
@@ -38,43 +41,59 @@ val objectMapper: ObjectMapper = ObjectMapper().apply {
 }
 
 val log = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
+const val NAV_CALLID = "Nav-CallId"
 
-data class ApplicationState(var running: Boolean = true, var initialized: Boolean = false)
+data class ApplicationState(var running: Boolean = true, var ready: Boolean = true)
 
 fun main() {
+    val environment = Environment()
+    val credentials: VaultCredentials = objectMapper.readValue(Paths.get(environment.vaultPath).toFile())
+    val applicationState = ApplicationState()
 
-    val env = Environment()
-    val credentials =
-        objectMapper.readValue<VaultCredentials>(Paths.get("/var/run/secrets/nais.io/vault/credentials.json").toFile())
     val authorizedUsers = emptyList<String>()
 
     val helsepersonellV1 = helsepersonellV1(
-        env.helsepersonellv1EndpointURL,
+        environment.helsepersonellv1EndpointURL,
         credentials.serviceuserUsername,
         credentials.serviceuserPassword,
-        env.securityTokenServiceUrl
+        environment.securityTokenServiceUrl
     )
 
     val helsepersonellService = HelsepersonellService(helsepersonellV1)
 
-    embeddedServer(Netty, 8080) {
+    val applicationServer = embeddedServer(Netty, 8080) {
 
-        setupAuth(env, authorizedUsers)
+        setupAuth(environment, authorizedUsers)
         setupContentNegotiation()
 
         routing {
-
-            get("/isAlive") {
-                call.respondText("I'm alive! :)")
-            }
-            get("/isReady") {
-                call.respondText("I'm ready! :)")
-            }
+            registerCallIdInterceptor()
+            registerNaisApi(readynessCheck = { applicationState.ready }, livenessCheck = { applicationState.running })
             authenticate {
-                setupBehandlerApi(helsepersonellService)
+                registerBehandlerApi(helsepersonellService)
             }
         }
+        applicationState.ready = true
     }.start(wait = true)
+
+    Runtime.getRuntime().addShutdownHook(Thread {
+        // Kubernetes polls every 5 seconds for liveness, mark as not ready and wait 5 seconds for a new readyness check
+        applicationState.ready = false
+        Thread.sleep(10000)
+        applicationServer.stop(10, 10, TimeUnit.SECONDS)
+    })
+}
+
+private fun Routing.registerCallIdInterceptor() {
+    intercept(ApplicationCallPipeline.Setup) {
+        call.request.header(NAV_CALLID)
+            ?.let { MDC.put(NAV_CALLID, it) }
+            ?: run {
+                log.warn("Kall mangler Call Id")
+                call.respond(BadRequest, "Mangler header `NAV_CALLID`")
+                return@intercept
+            }
+    }
 }
 
 fun Application.setupContentNegotiation() {
@@ -88,22 +107,22 @@ fun Application.setupContentNegotiation() {
 }
 
 fun Application.setupAuth(
-    env: Environment,
+    environment: Environment,
     authorizedUsers: List<String>
 ) {
     install(Authentication) {
         jwt {
             verifier(
-                JwkProviderBuilder(URL(env.jwkKeysUrl))
+                JwkProviderBuilder(URL(environment.jwkKeysUrl))
                     .cached(10, 24, TimeUnit.HOURS)
                     .rateLimited(10, 1, TimeUnit.MINUTES)
-                    .build(), env.jwtIssuer
+                    .build(), environment.jwtIssuer
             )
             realm = "syfohelsenettproxy"
             validate { credentials ->
                 val appid: String = credentials.payload.getClaim("appid").asString()
                 log.info("authorization attempt for $appid")
-                if (appid in authorizedUsers && credentials.payload.audience.contains(env.clientId)) {
+                if (appid in authorizedUsers && credentials.payload.audience.contains(environment.clientId)) {
                     log.info("authorization ok")
                     return@validate JWTPrincipal(credentials.payload)
                 }
@@ -114,15 +133,17 @@ fun Application.setupAuth(
     }
 }
 
-fun Route.setupBehandlerApi(helsepersonellService: HelsepersonellService) {
+fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
     get("/behandler") {
-        withTraceInterceptor {
-            val fnr = call.request.header("behandlerFnr") ?: throw RuntimeException()
+        val fnr = call.request.header("behandlerFnr") ?: run {
+            call.respond(BadRequest, "Mangler header `behandlerFnr` med fnr")
+            return@get
+        }
 
-            when (val behandler = helsepersonellService.finnBehandler(fnr)) {
-                null -> call.respond(NotFound, "Fant ikke behandler")
-                else -> {
-                    call.respond(behandler) }
+        when (val behandler = helsepersonellService.finnBehandler(fnr)) {
+            null -> call.respond(NotFound, "Fant ikke behandler")
+            else -> {
+                call.respond(behandler)
             }
         }
     }

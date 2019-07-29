@@ -41,7 +41,9 @@ buildscript {
         classpath("javax.xml.bind:jaxb-api:2.3.1")
         classpath("org.glassfish.jaxb:jaxb-runtime:2.3.1")
         classpath("com.sun.activation:javax.activation:1.2.0")
-        classpath("com.sun.xml.ws:jaxws-tools:2.3.2")
+        classpath("com.sun.xml.ws:jaxws-tools:2.3.1") {
+            exclude(group = "com.sun.xml.ws", module = "policy")
+        }
     }
 }
 
@@ -80,6 +82,7 @@ dependencies {
     implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$ktorVersion")
 
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -114,12 +117,14 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty") // conflicts with WireMock
     }
+
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
     testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
+    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
 }
 
 

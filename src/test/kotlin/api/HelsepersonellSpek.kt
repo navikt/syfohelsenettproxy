@@ -10,7 +10,7 @@ import io.mockk.mockk
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.objectMapper
-import no.nav.syfo.setupBehandlerApi
+import no.nav.syfo.registerBehandlerApi
 import no.nav.syfo.setupContentNegotiation
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
@@ -22,59 +22,66 @@ import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.util.concurrent.TimeUnit
 
 object HelsepersonellSpek : Spek({
 
+    val wsMock = mockk<IHPR2Service>()
+    val helsePersonService = HelsepersonellService(wsMock)
+
+    every { wsMock.hentPersonMedPersonnummer("fnr", any()) } returns
+        Person().apply {
+            godkjenninger = ArrayOfGodkjenning().apply {
+                godkjenning.add(Godkjenning().apply {
+                    autorisasjon = Kode().apply {
+                        isAktiv = true
+                        oid = 7704
+                        verdi = "1"
+                    }.apply {
+                        helsepersonellkategori = Kode().apply {
+                            isAktiv = true
+                            verdi = null
+                            oid = 10
+                        }
+                    }
+                })
+            }
+        }
+
     describe("Helsepersonell") {
 
-        val wsMock = mockk<IHPR2Service>()
-        val helsePersonService = HelsepersonellService(wsMock)
+        val engine = TestApplicationEngine()
+        engine.start(wait = false)
+        engine.application.apply {
+            setupContentNegotiation()
+            routing {
+                registerBehandlerApi(helsePersonService)
+            }
+        }
 
-        every { wsMock.hentPersonMedPersonnummer("fnr", any()) } returns
-                Person().apply {
-                    godkjenninger = ArrayOfGodkjenning().apply {
-                        godkjenning.add(Godkjenning().apply {
-                            autorisasjon = Kode().apply {
-                                isAktiv = true
-                                oid = 7704
-                                verdi = "1"
-                            }.apply {
-                                helsepersonellkategori = Kode().apply {
-                                    isAktiv = true
-                                    verdi = null
-                                    oid = 10
-                                }
-                            }
-                        })
-                    }
+        afterGroup {
+            engine.stop(0L, 0L, TimeUnit.SECONDS)
+        }
 
-                    with(TestApplicationEngine()) {
-                        start()
-                        application.setupContentNegotiation()
-                        application.routing {
-                            setupBehandlerApi(helsePersonService)
-                        }
+        it("Finner behandlingskode på behandler") {
+            with(engine.handleRequest(HttpMethod.Get, "/behandler") {
+                addHeader("behandlerFnr", "fnr")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.OK)
+                val behandler: Behandler =
+                    objectMapper.readValue(response.content!!, Behandler::class.java)
+                behandler.godkjenninger.size.shouldEqual(1)
+                behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
+                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldEqual(true)
+                behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldEqual(10)
+                behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
 
-                        it("Finner behandlingskode på behandler") {
-                            with(handleRequest(HttpMethod.Get, "/behandler") {
-                                addHeader("behandlerFnr", "fnr")
-                            }) {
-                                response.status()?.shouldEqual(HttpStatusCode.OK)
-                                val behandler: Behandler =
-                                        objectMapper.readValue(response.content!!, Behandler::class.java)
-                                behandler.godkjenninger.size.shouldEqual(1)
-                                behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
-                                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldEqual(true)
-                                behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldEqual(10)
-                                behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
-
-                                behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
-                                behandler.godkjenninger[0].autorisasjon?.aktiv.shouldEqual(true)
-                                behandler.godkjenninger[0].autorisasjon?.oid.shouldEqual(7704)
-                                behandler.godkjenninger[0].autorisasjon?.verdi.shouldEqual("1")
-                            }
-                        }
-                    }
-                }
+                behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
+                behandler.godkjenninger[0].autorisasjon?.aktiv.shouldEqual(true)
+                behandler.godkjenninger[0].autorisasjon?.oid.shouldEqual(7704)
+                behandler.godkjenninger[0].autorisasjon?.verdi.shouldEqual("1")
+            }
+        }
     }
 })
