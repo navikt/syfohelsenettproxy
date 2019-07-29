@@ -112,9 +112,7 @@ dependencies {
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
     testImplementation("io.mockk:mockk:1.9.3")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
-        exclude(group = "org.eclipse.jetty") // conflicts with WireMock
-    }
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
