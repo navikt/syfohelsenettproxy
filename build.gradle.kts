@@ -24,7 +24,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.21"
+val smCommonVersion = "1.0.22"
 val micrometerRegistryPrometheusVersion = "1.1.5"
 
 plugins {
@@ -48,12 +48,10 @@ buildscript {
 }
 
 repositories {
-    maven (url= "https://repo.adeo.no/repository/maven-snapshots/")
-    maven (url= "https://repo.adeo.no/repository/maven-releases/")
-    maven (url= "https://dl.bintray.com/kotlin/ktor")
-    maven (url= "https://dl.bintray.com/spekframework/spek-dev")
-    maven (url= "http://packages.confluent.io/maven/")
-    maven (url= "https://kotlin.bintray.com/kotlinx")
+    maven(url = "https://dl.bintray.com/kotlin/ktor")
+    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
+    maven(url = "http://packages.confluent.io/maven/")
+    maven(url = "https://kotlin.bintray.com/kotlinx")
     mavenCentral()
     jcenter()
 }

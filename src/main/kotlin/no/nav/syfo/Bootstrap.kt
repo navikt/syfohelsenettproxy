@@ -7,21 +7,21 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.Application
+import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
+import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.jackson.jackson
 import io.ktor.request.header
 import io.ktor.response.respond
-import io.ktor.routing.Route
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import no.nav.syfo.helsepersonell.HelsepersonellService
@@ -59,14 +59,17 @@ fun main() {
     val helsepersonellService = HelsepersonellService(helsepersonellV1)
 
     val applicationServer = embeddedServer(Netty, 8080) {
-
+        callLogging()
         setupAuth(environment, authorizedUsers)
         setupContentNegotiation()
 
         routing {
             registerNaisApi(readynessCheck = { applicationState.ready }, livenessCheck = { applicationState.running })
-            authenticate {
-                registerBehandlerApi(helsepersonellService)
+            route("/api") {
+                enforceCallId()
+                authenticate {
+                    registerBehandlerApi(helsepersonellService)
+                }
             }
         }
         applicationState.ready = true
@@ -78,6 +81,22 @@ fun main() {
         Thread.sleep(10000)
         applicationServer.stop(10, 10, TimeUnit.SECONDS)
     })
+}
+
+fun Route.enforceCallId() {
+    intercept(ApplicationCallPipeline.Setup) {
+        if (call.request.header(NAV_CALLID).isNullOrBlank()) {
+            call.respond(BadRequest, "Mangler header `$NAV_CALLID`")
+            finish()
+            return@intercept
+        }
+    }
+}
+
+fun Application.callLogging() {
+    install(CallLogging) {
+        mdc(NAV_CALLID) { it.request.header(NAV_CALLID) }
+    }
 }
 
 fun Application.setupContentNegotiation() {
