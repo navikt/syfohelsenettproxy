@@ -9,12 +9,16 @@ import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.Person
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
+import org.apache.cxf.headers.Header
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
+import org.slf4j.MDC
 import java.io.IOException
 import java.time.LocalDate
+import java.util.UUID
+import javax.xml.namespace.QName
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
     suspend fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
@@ -77,9 +81,22 @@ fun helsepersonellV1(
             }
         }
         inInterceptors.add(interceptor)
+        outInterceptors.add(CallIdOutInterceptor())
         inFaultInterceptors.add(interceptor)
         features.add(WSAddressingFeature())
     }
 
     port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
+}
+
+class CallIdOutInterceptor : AbstractSoapInterceptor(Phase.WRITE) {
+    override fun handleMessage(message: SoapMessage?) {
+        val callId = MDC.get(NAV_CALLID) ?: run {
+            UUID.randomUUID().toString()
+                .also { log.info("Fant ikke callId på kall. Lager ny: $id") }
+        }
+        message?.headers?.add(Header(QName("callId"), callId))
+        // Todo: Fjern denne etter vi ser at den virker
+        log.info(message.toString())
+    }
 }

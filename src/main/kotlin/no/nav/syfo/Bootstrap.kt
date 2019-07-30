@@ -87,6 +87,7 @@ fun Route.enforceCallId() {
     intercept(ApplicationCallPipeline.Setup) {
         if (call.request.header(NAV_CALLID).isNullOrBlank()) {
             call.respond(BadRequest, "Mangler header `$NAV_CALLID`")
+            log.warn("Mottatt kall som mangler callId: ${call.request.local.uri}")
             return@intercept finish()
         }
     }
