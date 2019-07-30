@@ -1,8 +1,6 @@
 package no.nav.syfo.helsepersonell
 
-import com.ctc.wstx.exc.WstxException
 import no.nav.syfo.NAV_CALLID
-import no.nav.syfo.helpers.retry
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -15,22 +13,15 @@ import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
 import org.slf4j.MDC
-import java.io.IOException
 import java.time.LocalDate
 import java.util.UUID
 import javax.xml.namespace.QName
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
-    suspend fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
-        retry(
-            callName = "hpr_hent_person_med_personnummer",
-            retryIntervals = arrayOf(500L, 1000L, 3000L, 5000L, 10000L),
-            legalExceptions = *arrayOf(IOException::class, WstxException::class)
-        ) {
+    fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
             helsepersonellV1.hentPersonMedPersonnummer(
                     behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
             ).let { ws2Behandler(it) }
-        }
 }
 
 fun ws2Behandler(person: Person): Behandler =
