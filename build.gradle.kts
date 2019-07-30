@@ -33,7 +33,7 @@ plugins {
     kotlin("jvm") version "1.3.31"
     id("org.jmailen.kotlinter") version "1.26.0"
     id("com.diffplug.gradle.spotless") version "3.14.0"
-    id("com.github.johnrengelman.shadow") version "4.0.4"
+    id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
 buildscript {
