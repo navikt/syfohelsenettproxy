@@ -7,13 +7,20 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.syfo.*
+import no.nav.syfo.callLogging
+import no.nav.syfo.enforceCallId
+import no.nav.syfo.errorHandling
 import no.nav.syfo.helsepersonell.Behandler
+import no.nav.syfo.helsepersonell.Feilmelding
 import no.nav.syfo.helsepersonell.HelsepersonellService
+import no.nav.syfo.objectMapper
+import no.nav.syfo.registerBehandlerApi
+import no.nav.syfo.setupContentNegotiation
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
 import no.nhn.schemas.reg.hprv2.Godkjenning
 import no.nhn.schemas.reg.hprv2.IHPR2Service
+import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.Person
 import org.amshove.kluent.shouldBeNull
 import org.amshove.kluent.shouldEqual
@@ -52,6 +59,7 @@ object HelsepersonellSpek : Spek({
         engine.start(wait = false)
         engine.application.apply {
             callLogging()
+            errorHandling()
             setupContentNegotiation()
             routing {
                 enforceCallId()
@@ -89,6 +97,21 @@ object HelsepersonellSpek : Spek({
                 addHeader("behandlerFnr", "fnr")
             }) {
                 response.status() shouldEqual HttpStatusCode.BadRequest
+            }
+        }
+
+        it("Sender feilmelding videre til konsumenten") {
+            every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("fault"))
+            with(engine.handleRequest(HttpMethod.Get, "/behandler") {
+                addHeader("behandlerFnr", "fnr")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.InternalServerError)
+                val feil: Feilmelding =
+                    objectMapper.readValue(response.content!!, Feilmelding::class.java)
+
+                feil.status.shouldEqual(HttpStatusCode.InternalServerError)
+                feil.message.shouldEqual("fault")
             }
         }
     }

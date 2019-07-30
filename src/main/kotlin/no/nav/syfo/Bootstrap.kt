@@ -16,14 +16,20 @@ import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.jackson.jackson
 import io.ktor.request.header
 import io.ktor.response.respond
-import io.ktor.routing.*
+import io.ktor.routing.Route
+import io.ktor.routing.get
+import io.ktor.routing.route
+import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import org.slf4j.LoggerFactory
@@ -59,6 +65,7 @@ fun main() {
     val helsepersonellService = HelsepersonellService(helsepersonellV1)
 
     val applicationServer = embeddedServer(Netty, 8080) {
+        errorHandling()
         callLogging()
         setupAuth(environment, authorizedUsers)
         setupContentNegotiation()
@@ -81,6 +88,14 @@ fun main() {
         Thread.sleep(10000)
         applicationServer.stop(10, 10, TimeUnit.SECONDS)
     })
+}
+
+fun Application.errorHandling() {
+    install(StatusPages) {
+        exception<HelsepersonellException> { e ->
+            call.respond(InternalServerError, e.feilmelding)
+        }
+    }
 }
 
 fun Route.enforceCallId() {
