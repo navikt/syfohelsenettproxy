@@ -1,5 +1,6 @@
 package no.nav.syfo.helsepersonell
 
+import no.nav.syfo.datatypeFactory
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -10,14 +11,13 @@ import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
-import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
-import java.time.LocalDate
+import java.util.GregorianCalendar
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
-    fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
+    fun finnBehandler(behandlersPersonnummer: String): Behandler? =
         try {
             helsepersonellV1.hentPersonMedPersonnummer(
-                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
+                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
             ).let { ws2Behandler(it) }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             log.error("Helsenett gir feilmelding: {}", e.message)
