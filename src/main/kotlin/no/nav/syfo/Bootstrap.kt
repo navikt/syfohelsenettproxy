@@ -55,7 +55,7 @@ fun main() {
 
     val authorizedUsers = listOf(
         environment.syfosmmottakClientId,
-        environment.syfosmmottakClientId,
+        environment.syfosminfotrygdClientId,
         environment.syfosmreglerClientId
     )
 
