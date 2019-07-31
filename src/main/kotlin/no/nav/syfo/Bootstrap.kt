@@ -53,7 +53,11 @@ fun main() {
     val credentials: VaultCredentials = objectMapper.readValue(Paths.get(environment.vaultPath).toFile())
     val applicationState = ApplicationState()
 
-    val authorizedUsers = emptyList<String>()
+    val authorizedUsers = listOf(
+        environment.syfosmmottakClientId,
+        environment.syfosmmottakClientId,
+        environment.syfosmreglerClientId
+    )
 
     val helsepersonellV1 = helsepersonellV1(
         environment.helsepersonellv1EndpointURL,

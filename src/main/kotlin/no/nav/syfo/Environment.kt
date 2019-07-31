@@ -11,6 +11,9 @@ data class Environment(
     val jwkKeysUrl: String = getEnvVar("JWKKEYS_URL", "https://login.microsoftonline.com/common/discovery/keys"),
     val jwtIssuer: String = getEnvVar("JWT_ISSUER"),
     val clientId: String = getEnvVar("CLIENT_ID"),
+    val syfosmmottakClientId: String = getEnvVar("SYFOSMMOTTAK_CLIENT_ID"),
+    val syfosminfotrygdClientId: String = getEnvVar("SYFOSMINFOTRYGD_CLIENT_ID"),
+    val syfosmreglerClientId: String = getEnvVar("SYFOSMREGLER_CLIENT_ID"),
     val vaultPath: String = "/var/run/secrets/nais.io/vault/credentials.json"
 )
 

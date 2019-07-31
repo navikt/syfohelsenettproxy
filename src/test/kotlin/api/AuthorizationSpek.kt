@@ -33,7 +33,10 @@ object AuthorizationSpek : Spek({
         jwkKeysUrl = "http://localhost:$randomPort/fake.jwt",
         jwtIssuer = "https://sts.issuer.net/myid",
         clientId = "helsenett-clientId",
-        vaultPath = "src/test/resources/credentials.json"
+        vaultPath = "src/test/resources/credentials.json",
+        syfosminfotrygdClientId = "syfosminfotrygdClientId",
+        syfosmmottakClientId = "syfosmmottakClientId",
+        syfosmreglerClientId = "syfosmreglerClientId"
     )
 
     describe("Authorization") {
