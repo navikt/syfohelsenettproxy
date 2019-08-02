@@ -1,6 +1,6 @@
 package no.nav.syfo.helsepersonell
 
-import no.nav.syfo.NAV_CALLID
+import no.nav.syfo.datatypeFactory
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -8,21 +8,16 @@ import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaul
 import no.nhn.schemas.reg.hprv2.Person
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
-import org.apache.cxf.headers.Header
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import org.apache.cxf.ws.addressing.WSAddressingFeature
-import org.apache.xml.security.stax.ext.XMLSecurityConstants.datatypeFactory
-import org.slf4j.MDC
-import java.time.LocalDate
-import java.util.UUID
-import javax.xml.namespace.QName
+import java.util.GregorianCalendar
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
-    fun finnBehandler(behandlersPersonnummer: String, paTidspunkt: LocalDate? = LocalDate.now()): Behandler? =
+    fun finnBehandler(behandlersPersonnummer: String): Behandler? =
         try {
             helsepersonellV1.hentPersonMedPersonnummer(
-                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(paTidspunkt.toString())
+                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
             ).let { ws2Behandler(it) }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             log.error("Helsenett gir feilmelding: {}", e.message)
@@ -78,22 +73,9 @@ fun helsepersonellV1(
             }
         }
         inInterceptors.add(interceptor)
-        outInterceptors.add(CallIdOutInterceptor())
         inFaultInterceptors.add(interceptor)
         features.add(WSAddressingFeature())
     }
 
     port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
-}
-
-class CallIdOutInterceptor : AbstractSoapInterceptor(Phase.WRITE) {
-    override fun handleMessage(message: SoapMessage?) {
-        val callId = MDC.get(NAV_CALLID) ?: run {
-            UUID.randomUUID().toString()
-                .also { log.info("Fant ikke callId på kall. Lager ny: $id") }
-        }
-        message?.headers?.add(Header(QName("callId"), callId))
-        // Todo: Fjern denne etter vi ser at den virker
-        log.info(message.toString())
-    }
 }

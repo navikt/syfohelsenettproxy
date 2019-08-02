@@ -21,6 +21,7 @@ import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.NotFound
 import io.ktor.jackson.jackson
+import io.ktor.metrics.micrometer.MicrometerMetrics
 import io.ktor.request.header
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -29,6 +30,16 @@ import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
+import io.micrometer.core.instrument.Clock
+import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
+import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
+import io.micrometer.core.instrument.binder.logging.LogbackMetrics
+import io.micrometer.core.instrument.binder.system.ProcessorMetrics
+import io.micrometer.prometheus.PrometheusConfig
+import io.micrometer.prometheus.PrometheusMeterRegistry
+import io.prometheus.client.CollectorRegistry
 import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
@@ -36,12 +47,15 @@ import org.slf4j.LoggerFactory
 import java.net.URL
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
+import javax.xml.datatype.DatatypeFactory
 
 val objectMapper: ObjectMapper = ObjectMapper().apply {
     registerKotlinModule()
     registerModule(JavaTimeModule())
     configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
 }
+
+val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
 
 val log = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 const val NAV_CALLID = "Nav-CallId"
@@ -53,7 +67,11 @@ fun main() {
     val credentials: VaultCredentials = objectMapper.readValue(Paths.get(environment.vaultPath).toFile())
     val applicationState = ApplicationState()
 
-    val authorizedUsers = emptyList<String>()
+    val authorizedUsers = listOf(
+        environment.syfosmmottakClientId,
+        environment.syfosminfotrygdClientId,
+        environment.syfosmreglerClientId
+    )
 
     val helsepersonellV1 = helsepersonellV1(
         environment.helsepersonellv1EndpointURL,
@@ -69,6 +87,7 @@ fun main() {
         callLogging()
         setupAuth(environment, authorizedUsers)
         setupContentNegotiation()
+        setupMetrics()
 
         routing {
             registerNaisApi(readynessCheck = { applicationState.ready }, livenessCheck = { applicationState.running })
@@ -88,6 +107,20 @@ fun main() {
         Thread.sleep(10000)
         applicationServer.stop(10, 10, TimeUnit.SECONDS)
     })
+}
+
+private fun Application.setupMetrics() {
+    install(MicrometerMetrics) {
+        registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT, CollectorRegistry.defaultRegistry, Clock.SYSTEM)
+        meterBinders = listOf(
+            ClassLoaderMetrics(),
+            JvmMemoryMetrics(),
+            JvmGcMetrics(),
+            ProcessorMetrics(),
+            JvmThreadMetrics(),
+            LogbackMetrics()
+        )
+    }
 }
 
 fun Application.errorHandling() {
