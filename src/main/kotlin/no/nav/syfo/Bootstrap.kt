@@ -185,6 +185,7 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
     get("/behandler") {
         val fnr = call.request.header("behandlerFnr") ?: run {
             call.respond(BadRequest, "Mangler header `behandlerFnr` med fnr")
+            log.warn("Mottatt kall som mangler header behandlerFnr")
             return@get
         }
 

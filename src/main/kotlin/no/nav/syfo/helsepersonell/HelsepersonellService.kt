@@ -10,7 +10,6 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
-import org.apache.cxf.ws.addressing.WSAddressingFeature
 import java.util.GregorianCalendar
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
@@ -19,6 +18,7 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             helsepersonellV1.hentPersonMedPersonnummer(
                 behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
             ).let { ws2Behandler(it) }
+                .also { log.info("Hentet behandler") }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             log.error("Helsenett gir feilmelding: {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
@@ -74,7 +74,6 @@ fun helsepersonellV1(
         }
         inInterceptors.add(interceptor)
         inFaultInterceptors.add(interceptor)
-        features.add(WSAddressingFeature())
     }
 
     port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
