@@ -24,7 +24,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.22"
+val smCommonVersion = "2019.08.08-01-39-335c0ead0c5ce381bb9d1a58feea76d68a50231d"
 val micrometerRegistryPrometheusVersion = "1.1.5"
 
 plugins {
