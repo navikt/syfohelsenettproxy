@@ -36,7 +36,8 @@ object AuthorizationSpek : Spek({
         vaultPath = "src/test/resources/credentials.json",
         syfosminfotrygdClientId = "syfosminfotrygdClientId",
         syfosmmottakClientId = "syfosmmottakClientId",
-        syfosmreglerClientId = "syfosmreglerClientId"
+        syfosmreglerClientId = "syfosmreglerClientId",
+        syfosmpapirreglerClientId = "syfosmpapirreglerClientId"
     )
 
     describe("Authorization") {
