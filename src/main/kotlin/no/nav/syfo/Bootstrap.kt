@@ -70,7 +70,8 @@ fun main() {
     val authorizedUsers = listOf(
         environment.syfosmmottakClientId,
         environment.syfosminfotrygdClientId,
-        environment.syfosmreglerClientId
+        environment.syfosmreglerClientId,
+        environment.syfosmpapirreglerClientId
     )
 
     val helsepersonellV1 = helsepersonellV1(
