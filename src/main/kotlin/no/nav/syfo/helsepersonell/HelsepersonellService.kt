@@ -3,7 +3,9 @@ package no.nav.syfo.helsepersonell
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
+import no.nhn.schemas.reg.hprv2.AlternativId
 import no.nhn.schemas.reg.hprv2.IHPR2Service
+import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.Person
 import org.apache.cxf.binding.soap.SoapMessage
@@ -27,10 +29,30 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             log.error("Helsenett gir feilmelding: {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
         }
+
+    fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? =
+        try {
+            helsepersonellV1.hentPerson(
+                Integer.valueOf(hprNummer), datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+            ).let { ws2Behandler(it) }
+                .also { log.info("Hentet behandler for HPR-nummer") }
+        } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
+            log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+            throw HelsepersonellException(message = e.message, cause = e.cause)
+        } catch (e: SOAPFaultException) {
+            log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+            throw HelsepersonellException(message = e.message, cause = e.cause)
+        }
 }
 
 fun ws2Behandler(person: Person): Behandler =
-    Behandler(godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) })
+    Behandler(
+        godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
+        fnr = person.alternativeIder?.let { finnFnr(it.alternativId) },
+        fornavn = person.fornavn,
+        mellomnavn = person.mellomnavn,
+        etternavn = person.etternavn
+    )
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
     Godkjenning(
@@ -45,8 +67,20 @@ fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
         verdi = kode.verdi
     )
 
+fun finnFnr(alternativeIder: List<AlternativId>?): String? {
+    if (alternativeIder.isNullOrEmpty()) return null
+
+    alternativeIder.forEach { log.info("Alernativ Id: eTag: ${it.eTag}, id: ${it.id}, type: ${it.type}, verdi: ${it.verdi}") }
+
+    return "fnr"
+}
+
 data class Behandler(
-    val godkjenninger: List<Godkjenning>
+    val godkjenninger: List<Godkjenning>,
+    val fnr: String?,
+    val fornavn: String?,
+    val mellomnavn: String?,
+    val etternavn: String?
 )
 
 data class Godkjenning(

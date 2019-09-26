@@ -197,4 +197,19 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
             }
         }
     }
+
+    get("/behandlerMedHprNummer") {
+        val hprNummer = call.request.header("hprNummer") ?: run {
+            call.respond(BadRequest, "Mangler header `hprNummer` med HPR-nummer")
+            log.warn("Mottatt kall som mangler header hprNummer")
+            return@get
+        }
+
+        when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
+            null -> call.respond(NotFound, "Fant ikke behandler fra HPR-nummer")
+            else -> {
+                call.respond(behandler)
+            }
+        }
+    }
 }
