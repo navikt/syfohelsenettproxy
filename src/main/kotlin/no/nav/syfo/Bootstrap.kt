@@ -1,6 +1,7 @@
 package no.nav.syfo
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -53,6 +54,7 @@ val objectMapper: ObjectMapper = ObjectMapper().apply {
     registerKotlinModule()
     registerModule(JavaTimeModule())
     configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
 
 val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
@@ -71,8 +73,8 @@ fun main() {
         environment.syfosmmottakClientId,
         environment.syfosminfotrygdClientId,
         environment.syfosmreglerClientId,
-        environment.syfosmpapirreglerClientId
-        // environment.syfosmpapirmottakClientId
+        environment.syfosmpapirreglerClientId,
+        environment.syfosmpapirmottakClientId
     )
 
     val helsepersonellV1 = helsepersonellV1(
