@@ -1,6 +1,7 @@
 package no.nav.syfo
 
 import com.auth0.jwk.JwkProviderBuilder
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -53,6 +54,7 @@ val objectMapper: ObjectMapper = ObjectMapper().apply {
     registerKotlinModule()
     registerModule(JavaTimeModule())
     configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }
 
 val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
@@ -71,7 +73,8 @@ fun main() {
         environment.syfosmmottakClientId,
         environment.syfosminfotrygdClientId,
         environment.syfosmreglerClientId,
-        environment.syfosmpapirreglerClientId
+        environment.syfosmpapirreglerClientId,
+        environment.syfosmpapirmottakClientId
     )
 
     val helsepersonellV1 = helsepersonellV1(
@@ -192,6 +195,21 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
 
         when (val behandler = helsepersonellService.finnBehandler(fnr)) {
             null -> call.respond(NotFound, "Fant ikke behandler")
+            else -> {
+                call.respond(behandler)
+            }
+        }
+    }
+
+    get("/behandlerMedHprNummer") {
+        val hprNummer = call.request.header("hprNummer") ?: run {
+            call.respond(BadRequest, "Mangler header `hprNummer` med HPR-nummer")
+            log.warn("Mottatt kall som mangler header hprNummer")
+            return@get
+        }
+
+        when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
+            null -> call.respond(NotFound, "Fant ikke behandler fra HPR-nummer")
             else -> {
                 call.respond(behandler)
             }

@@ -20,6 +20,7 @@ import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
 import no.nhn.schemas.reg.hprv2.Godkjenning
 import no.nhn.schemas.reg.hprv2.IHPR2Service
+import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.Person
 import org.amshove.kluent.shouldBeNull
@@ -52,24 +53,45 @@ object HelsepersonellSpek : Spek({
                 })
             }
         }
-
-    describe("Helsepersonell") {
-
-        val engine = TestApplicationEngine()
-        engine.start(wait = false)
-        engine.application.apply {
-            callLogging()
-            errorHandling()
-            setupContentNegotiation()
-            routing {
-                enforceCallId()
-                registerBehandlerApi(helsePersonService)
+    every { wsMock.hentPerson(1234, any()) } returns
+        Person().apply {
+            godkjenninger = ArrayOfGodkjenning().apply {
+                godkjenning.add(Godkjenning().apply {
+                    autorisasjon = Kode().apply {
+                        isAktiv = true
+                        oid = 7704
+                        verdi = "1"
+                    }.apply {
+                        helsepersonellkategori = Kode().apply {
+                            isAktiv = true
+                            verdi = null
+                            oid = 10
+                        }
+                    }
+                })
             }
+            fornavn = "Fornavn"
+            etternavn = "Etternavn"
+            nin = "12345678910"
         }
 
-        afterGroup {
-            engine.stop(0L, 0L, TimeUnit.SECONDS)
+    val engine = TestApplicationEngine()
+    engine.start(wait = false)
+    engine.application.apply {
+        callLogging()
+        errorHandling()
+        setupContentNegotiation()
+        routing {
+            enforceCallId()
+            registerBehandlerApi(helsePersonService)
         }
+    }
+
+    afterGroup {
+        engine.stop(0L, 0L, TimeUnit.SECONDS)
+    }
+
+    describe("Helsepersonell gitt fnr") {
 
         it("Finner behandlingskode på behandler") {
             with(engine.handleRequest(HttpMethod.Get, "/behandler") {
@@ -104,6 +126,57 @@ object HelsepersonellSpek : Spek({
             every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("fault"))
             with(engine.handleRequest(HttpMethod.Get, "/behandler") {
                 addHeader("behandlerFnr", "fnr")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.InternalServerError)
+                val feil: Feilmelding =
+                    objectMapper.readValue(response.content!!, Feilmelding::class.java)
+
+                feil.status.shouldEqual(HttpStatusCode.InternalServerError)
+                feil.message.shouldEqual("fault")
+            }
+        }
+    }
+
+    describe("Helsepersonell gitt hpr-nummer") {
+
+        it("Henter riktig info for behandler") {
+            with(engine.handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
+                addHeader("hprNummer", "1234")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.OK)
+                val behandler: Behandler =
+                    objectMapper.readValue(response.content!!, Behandler::class.java)
+                behandler.godkjenninger.size.shouldEqual(1)
+                behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
+                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldEqual(true)
+                behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldEqual(10)
+                behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
+
+                behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
+                behandler.godkjenninger[0].autorisasjon?.aktiv.shouldEqual(true)
+                behandler.godkjenninger[0].autorisasjon?.oid.shouldEqual(7704)
+                behandler.godkjenninger[0].autorisasjon?.verdi.shouldEqual("1")
+                behandler.fornavn.shouldEqual("Fornavn")
+                behandler.mellomnavn.shouldBeNull()
+                behandler.etternavn.shouldEqual("Etternavn")
+                behandler.fnr.shouldEqual("12345678910")
+            }
+        }
+
+        it("Enforces callid when interceptor is installed") {
+            with(engine.handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
+                addHeader("hprNummer", "fnr")
+            }) {
+                response.status() shouldEqual HttpStatusCode.BadRequest
+            }
+        }
+
+        it("Sender feilmelding videre til konsumenten") {
+            every { wsMock.hentPerson(any(), any()) } throws (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage("fault"))
+            with(engine.handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
+                addHeader("hprNummer", "1234")
                 addHeader("Nav-CallId", "callId")
             }) {
                 response.status()?.shouldEqual(HttpStatusCode.InternalServerError)
