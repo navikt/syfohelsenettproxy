@@ -72,6 +72,7 @@ fun main() {
         environment.syfosminfotrygdClientId,
         environment.syfosmreglerClientId,
         environment.syfosmpapirreglerClientId
+        // environment.syfosmpapirmottakClientId
     )
 
     val helsepersonellV1 = helsepersonellV1(

@@ -48,7 +48,7 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
 fun ws2Behandler(person: Person): Behandler =
     Behandler(
         godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
-        fnr = person.alternativeIder?.let { finnFnr(it.alternativId) },
+        fnr = finnFnr(person.alternativeIder?.alternativId, person.nin),
         fornavn = person.fornavn,
         mellomnavn = person.mellomnavn,
         etternavn = person.etternavn
@@ -67,7 +67,8 @@ fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
         verdi = kode.verdi
     )
 
-fun finnFnr(alternativeIder: List<AlternativId>?): String? {
+fun finnFnr(alternativeIder: List<AlternativId>?, nin: String?): String? {
+    log.info("Nin: $nin")
     if (alternativeIder.isNullOrEmpty()) return null
 
     alternativeIder.forEach { log.info("Alernativ Id: eTag: ${it.eTag}, id: ${it.id}, type: ${it.type}, verdi: ${it.verdi}") }

@@ -15,6 +15,7 @@ data class Environment(
     val syfosminfotrygdClientId: String = getEnvVar("SYFOSMINFOTRYGD_CLIENT_ID"),
     val syfosmreglerClientId: String = getEnvVar("SYFOSMREGLER_CLIENT_ID"),
     val syfosmpapirreglerClientId: String = getEnvVar("SYFOSMPAPIRREGLER_CLIENT_ID"),
+    // val syfosmpapirmottakClientId: String = getEnvVar("SYFOSMPAPIRMOTTAK_CLIENT_ID"),
     val vaultPath: String = "/var/run/secrets/nais.io/vault/credentials.json"
 )
 
