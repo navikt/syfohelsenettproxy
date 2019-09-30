@@ -199,5 +199,16 @@ object HelsepersonellSpek : Spek({
                 feil.message.shouldEqual("fault")
             }
         }
+
+        it("Return 404 when HPR-nr is not found") {
+            every { wsMock.hentPerson(any(), any()) } throws (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage("ArgumentException: HPR-nummer ikke funnet"))
+            with(engine.handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
+                addHeader("hprNummer", "1234")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.NotFound)
+                response.content shouldEqual "Fant ikke behandler fra HPR-nummer"
+            }
+        }
     }
 })
