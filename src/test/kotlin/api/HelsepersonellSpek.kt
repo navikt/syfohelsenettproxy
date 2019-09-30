@@ -136,6 +136,18 @@ object HelsepersonellSpek : Spek({
                 feil.message.shouldEqual("fault")
             }
         }
+
+        it("Should return 404 when personnr ikke funnet") {
+            every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("ArgumentException: Personnummer ikke funnet"))
+            with(engine.handleRequest(HttpMethod.Get, "/behandler") {
+                addHeader("behandlerFnr", "fnr")
+                addHeader("Nav-CallId", "callId")
+            }) {
+                response.status()?.shouldEqual(HttpStatusCode.NotFound)
+                val feil: String = response.content!!
+                feil shouldEqual "Fant ikke behandler"
+            }
+        }
     }
 
     describe("Helsepersonell gitt hpr-nummer") {

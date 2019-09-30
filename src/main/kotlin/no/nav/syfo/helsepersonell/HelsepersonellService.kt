@@ -15,6 +15,8 @@ import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
+
+    private val PERSONNR_IKKE_FUNNET = "ArgumentException: Personnummer ikke funnet"
     fun finnBehandler(behandlersPersonnummer: String): Behandler? =
         try {
             helsepersonellV1.hentPersonMedPersonnummer(
@@ -22,9 +24,13 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             ).let { ws2Behandler(it) }
                 .also { log.info("Hentet behandler") }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
-            log.error("got faultInfo.errorCode {}, faultInfo.message {}", e.faultInfo?.errorCode, e.faultInfo?.message)
             log.error("Helsenett gir feilmelding: {}", e.message)
-            throw HelsepersonellException(message = e.message, cause = e.cause)
+            when (e.message) {
+                PERSONNR_IKKE_FUNNET -> null
+                else -> {
+                    throw HelsepersonellException(message = e.message, cause = e.cause)
+                }
+            }
         } catch (e: SOAPFaultException) {
             log.error("Helsenett gir feilmelding: {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
