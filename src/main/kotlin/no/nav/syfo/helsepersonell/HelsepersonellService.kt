@@ -15,6 +15,10 @@ import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
+
+    private val PERSONNR_IKKE_FUNNET = "ArgumentException: Personnummer ikke funnet"
+    private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
+
     fun finnBehandler(behandlersPersonnummer: String): Behandler? =
         try {
             helsepersonellV1.hentPersonMedPersonnummer(
@@ -23,7 +27,12 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
                 .also { log.info("Hentet behandler") }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             log.error("Helsenett gir feilmelding: {}", e.message)
-            throw HelsepersonellException(message = e.message, cause = e.cause)
+            when (e.message) {
+                PERSONNR_IKKE_FUNNET -> null
+                else -> {
+                    throw HelsepersonellException(message = e.message, cause = e.cause)
+                }
+            }
         } catch (e: SOAPFaultException) {
             log.error("Helsenett gir feilmelding: {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
@@ -37,7 +46,10 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
                 .also { log.info("Hentet behandler for HPR-nummer") }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
-            throw HelsepersonellException(message = e.message, cause = e.cause)
+            when (e.message) {
+                HPR_NR_IKKE_FUNNET -> null
+                else -> throw HelsepersonellException(message = e.message, cause = e.cause)
+            }
         } catch (e: SOAPFaultException) {
             log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
