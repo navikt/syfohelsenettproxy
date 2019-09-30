@@ -22,6 +22,7 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
             ).let { ws2Behandler(it) }
                 .also { log.info("Hentet behandler") }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
+            log.error("got faultInfo {}, error {}", e.faultInfo, e)
             log.error("Helsenett gir feilmelding: {}", e.message)
             throw HelsepersonellException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
