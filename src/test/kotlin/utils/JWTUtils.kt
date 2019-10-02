@@ -1,3 +1,5 @@
+package utils
+
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.nimbusds.jose.jwk.JWKSet
@@ -9,9 +11,8 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
+import no.nav.syfo.utils.getFileAsString
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
 import java.text.ParseException
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -27,7 +28,7 @@ fun fakeJWTApi(randomPort: Int): NettyApplicationEngine {
     return embeddedServer(Netty, randomPort) {
         routing {
             get("/fake.jwt") {
-                call.respond(Files.readString(Path.of("src/test/resources/jwkset.json")))
+                call.respond(getFileAsString("src/test/resources/jwkset.json"))
             }
         }
     }.start(wait = false)
@@ -66,7 +67,7 @@ private fun getDefaultRSAKey(): RSAKey {
 
 private fun getJWKSet(): JWKSet {
     try {
-        return JWKSet.parse(Files.readString(Path.of("src/test/resources/jwkset.json")))
+        return JWKSet.parse(getFileAsString("src/test/resources/jwkset.json"))
     } catch (io: IOException) {
         throw RuntimeException(io)
     } catch (io: ParseException) {
