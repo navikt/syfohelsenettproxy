@@ -50,7 +50,7 @@ spec:
     - name: AADDISCOVERY_URL
       value: https://login.microsoftonline.com/navno.onmicrosoft.com/.well-known/openid-configuration
     - name: JWT_ISSUER
-      value: ttps://sts.windows.net/62366534-1ec3-4962-8869-9b5535279d0b/
+      value: https://sts.windows.net/62366534-1ec3-4962-8869-9b5535279d0b/
     - name: SYFOSMREGLER_CLIENT_ID
       value: 97b74a7f-7cc8-475b-ac1e-6a198824e44c
     - name: SYFOSMMOTTAK_CLIENT_ID
