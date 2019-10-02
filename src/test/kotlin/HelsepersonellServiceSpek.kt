@@ -38,28 +38,42 @@ class HelsepersonellServiceSpek : Spek({
                         }
                     }
                     tilleggskompetanser = ArrayOfTilleggskompetanse().apply {
-                            tilleggskompetanse.add(Tilleggskompetanse().apply {
-                                avsluttetStatus = Kode().apply {
-                                    isAktiv = false
-                                    verdi = null
-                                    oid = 10
-                                }
-                                eTag = ""
-                                gyldig = Periode().apply {
-                                    fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                                    til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                                }
-                                id = 20
-                                type = Kode().apply {
-                                    isAktiv = true
-                                    verdi = "1"
-                                    oid = 7702
-                                }
+                        tilleggskompetanse.add(Tilleggskompetanse().apply {
+                            avsluttetStatus = Kode().apply {
+                                isAktiv = false
+                                verdi = null
+                                oid = 10
                             }
-                    ) }
+                            eTag = ""
+                            gyldig = Periode().apply {
+                                fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                                til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                            }
+                            id = 20
+                            type = Kode().apply {
+                                isAktiv = true
+                                verdi = "1"
+                                oid = 7702
+                            }
+                        })
+                        tilleggskompetanse.add(Tilleggskompetanse().apply {
+                            avsluttetStatus = null
+                            eTag = ""
+                            gyldig = Periode().apply {
+                                fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                                til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                            }
+                            id = 20
+                            type = Kode().apply {
+                                isAktiv = true
+                                verdi = "1"
+                                oid = 7702
+                            }
+                        })
+                    }
                 })
-                }
             }
+        }
 
     describe("HelsepersonellService") {
         it("Kaller WS med korrekte argumenter") {
