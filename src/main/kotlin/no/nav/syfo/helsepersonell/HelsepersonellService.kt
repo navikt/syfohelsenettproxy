@@ -87,11 +87,22 @@ fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
 
 fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggskompetanse): Tilleggskompetanse =
         Tilleggskompetanse(
-                avsluttetStatus = ws2Kode(tillegskompetanse.avsluttetStatus),
-                eTag = tillegskompetanse.eTag,
+                avsluttetStatus = when(tillegskompetanse.avsluttetStatus != null) {
+                    true -> ws2Kode(tillegskompetanse.avsluttetStatus)
+                    else -> null
+                },
+                eTag = when(tillegskompetanse.eTag.isNotEmpty() && tillegskompetanse.eTag.isNotBlank()) {
+                    true ->  tillegskompetanse.eTag
+                    else -> null
+                },
                 gyldig = ws2Periode(tillegskompetanse.gyldig),
-                id = tillegskompetanse.id,
-                type = ws2Kode(tillegskompetanse.type)
+                id = when(tillegskompetanse.id != null) {
+                    true ->  tillegskompetanse.id
+                    else -> null
+                },
+                type = when(tillegskompetanse.type != null) {
+                    true -> ws2Kode(tillegskompetanse.type)
+                    else -> null
         )
 
 fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
