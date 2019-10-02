@@ -11,6 +11,8 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 
@@ -68,7 +70,12 @@ fun ws2Behandler(person: Person): Behandler =
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
     Godkjenning(
         helsepersonellkategori = ws2Kode(godkjenning.helsepersonellkategori),
-        autorisasjon = ws2Kode(godkjenning.autorisasjon)
+        autorisasjon = ws2Kode(godkjenning.autorisasjon),
+        tillegskompetanse = when (godkjenning.tilleggskompetanser != null &&
+                godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()) {
+        true -> godkjenning.tilleggskompetanser.tilleggskompetanse.map { ws2Tilleggskompetanse(it) }
+        else -> null
+        }
     )
 
 fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
@@ -77,6 +84,21 @@ fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
         oid = kode.oid,
         verdi = kode.verdi
     )
+
+fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggskompetanse): Tilleggskompetanse =
+        Tilleggskompetanse(
+                avsluttetStatus = ws2Kode(tillegskompetanse.avsluttetStatus),
+                eTag = tillegskompetanse.eTag,
+                gyldig = ws2Periode(tillegskompetanse.gyldig),
+                id = tillegskompetanse.id,
+                type = ws2Kode(tillegskompetanse.type)
+        )
+
+fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
+        Periode(
+                fra = periode.fra.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(),
+                til = periode.til.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
+        )
 
 data class Behandler(
     val godkjenninger: List<Godkjenning>,
@@ -88,13 +110,27 @@ data class Behandler(
 
 data class Godkjenning(
     val helsepersonellkategori: Kode? = null,
-    val autorisasjon: Kode? = null
+    val autorisasjon: Kode? = null,
+    val tillegskompetanse: List<Tilleggskompetanse>? = null
 )
 
 data class Kode(
     val aktiv: Boolean,
     val oid: Int,
     val verdi: String?
+)
+
+data class Tilleggskompetanse(
+    val avsluttetStatus: Kode?,
+    val eTag: String?,
+    val gyldig: Periode?,
+    val id: Int?,
+    val type: Kode?
+)
+
+data class Periode(
+    val fra: LocalDateTime,
+    val til: LocalDateTime
 )
 
 fun helsepersonellV1(

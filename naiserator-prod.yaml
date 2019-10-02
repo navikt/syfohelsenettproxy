@@ -1,0 +1,63 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: syfohelsenettproxy
+  namespace: default
+  labels:
+    team: {{team}}
+spec:
+  image: "docker.pkg.github.com/navikt/syfohelsenettproxy:{{tag}}"
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 90
+  port: 8080
+  liveness:
+    path: /is_alive
+    initialDelay: 10
+    timeout: 5
+    periodSeconds: 5
+    failureThreshold: 30
+  readiness:
+    path: /is_ready
+    initialDelay: 30
+    periodSeconds: 5
+    timeout: 5
+  prometheus:
+    enabled: true
+    path: /prometheus
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  vault:
+    enabled: true
+  webproxy: true
+  ingresses:
+    - "https://syfohelsenettproxy.nais.adeo.no"
+  env:
+    - name: SECURITY_TOKEN_SERVICE_URL
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
+    - name: HELSEPERSONELL_V1_ENDPOINT_URL
+      value: https://pep-gw.oera.no:9443/samhandler/helse/helsepersonell/v1
+    - name: CLIENT_ID
+      value: b813133d-82b8-46ef-be96-3b903ea6c048
+    - name: AADACCESSTOKEN_URL
+      value: https://login.microsoftonline.com/navno.onmicrosoft.com/oauth2/token
+    - name: AADDISCOVERY_URL
+      value: https://login.microsoftonline.com/navno.onmicrosoft.com/.well-known/openid-configuration
+    - name: JWT_ISSUER
+      value: ttps://sts.windows.net/62366534-1ec3-4962-8869-9b5535279d0b/
+    - name: SYFOSMREGLER_CLIENT_ID
+      value: 97b74a7f-7cc8-475b-ac1e-6a198824e44c
+    - name: SYFOSMMOTTAK_CLIENT_ID
+      value: 8ed7cd5f-5b91-4af4-89e9-791ae25dc4d1
+    - name: SYFOSMINFOTRYGD_CLIENT_ID
+      value: 2c9d40f1-81c2-4f8d-b862-aabd14ab901c
+    - name: SYFOSMPAPIRREGLER_CLIENT_ID
+      value: 77a0df77-18de-4bab-887a-ed65f5c44927
+    - name: SYFOSMPAPIRMOTTAK_CLIENT_ID
+      value: 9d4d6e11-1717-44f7-b76c-1a671847bb32

@@ -1,7 +1,7 @@
 package api
 
-import fakeJWTApi
-import genereateJWT
+import utils.fakeJWTApi
+import utils.genereateJWT
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpMethod
