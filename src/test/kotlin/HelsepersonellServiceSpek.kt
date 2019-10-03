@@ -60,8 +60,8 @@ class HelsepersonellServiceSpek : Spek({
                             avsluttetStatus = null
                             eTag = ""
                             gyldig = Periode().apply {
-                                fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                                til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                                fra = null
+                                til = null
                             }
                             id = 20
                             type = Kode().apply {

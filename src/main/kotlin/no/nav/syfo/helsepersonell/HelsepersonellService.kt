@@ -96,8 +96,8 @@ fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggsko
 
 fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
         Periode(
-                fra = periode.fra.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime(),
-                til = periode.til.toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
+                fra = periode.fra?.toGregorianCalendar()?.toZonedDateTime()?.withZoneSameInstant(ZoneOffset.UTC)?.toLocalDateTime(),
+                til = periode.til?.toGregorianCalendar()?.toZonedDateTime()?.withZoneSameInstant(ZoneOffset.UTC)?.toLocalDateTime()
         )
 
 data class Behandler(
@@ -129,8 +129,8 @@ data class Tilleggskompetanse(
 )
 
 data class Periode(
-    val fra: LocalDateTime,
-    val til: LocalDateTime
+    val fra: LocalDateTime?,
+    val til: LocalDateTime?
 )
 
 fun helsepersonellV1(
