@@ -22,68 +22,76 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
 
     fun finnBehandler(behandlersPersonnummer: String): Behandler? =
-        try {
-            helsepersonellV1.hentPersonMedPersonnummer(
-                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-            ).let { ws2Behandler(it) }
-                .also { log.info("Hentet behandler") }
-        } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
-            log.error("Helsenett gir feilmelding: {}", e.message)
-            when (e.message) {
-                PERSONNR_IKKE_FUNNET -> null
-                else -> {
-                    throw HelsepersonellException(message = e.message, cause = e.cause)
+            try {
+                helsepersonellV1.hentPersonMedPersonnummer(
+                        behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                ).let { ws2Behandler(it) }
+                        .also { log.info("Hentet behandler") }
+            } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
+                when (e.message) {
+                    PERSONNR_IKKE_FUNNET -> {
+                        log.warn("Helsenett gir feilmelding: {}", e.message)
+                        null
+                    }
+                    else -> {
+                        log.error("Helsenett gir feilmelding: {}", e.message)
+                        throw HelsepersonellException(message = e.message, cause = e.cause)
+                    }
                 }
+            } catch (e: SOAPFaultException) {
+                log.error("Helsenett gir feilmelding: {}", e.message)
+                throw HelsepersonellException(message = e.message, cause = e.cause)
             }
-        } catch (e: SOAPFaultException) {
-            log.error("Helsenett gir feilmelding: {}", e.message)
-            throw HelsepersonellException(message = e.message, cause = e.cause)
-        }
 
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? =
-        try {
-            helsepersonellV1.hentPerson(
-                Integer.valueOf(hprNummer), datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-            ).let { ws2Behandler(it) }
-                .also { log.info("Hentet behandler for HPR-nummer") }
-        } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
-            log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
-            when (e.message) {
-                HPR_NR_IKKE_FUNNET -> null
-                else -> throw HelsepersonellException(message = e.message, cause = e.cause)
+            try {
+                helsepersonellV1.hentPerson(
+                        Integer.valueOf(hprNummer), datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                ).let { ws2Behandler(it) }
+                        .also { log.info("Hentet behandler for HPR-nummer") }
+            } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
+                when (e.message) {
+                    HPR_NR_IKKE_FUNNET -> {
+                        log.warn("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+                        null
+                    }
+                    else -> {
+                        log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+                        throw HelsepersonellException(message = e.message, cause = e.cause)
+                    }
+                }
+            } catch (e: SOAPFaultException) {
+                log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+                throw HelsepersonellException(message = e.message, cause = e.cause)
             }
-        } catch (e: SOAPFaultException) {
-            log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
-            throw HelsepersonellException(message = e.message, cause = e.cause)
-        }
 }
 
 fun ws2Behandler(person: Person): Behandler =
-    Behandler(
-        godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
-        fnr = person.nin,
-        fornavn = person.fornavn,
-        mellomnavn = person.mellomnavn,
-        etternavn = person.etternavn
-    )
+        Behandler(
+                godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
+                fnr = person.nin,
+                fornavn = person.fornavn,
+                mellomnavn = person.mellomnavn,
+                etternavn = person.etternavn
+        )
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
-    Godkjenning(
-        helsepersonellkategori = ws2Kode(godkjenning.helsepersonellkategori),
-        autorisasjon = ws2Kode(godkjenning.autorisasjon),
-        tillegskompetanse = when (godkjenning.tilleggskompetanser != null &&
-                godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()) {
-        true -> godkjenning.tilleggskompetanser.tilleggskompetanse.map { ws2Tilleggskompetanse(it) }
-        else -> null
-        }
-    )
+        Godkjenning(
+                helsepersonellkategori = ws2Kode(godkjenning.helsepersonellkategori),
+                autorisasjon = ws2Kode(godkjenning.autorisasjon),
+                tillegskompetanse = when (godkjenning.tilleggskompetanser != null &&
+                        godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()) {
+                    true -> godkjenning.tilleggskompetanser.tilleggskompetanse.map { ws2Tilleggskompetanse(it) }
+                    else -> null
+                }
+        )
 
 fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
-    Kode(
-        aktiv = kode.isAktiv,
-        oid = kode.oid,
-        verdi = kode.verdi
-    )
+        Kode(
+                aktiv = kode.isAktiv,
+                oid = kode.oid,
+                verdi = kode.verdi
+        )
 
 fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggskompetanse): Tilleggskompetanse =
         Tilleggskompetanse(
@@ -101,43 +109,43 @@ fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
         )
 
 data class Behandler(
-    val godkjenninger: List<Godkjenning>,
-    val fnr: String?,
-    val fornavn: String?,
-    val mellomnavn: String?,
-    val etternavn: String?
+        val godkjenninger: List<Godkjenning>,
+        val fnr: String?,
+        val fornavn: String?,
+        val mellomnavn: String?,
+        val etternavn: String?
 )
 
 data class Godkjenning(
-    val helsepersonellkategori: Kode? = null,
-    val autorisasjon: Kode? = null,
-    val tillegskompetanse: List<Tilleggskompetanse>? = null
+        val helsepersonellkategori: Kode? = null,
+        val autorisasjon: Kode? = null,
+        val tillegskompetanse: List<Tilleggskompetanse>? = null
 )
 
 data class Kode(
-    val aktiv: Boolean,
-    val oid: Int,
-    val verdi: String?
+        val aktiv: Boolean,
+        val oid: Int,
+        val verdi: String?
 )
 
 data class Tilleggskompetanse(
-    val avsluttetStatus: Kode?,
-    val eTag: String?,
-    val gyldig: Periode?,
-    val id: Int?,
-    val type: Kode?
+        val avsluttetStatus: Kode?,
+        val eTag: String?,
+        val gyldig: Periode?,
+        val id: Int?,
+        val type: Kode?
 )
 
 data class Periode(
-    val fra: LocalDateTime?,
-    val til: LocalDateTime?
+        val fra: LocalDateTime?,
+        val til: LocalDateTime?
 )
 
 fun helsepersonellV1(
-    endpointUrl: String,
-    serviceuserUsername: String,
-    serviceuserPassword: String,
-    securityTokenServiceUrl: String
+        endpointUrl: String,
+        serviceuserUsername: String,
+        serviceuserPassword: String,
+        securityTokenServiceUrl: String
 ) = createPort<IHPR2Service>(endpointUrl) {
     proxy {
 
