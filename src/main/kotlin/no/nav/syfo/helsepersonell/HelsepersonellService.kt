@@ -70,6 +70,7 @@ fun ws2Behandler(person: Person): Behandler =
         Behandler(
                 godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
                 fnr = person.nin,
+                hprNummer = person.hprNummer,
                 fornavn = person.fornavn,
                 mellomnavn = person.mellomnavn,
                 etternavn = person.etternavn
@@ -109,43 +110,44 @@ fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
         )
 
 data class Behandler(
-        val godkjenninger: List<Godkjenning>,
-        val fnr: String?,
-        val fornavn: String?,
-        val mellomnavn: String?,
-        val etternavn: String?
+    val godkjenninger: List<Godkjenning>,
+    val fnr: String?,
+    val hprNummer: Int?,
+    val fornavn: String?,
+    val mellomnavn: String?,
+    val etternavn: String?
 )
 
 data class Godkjenning(
-        val helsepersonellkategori: Kode? = null,
-        val autorisasjon: Kode? = null,
-        val tillegskompetanse: List<Tilleggskompetanse>? = null
+    val helsepersonellkategori: Kode? = null,
+    val autorisasjon: Kode? = null,
+    val tillegskompetanse: List<Tilleggskompetanse>? = null
 )
 
 data class Kode(
-        val aktiv: Boolean,
-        val oid: Int,
-        val verdi: String?
+    val aktiv: Boolean,
+    val oid: Int,
+    val verdi: String?
 )
 
 data class Tilleggskompetanse(
-        val avsluttetStatus: Kode?,
-        val eTag: String?,
-        val gyldig: Periode?,
-        val id: Int?,
-        val type: Kode?
+    val avsluttetStatus: Kode?,
+    val eTag: String?,
+    val gyldig: Periode?,
+    val id: Int?,
+    val type: Kode?
 )
 
 data class Periode(
-        val fra: LocalDateTime?,
-        val til: LocalDateTime?
+    val fra: LocalDateTime?,
+    val til: LocalDateTime?
 )
 
 fun helsepersonellV1(
-        endpointUrl: String,
-        serviceuserUsername: String,
-        serviceuserPassword: String,
-        securityTokenServiceUrl: String
+    endpointUrl: String,
+    serviceuserUsername: String,
+    serviceuserPassword: String,
+    securityTokenServiceUrl: String
 ) = createPort<IHPR2Service>(endpointUrl) {
     proxy {
 
