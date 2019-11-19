@@ -20,6 +20,7 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
 
     private val PERSONNR_IKKE_FUNNET = "ArgumentException: Personnummer ikke funnet"
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
+    private val HPR_NR_IKKE_OPPGITT = "ArgumentException: HPR-nummer må oppgis"
 
     fun finnBehandler(behandlersPersonnummer: String): Behandler? =
             try {
@@ -50,8 +51,8 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
                 ).let { ws2Behandler(it) }
                         .also { log.info("Hentet behandler for HPR-nummer") }
             } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
-                when (e.message) {
-                    HPR_NR_IKKE_FUNNET -> {
+                when {
+                    behandlerNotFound(e.message) -> {
                         log.warn("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
                         null
                     }
@@ -64,6 +65,14 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
                 log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
                 throw HelsepersonellException(message = e.message, cause = e.cause)
             }
+
+    private fun behandlerNotFound(message: String?): Boolean {
+        return when (message) {
+            HPR_NR_IKKE_FUNNET -> true
+            HPR_NR_IKKE_OPPGITT -> true
+            else -> false
+        }
+    }
 }
 
 fun ws2Behandler(person: Person): Behandler =
