@@ -42,7 +42,7 @@ spec:
     - name: SECURITY_TOKEN_SERVICE_URL
       value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
-      value: https://pep-gw-q4.oera-q.local:9443/samhandler/helse/helsepersonell/v1
+      value: https://pep-gw-q1.oera-q.local:9443/samhandler/helse/helsepersonell/v1
     - name: CLIENT_ID
       value: c18eba24-f676-47db-9a97-3c66e9304aee
     - name: AADACCESSTOKEN_URL
