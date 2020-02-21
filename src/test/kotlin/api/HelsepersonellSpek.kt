@@ -7,6 +7,7 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every
 import io.mockk.mockk
+import java.util.concurrent.TimeUnit
 import no.nav.syfo.callLogging
 import no.nav.syfo.enforceCallId
 import no.nav.syfo.errorHandling
@@ -28,7 +29,6 @@ import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldNotBeNull
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.util.concurrent.TimeUnit
 
 object HelsepersonellSpek : Spek({
 

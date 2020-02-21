@@ -8,6 +8,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
+import java.util.concurrent.TimeUnit
 import no.nav.syfo.NAV_CALLID
 import no.nav.syfo.callLogging
 import no.nav.syfo.enforceCallId
@@ -15,7 +16,6 @@ import no.nav.syfo.setupContentNegotiation
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.util.concurrent.TimeUnit
 
 object CallIdLoggingSpek : Spek({
 

@@ -1,5 +1,9 @@
 package no.nav.syfo.helsepersonell
 
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.GregorianCalendar
+import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
@@ -11,10 +15,6 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
-import java.time.LocalDateTime
-import java.time.ZoneOffset
-import java.util.GregorianCalendar
-import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
 

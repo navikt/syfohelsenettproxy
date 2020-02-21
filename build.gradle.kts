@@ -30,10 +30,10 @@ val micrometerRegistryPrometheusVersion = "1.1.5"
 plugins {
     java
     id("no.nils.wsdl2java") version "0.10"
-    kotlin("jvm") version "1.3.31"
-    id("org.jmailen.kotlinter") version "1.26.0"
+    kotlin("jvm") version "1.3.61"
+    id("org.jmailen.kotlinter") version "2.2.0"
     id("com.diffplug.gradle.spotless") version "3.14.0"
-    id("com.github.johnrengelman.shadow") version "5.1.0"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
 }
 
 buildscript {

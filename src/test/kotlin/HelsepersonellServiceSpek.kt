@@ -2,6 +2,9 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import java.time.LocalDate.now
+import java.util.GregorianCalendar
+import javax.xml.datatype.XMLGregorianCalendar
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nhn.schemas.reg.common.no.Kode
@@ -15,9 +18,6 @@ import no.nhn.schemas.reg.hprv2.Tilleggskompetanse
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.time.LocalDate.now
-import java.util.GregorianCalendar
-import javax.xml.datatype.XMLGregorianCalendar
 
 class HelsepersonellServiceSpek : Spek({
 
