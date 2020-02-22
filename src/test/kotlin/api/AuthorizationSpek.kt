@@ -1,7 +1,5 @@
 package api
 
-import utils.fakeJWTApi
-import utils.genereateJWT
 import io.ktor.application.call
 import io.ktor.auth.authenticate
 import io.ktor.http.HttpMethod
@@ -11,15 +9,17 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
+import java.net.ServerSocket
+import java.time.LocalDateTime
+import java.util.concurrent.TimeUnit
 import no.nav.syfo.Environment
 import no.nav.syfo.setupAuth
 import no.nav.syfo.setupContentNegotiation
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.net.ServerSocket
-import java.time.LocalDateTime
-import java.util.concurrent.TimeUnit
+import utils.fakeJWTApi
+import utils.genereateJWT
 
 object AuthorizationSpek : Spek({
 

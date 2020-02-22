@@ -35,6 +35,11 @@ spec:
       memory: 128Mi
   vault:
     enabled: true
+    paths:
+      - kvPath: /azuread/data/prod/creds/pale-2
+        mountPath: /secrets/azuread/pale-2
+      - kvPath: /kv/prod/fss/syfohelsenettproxy/default
+        mountPath: /secrets/default
   webproxy: true
   ingresses:
     - "https://syfohelsenettproxy.nais.adeo.no"

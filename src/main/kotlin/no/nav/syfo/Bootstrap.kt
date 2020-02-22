@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCallPipeline
@@ -41,14 +40,13 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.CollectorRegistry
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import org.slf4j.LoggerFactory
-import java.net.URL
-import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
-import javax.xml.datatype.DatatypeFactory
 
 val objectMapper: ObjectMapper = ObjectMapper().apply {
     registerKotlinModule()
@@ -66,22 +64,28 @@ data class ApplicationState(var running: Boolean = true, var ready: Boolean = tr
 
 fun main() {
     val environment = Environment()
-    val credentials: VaultCredentials = objectMapper.readValue(Paths.get(environment.vaultPath).toFile())
+    val vaultSecrets = VaultSecrets(
+            serviceuserPassword = getFileAsString("/secrets/default/serviceuserPassword"),
+            serviceuserUsername = getFileAsString("/secrets/default/serviceuserUsername"),
+            pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id")
+    )
     val applicationState = ApplicationState()
 
     val authorizedUsers = listOf(
-        environment.syfosmmottakClientId,
-        environment.syfosminfotrygdClientId,
-        environment.syfosmreglerClientId,
-        environment.syfosmpapirreglerClientId,
-        environment.syfosmpapirmottakClientId
+            environment.syfosmmottakClientId,
+            environment.syfosminfotrygdClientId,
+            environment.syfosmreglerClientId,
+            environment.syfosmpapirreglerClientId,
+            environment.syfosmpapirmottakClientId,
+            vaultSecrets.pale2ClientId
+
     )
 
     val helsepersonellV1 = helsepersonellV1(
-        environment.helsepersonellv1EndpointURL,
-        credentials.serviceuserUsername,
-        credentials.serviceuserPassword,
-        environment.securityTokenServiceUrl
+            environment.helsepersonellv1EndpointURL,
+            vaultSecrets.serviceuserUsername,
+            vaultSecrets.serviceuserPassword,
+            environment.securityTokenServiceUrl
     )
 
     val helsepersonellService = HelsepersonellService(helsepersonellV1)

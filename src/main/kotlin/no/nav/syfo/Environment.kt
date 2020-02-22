@@ -19,9 +19,10 @@ data class Environment(
     val vaultPath: String = "/var/run/secrets/nais.io/vault/credentials.json"
 )
 
-data class VaultCredentials(
+data class VaultSecrets(
     val serviceuserUsername: String,
-    val serviceuserPassword: String
+    val serviceuserPassword: String,
+    val pale2ClientId: String
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =
