@@ -22,7 +22,8 @@ data class Environment(
 data class VaultSecrets(
     val serviceuserUsername: String,
     val serviceuserPassword: String,
-    val pale2ClientId: String
+    val pale2ClientId: String,
+    val pale2ReglerClientId: String
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

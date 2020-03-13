@@ -67,7 +67,8 @@ fun main() {
     val vaultSecrets = VaultSecrets(
             serviceuserPassword = getFileAsString("/secrets/default/serviceuserPassword"),
             serviceuserUsername = getFileAsString("/secrets/default/serviceuserUsername"),
-            pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id")
+            pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
+            pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id")
     )
     val applicationState = ApplicationState()
 
@@ -77,7 +78,8 @@ fun main() {
             environment.syfosmreglerClientId,
             environment.syfosmpapirreglerClientId,
             environment.syfosmpapirmottakClientId,
-            vaultSecrets.pale2ClientId
+            vaultSecrets.pale2ClientId,
+            vaultSecrets.pale2ReglerClientId
 
     )
 
