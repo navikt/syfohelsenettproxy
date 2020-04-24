@@ -4,9 +4,9 @@ metadata:
   name: syfohelsenettproxy
   namespace: default
   labels:
-    team: {{team}}
+    team: teamsykefravr
 spec:
-  image: "docker.pkg.github.com/navikt/syfohelsenettproxy:{{tag}}"
+  image: {{ image }}
   replicas:
     min: 2
     max: 4
