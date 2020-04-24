@@ -68,3 +68,5 @@ spec:
       value: 77a0df77-18de-4bab-887a-ed65f5c44927
     - name: SYFOSMPAPIRMOTTAK_CLIENT_ID
       value: 9d4d6e11-1717-44f7-b76c-1a671847bb32
+    - name: PADM2REGLER_CLIENT_ID
+      value: 1104f1c0-fb91-4757-8766-9c6cea4dae72

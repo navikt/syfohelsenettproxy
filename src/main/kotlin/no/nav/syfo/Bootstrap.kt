@@ -79,7 +79,8 @@ fun main() {
             environment.syfosmpapirreglerClientId,
             environment.syfosmpapirmottakClientId,
             vaultSecrets.pale2ClientId,
-            vaultSecrets.pale2ReglerClientId
+            vaultSecrets.pale2ReglerClientId,
+            environment.padm2ReglerClientId
 
     )
 
