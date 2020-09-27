@@ -70,3 +70,5 @@ spec:
       value: a99ce657-bce8-4f11-8dd6-5624038f4820
     - name: PADM2REGLER_CLIENT_ID
       value: d9cb3ab1-39ac-4844-81ec-123f437575aa
+    - name: SMREGISTRERING_BACKEND_CLIENT_ID
+      value: 6e2c2c7d-9bc1-45f9-a76c-9d32b489268a
