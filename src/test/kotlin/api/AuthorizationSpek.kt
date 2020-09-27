@@ -39,7 +39,8 @@ object AuthorizationSpek : Spek({
         syfosmreglerClientId = "syfosmreglerClientId",
         syfosmpapirreglerClientId = "syfosmpapirreglerClientId",
         syfosmpapirmottakClientId = "syfosmpapirmottakClientId",
-        padm2ReglerClientId = "padm2reglerClientId"
+        padm2ReglerClientId = "padm2reglerClientId",
+        smregistreringBackendClientId = "smregistreringBackendClientId"
     )
 
     describe("Authorization") {
