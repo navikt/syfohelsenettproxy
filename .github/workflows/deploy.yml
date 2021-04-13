@@ -1,6 +1,8 @@
 name: Deploy to dev and prod
 on:
   push:
+    paths-ignore:
+      - 'nais/redis/redis.yaml'
     branches:
       - master
 

@@ -2,7 +2,7 @@ name: Deploy redis to dev
 on:
   push:
     paths:
-      - "nais/redis/redis.yaml"
+      - 'nais/redis/redis.yaml'
     branches:
       - '*'
       - '!master'
@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Deploy to dev-gcp
+      - name: Deploy to dev-fss
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.TEAMSYKMELDING_DEPLOY_KEY }}
