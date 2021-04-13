@@ -1,0 +1,57 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  labels:
+    team: teamsykmelding
+  name: syfohelsenettproxy-redis
+  namespace: teamsykmelding
+spec:
+  image: bitnami/redis:latest
+  port: 6379
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 1024m
+      memory: 2Gi
+    requests:
+      cpu: 1024m
+      memory: 2048Gi
+    service:
+      port: 6379
+      protocol: redis
+    envFrom:
+      - secret: syfohelsenettproxy-redis-password
+---
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  labels:
+    team: teamsykmelding
+  name: syfohelsenettproxy-redis-exporter
+  namespace: teamsykmelding
+spec:
+  image: oliver006/redis_exporter:latest
+  port: 9121
+  prometheus:
+    enabled: true
+  replicas:
+    min: 1
+    max: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  liveness:
+    path: /health
+  env:
+    - name: REDIS_ADDR
+      value: syfohelsenettproxy-redis:6379
+    - name: REDIS_EXPORTER_LOG_FORMAT
+      value: json
+  envFrom:
+    - secret: syfohelsenettproxy-redis-password
