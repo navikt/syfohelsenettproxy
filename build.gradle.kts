@@ -26,6 +26,8 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val smCommonVersion = "2019.08.08-03-52-c78281e2409af36f3ef07df4369fa29b0ea81a46"
 val micrometerRegistryPrometheusVersion = "1.1.5"
+val jedisVersion = "3.1.0"
+val testcontainersVersion = "1.15.1"
 
 plugins {
     java
@@ -107,13 +109,14 @@ dependencies {
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
+    implementation("redis.clients:jedis:$jedisVersion")
 
     testImplementation ("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
     testImplementation("io.mockk:mockk:1.9.3")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-
+    testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }

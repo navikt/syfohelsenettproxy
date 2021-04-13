@@ -13,6 +13,7 @@ import no.nav.syfo.enforceCallId
 import no.nav.syfo.errorHandling
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.Feilmelding
+import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.objectMapper
 import no.nav.syfo.registerBehandlerApi
@@ -30,51 +31,57 @@ import org.amshove.kluent.shouldNotBeNull
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-object HelsepersonellSpek : Spek({
+class HelsepersonellSpek : Spek({
 
     val wsMock = mockk<IHPR2Service>()
-    val helsePersonService = HelsepersonellService(wsMock)
+    val redis = mockk<HelsepersonellRedis>()
+    val helsePersonService = HelsepersonellService(wsMock, redis)
 
-    every { wsMock.hentPersonMedPersonnummer("fnr", any()) } returns
-        Person().apply {
-            godkjenninger = ArrayOfGodkjenning().apply {
-                godkjenning.add(Godkjenning().apply {
-                    autorisasjon = Kode().apply {
-                        isAktiv = true
-                        oid = 7704
-                        verdi = "1"
-                    }.apply {
-                        helsepersonellkategori = Kode().apply {
-                            isAktiv = true
-                            verdi = null
-                            oid = 10
-                        }
+    beforeEachTest {
+        every { wsMock.hentPersonMedPersonnummer("fnr", any()) } returns
+                Person().apply {
+                    godkjenninger = ArrayOfGodkjenning().apply {
+                        godkjenning.add(Godkjenning().apply {
+                            autorisasjon = Kode().apply {
+                                isAktiv = true
+                                oid = 7704
+                                verdi = "1"
+                            }.apply {
+                                helsepersonellkategori = Kode().apply {
+                                    isAktiv = true
+                                    verdi = null
+                                    oid = 10
+                                }
+                            }
+                        })
                     }
-                })
-            }
-        }
-    every { wsMock.hentPerson(1234, any()) } returns
-        Person().apply {
-            godkjenninger = ArrayOfGodkjenning().apply {
-                godkjenning.add(Godkjenning().apply {
-                    autorisasjon = Kode().apply {
-                        isAktiv = true
-                        oid = 7704
-                        verdi = "1"
-                    }.apply {
-                        helsepersonellkategori = Kode().apply {
-                            isAktiv = true
-                            verdi = null
-                            oid = 10
-                        }
+                }
+        every { wsMock.hentPerson(1234, any()) } returns
+                Person().apply {
+                    godkjenninger = ArrayOfGodkjenning().apply {
+                        godkjenning.add(Godkjenning().apply {
+                            autorisasjon = Kode().apply {
+                                isAktiv = true
+                                oid = 7704
+                                verdi = "1"
+                            }.apply {
+                                helsepersonellkategori = Kode().apply {
+                                    isAktiv = true
+                                    verdi = null
+                                    oid = 10
+                                }
+                            }
+                        })
                     }
-                })
-            }
-            fornavn = "Fornavn"
-            etternavn = "Etternavn"
-            nin = "12345678910"
-        }
+                    fornavn = "Fornavn"
+                    etternavn = "Etternavn"
+                    nin = "12345678910"
+                }
 
+        every { redis.getFromHpr(any()) } returns null
+        every { redis.getFromFnr(any()) } returns null
+        every { redis.save(any()) } returns Unit
+    }
     val engine = TestApplicationEngine()
     engine.start(wait = false)
     engine.application.apply {
