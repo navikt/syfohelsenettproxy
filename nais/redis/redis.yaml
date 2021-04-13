@@ -17,7 +17,7 @@ spec:
       memory: 2Gi
     requests:
       cpu: 1024m
-      memory: 2048Gi
+      memory: 2Gi
     service:
       port: 6379
       protocol: redis
