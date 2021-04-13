@@ -21,8 +21,8 @@ spec:
     service:
       port: 6379
       protocol: redis
-    envFrom:
-      - secret: syfohelsenettproxy-redis-password
+  envFrom:
+    - secret: syfohelsenettproxy-redis-password
 ---
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
