@@ -1,0 +1,25 @@
+name: Deploy redis to dev
+on:
+  push:
+    paths:
+      - 'nais/redis/redis.yaml'
+      - '.github/workflows/redis**'
+    branches:
+      - '*'
+      - '!master'
+jobs:
+  deploy:
+    name: Deploy Redis to dev-fss
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to dev-fss
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.TEAMSYKMELDING_DEPLOY_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLUSTER: dev-fss
+          TEAM: teamsykmelding
+          RESOURCE: nais/redis/redis.yaml
+          PRINT_PAYLOAD: true
