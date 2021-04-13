@@ -3,6 +3,7 @@ on:
   push:
     paths-ignore:
       - 'nais/redis/redis.yaml'
+      - '.github/workflows/redis**'
     branches:
       - master
 
