@@ -20,7 +20,7 @@ data class Environment(
     val padm2ClientId: String = getEnvVar("PADM2_CLIENT_ID"),
     val smregistreringBackendClientId: String = getEnvVar("SMREGISTRERING_BACKEND_CLIENT_ID"),
     val vaultPath: String = "/var/run/secrets/nais.io/vault/credentials.json",
-    val redisHost: String = getEnvVar("REDIS_HOST", "syfohelsenettproxy.default.svc.nais.local"),
+    val redisHost: String = getEnvVar("REDIS_HOST", "syfohelsenettproxy.teamsykmelding.svc.nais.local"),
     val redisPort: Int = getEnvVar("REDIS_PORT_SYKMELDINGER", "6379").toInt()
 )
 
