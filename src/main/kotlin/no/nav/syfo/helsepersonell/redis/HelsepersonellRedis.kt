@@ -11,10 +11,11 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
     }
 
     fun save(behandler: Behandler) {
-        val jedis = jedisPool.resource
+        var jedis: Jedis? = null
         try {
             when (behandler.hprNummer != null && "${behandler.hprNummer}".length > 1) {
                 true -> {
+                    jedis = jedisPool.resource
                     jedis.auth(redisSecret)
                     jedis.setex(
                         "hpr:${behandler.hprNummer}",
@@ -53,8 +54,9 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
     }
 
     private fun initRedis(block: (jedis: Jedis) -> Behandler?): Behandler? {
-        val jedis = jedisPool.resource
+        var jedis: Jedis? = null
         return try {
+            jedis = jedisPool.resource
             jedis.auth(redisSecret)
             block.invoke(jedis)
         } catch (ex: Exception) {
