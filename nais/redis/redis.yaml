@@ -50,7 +50,7 @@ spec:
     path: /health
   env:
     - name: REDIS_ADDR
-      value: syfohelsenettproxy-redis.teamsykmelding.svc.nais.local:6379
+      value: syfohelsenettproxy-redis:6379
     - name: REDIS_EXPORTER_LOG_FORMAT
       value: json
   envFrom:
