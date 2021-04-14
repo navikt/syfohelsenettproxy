@@ -32,7 +32,7 @@ metadata:
   name: syfohelsenettproxy-redis-exporter
   namespace: teamsykmelding
 spec:
-  image: oliver006/redis_exporter:latest
+  image: oliver006/redis_exporter:v1.17.0-alpine
   port: 9121
   prometheus:
     enabled: true
