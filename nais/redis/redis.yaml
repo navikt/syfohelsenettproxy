@@ -7,7 +7,6 @@ metadata:
   name: syfohelsenettproxy-redis
   namespace: teamsykmelding
 spec:
-
   image: bitnami/redis:latest # or a custom Redis-image
   port: 6379
   replicas: # A single Redis-app doesn't scale

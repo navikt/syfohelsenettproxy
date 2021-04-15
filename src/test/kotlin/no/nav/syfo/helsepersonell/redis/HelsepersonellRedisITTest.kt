@@ -73,6 +73,11 @@ class HelsepersonellRedisITTest : Spek({
             cachedBehandlerFnr shouldEqual null
             cachedBehandlerHpr shouldEqual null
         }
+
+        it("should get null behandler") {
+            val behandler = helsepesronellRedis.getFromHpr("10000001")
+            behandler shouldEqual null
+        }
     }
 })
 
