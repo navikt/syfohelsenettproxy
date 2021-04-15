@@ -44,9 +44,12 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.helsepersonell.HelsepersonellException
+import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import org.slf4j.LoggerFactory
+import redis.clients.jedis.JedisPool
+import redis.clients.jedis.JedisPoolConfig
 
 val objectMapper: ObjectMapper = ObjectMapper().apply {
     registerKotlinModule()
@@ -68,7 +71,8 @@ fun main() {
             serviceuserPassword = getFileAsString("/secrets/default/serviceuserPassword"),
             serviceuserUsername = getFileAsString("/secrets/default/serviceuserUsername"),
             pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
-            pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id")
+            pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
+            redisPassword = getFileAsString("/secrets/default/redisPassword")
     )
     val applicationState = ApplicationState()
 
@@ -92,7 +96,9 @@ fun main() {
             environment.securityTokenServiceUrl
     )
 
-    val helsepersonellService = HelsepersonellService(helsepersonellV1)
+    val jedisPool = JedisPool(JedisPoolConfig(), environment.redisHost, environment.redisPort)
+
+    val helsepersonellService = HelsepersonellService(helsepersonellV1, HelsepersonellRedis(jedisPool, vaultSecrets.redisPassword))
 
     val applicationServer = embeddedServer(Netty, 8080) {
         errorHandling()

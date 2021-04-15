@@ -16,7 +16,7 @@ import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 
-class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
+class HelsepersonellService(private val helsepersonellV1: IHPR2Service, private val helsepersonellRedis: HelsepersonellRedis) {
 
     private val PERSONNR_IKKE_FUNNET = "ArgumentException: Personnummer ikke funnet"
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
@@ -24,10 +24,14 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
 
     fun finnBehandler(behandlersPersonnummer: String): Behandler? =
             try {
-                helsepersonellV1.hentPersonMedPersonnummer(
+                helsepersonellRedis.getFromFnr(behandlersPersonnummer)
+                    ?: helsepersonellV1.hentPersonMedPersonnummer(
                         behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                ).let { ws2Behandler(it) }
-                        .also { log.info("Hentet behandler") }
+                    ).let { ws2Behandler(it) }
+                        .also {
+                            log.info("Hentet behandler")
+                            helsepersonellRedis.save(it)
+                        }
             } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
                 when (e.message) {
                     PERSONNR_IKKE_FUNNET -> {
@@ -46,10 +50,14 @@ class HelsepersonellService(private val helsepersonellV1: IHPR2Service) {
 
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? =
             try {
-                helsepersonellV1.hentPerson(
+                helsepersonellRedis.getFromHpr(hprNummer)
+                ?: helsepersonellV1.hentPerson(
                         Integer.valueOf(hprNummer), datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
                 ).let { ws2Behandler(it) }
-                        .also { log.info("Hentet behandler for HPR-nummer") }
+                        .also {
+                            log.info("Hentet behandler for HPR-nummer")
+                            helsepersonellRedis.save(it)
+                        }
             } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
                 when {
                     behandlerNotFound(e.message) -> {
