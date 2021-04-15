@@ -70,8 +70,8 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
     private fun getBehandlerFromRedis(
         jedis: Jedis,
         hprNummer: String
-    ) : Behandler? {
-        val behandlerString = jedis.get("hpr:${hprNummer}")
+    ): Behandler? {
+        val behandlerString = jedis.get("hpr:$hprNummer")
         return when (behandlerString.isNullOrBlank()) {
             true -> null
             false -> objectMapper.readValue(behandlerString, Behandler::class.java)
