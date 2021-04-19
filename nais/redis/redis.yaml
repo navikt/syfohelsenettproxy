@@ -15,10 +15,10 @@ spec:
   resources: # you need to monitor the resource usage yourself
     limits:
       cpu: 1024m
-      memory: 2Gi
+      memory: 128Mi
     requests:
       cpu: 1024m
-      memory: 2Gi
+      memory: 128Mi
   service:
     port: 6379
     protocol: redis
