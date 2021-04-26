@@ -80,7 +80,7 @@ class HelsepersonellSpek : Spek({
 
         every { redis.getFromHpr(any()) } returns null
         every { redis.getFromFnr(any()) } returns null
-        every { redis.save(any()) } returns Unit
+        every { redis.save(any(), any()) } returns Unit
     }
     val engine = TestApplicationEngine()
     engine.start(wait = false)
