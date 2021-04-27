@@ -9,10 +9,6 @@ import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 
 class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: String) {
-    companion object {
-        val REDIS_TIMEOUT_SECONDS = 3600
-    }
-
     fun save(behandler: Behandler, timestamp: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)) {
         var jedis: Jedis? = null
         try {
