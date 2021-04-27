@@ -1,5 +1,7 @@
 package no.nav.syfo.helsepersonell.redis
 
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import org.amshove.kluent.shouldEqual
@@ -48,8 +50,8 @@ class HelsepersonellRedisITTest : Spek({
             val cachedBehandlerFnr = helsepesronellRedis.getFromFnr("12345678912")
             val cachedBehandlerHpr = helsepesronellRedis.getFromHpr("10000001")
 
-            cachedBehandlerFnr shouldEqual behandler
-            cachedBehandlerHpr shouldEqual behandler
+            cachedBehandlerFnr shouldEqual JedisBehandlerModel(timestamp = cachedBehandlerFnr!!.timestamp, behandler = behandler)
+            cachedBehandlerHpr shouldEqual JedisBehandlerModel(timestamp = cachedBehandlerFnr.timestamp, behandler = behandler)
         }
 
         it("should not save when fnr is empty") {
@@ -60,7 +62,7 @@ class HelsepersonellRedisITTest : Spek({
             val cachedBehandlerHpr = helsepesronellRedis.getFromHpr("${behandler.hprNummer}")
 
             cachedBehandlerFnr shouldEqual null
-            cachedBehandlerHpr shouldEqual behandler
+            cachedBehandlerHpr shouldEqual JedisBehandlerModel(timestamp = cachedBehandlerHpr!!.timestamp, behandler = behandler)
         }
 
         it("Should not save when hprNummer = null") {
@@ -77,6 +79,14 @@ class HelsepersonellRedisITTest : Spek({
         it("should get null behandler") {
             val behandler = helsepesronellRedis.getFromHpr("10000001")
             behandler shouldEqual null
+        }
+
+        it("Should update when redis is older than 1 Hour") {
+            val timestamp = OffsetDateTime.now(ZoneOffset.UTC)
+            helsepesronellRedis.save(behandler(), timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(1))
+            helsepesronellRedis.save(behandler(), timestamp)
+
+            helsepesronellRedis.getFromHpr("${behandler().hprNummer}") shouldEqual JedisBehandlerModel(timestamp, behandler())
         }
     }
 })
