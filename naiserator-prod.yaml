@@ -48,6 +48,8 @@ spec:
   ingresses:
     - "https://syfohelsenettproxy.nais.adeo.no"
   env:
+    - name: SECURITY_TOKEN_SERVICE_URL
+      value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://pep-gw.oera.no:9443/samhandler/helse/helsepersonell/v1
     - name: CLIENT_ID
