@@ -27,7 +27,7 @@ val javaxActivationVersion = "1.1.1"
 val smCommonVersion = "2019.08.08-03-52-c78281e2409af36f3ef07df4369fa29b0ea81a46"
 val micrometerRegistryPrometheusVersion = "1.1.5"
 val jedisVersion = "3.1.0"
-val testcontainersVersion = "1.15.1"
+val testcontainersVersion = "1.15.2"
 
 plugins {
     java

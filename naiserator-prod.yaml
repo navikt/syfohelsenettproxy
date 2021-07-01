@@ -2,9 +2,9 @@ apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: syfohelsenettproxy
-  namespace: default
+  namespace: teamsykmelding
   labels:
-    team: teamsykefravr
+    team: teamsykmelding
 spec:
   image: {{ image }}
   replicas:
@@ -22,7 +22,7 @@ spec:
     path: /is_ready
     initialDelay: 30
     periodSeconds: 5
-    timeout: 5
+    timeout: 1
   prometheus:
     enabled: true
     path: /prometheus
@@ -40,14 +40,14 @@ spec:
         mountPath: /secrets/azuread/pale-2
       - kvPath: /azuread/data/prod/creds/pale-2-regler
         mountPath: /secrets/azuread/pale-2-regler
-      - kvPath: /kv/prod/fss/syfohelsenettproxy/default
+      - kvPath: /kv/prod/fss/syfohelsenettproxy/teamsykmelding
         mountPath: /secrets/default
   webproxy: true
+  envFrom:
+    - secret: syfohelsenettproxy-redis-password
   ingresses:
     - "https://syfohelsenettproxy.nais.adeo.no"
   env:
-    - name: SECURITY_TOKEN_SERVICE_URL
-      value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://pep-gw.oera.no:9443/samhandler/helse/helsepersonell/v1
     - name: CLIENT_ID

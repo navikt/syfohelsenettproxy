@@ -72,7 +72,7 @@ fun main() {
             serviceuserUsername = getFileAsString("/secrets/default/serviceuserUsername"),
             pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
             pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
-            redisPassword = getFileAsString("/secrets/default/redisPassword")
+            redisPassword = getEnvVar("REDIS_PASSWORD")
     )
     val applicationState = ApplicationState()
 
