@@ -40,8 +40,8 @@ spec:
         mountPath: /secrets/azuread/pale-2
       - kvPath: /azuread/data/dev/creds/pale-2-regler
         mountPath: /secrets/azuread/pale-2-regler
-      - kvPath: /kv/preprod/fss/syfohelsenettproxy/teamsykmelding
-        mountPath: /secrets/default
+      - kvPath: serviceuser/data/dev/srvsyfohelsenettproxy
+        mountPath: /secrets/serviceuser
   webproxy: true
   envFrom:
     - secret: syfohelsenettproxy-redis-password

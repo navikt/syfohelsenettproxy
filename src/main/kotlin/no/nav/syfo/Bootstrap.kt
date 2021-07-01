@@ -68,8 +68,8 @@ data class ApplicationState(var running: Boolean = true, var ready: Boolean = tr
 fun main() {
     val environment = Environment()
     val vaultSecrets = VaultSecrets(
-            serviceuserPassword = getFileAsString("/secrets/default/serviceuserPassword"),
-            serviceuserUsername = getFileAsString("/secrets/default/serviceuserUsername"),
+            serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
+            serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
             pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
             pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
             redisPassword = getEnvVar("REDIS_PASSWORD")
