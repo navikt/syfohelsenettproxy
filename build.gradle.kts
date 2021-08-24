@@ -6,16 +6,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.1.1"
-val jacksonVersion = "2.9.7"
+val coroutinesVersion = "1.4.2"
+val jacksonVersion = "2.12.0"
 val jaxbApiVersion = "2.3.1"
 val jaxbRuntimeVersion = "2.3.2"
-val kluentVersion = "1.39"
-val ktorVersion = "1.2.2"
+val kluentVersion = "1.61"
+val ktorVersion = "1.5.1"
 val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "5.1"
-val prometheusVersion = "0.5.0"
-val spekVersion = "2.0.5"
+val logstashEncoderVersion = "6.5"
+val prometheusVersion = "0.9.0"
+val spekVersion = "2.0.17"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val jaxbBasicAntVersion = "1.11.1"
@@ -24,7 +24,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "2019.08.08-03-52-c78281e2409af36f3ef07df4369fa29b0ea81a46"
+val smCommonVersion = "1.dff6489"
 val micrometerRegistryPrometheusVersion = "1.1.5"
 val jedisVersion = "3.1.0"
 val testcontainersVersion = "1.15.2"
@@ -32,10 +32,10 @@ val testcontainersVersion = "1.15.2"
 plugins {
     java
     id("no.nils.wsdl2java") version "0.10"
-    kotlin("jvm") version "1.3.61"
-    id("org.jmailen.kotlinter") version "2.2.0"
-    id("com.diffplug.gradle.spotless") version "3.14.0"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("jvm") version "1.4.21"
+    id("org.jmailen.kotlinter") version "3.3.0"
+    id("com.diffplug.spotless") version "5.8.2"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
 }
 
 buildscript {
@@ -141,7 +141,7 @@ tasks {
 
     withType<KotlinCompile> {
         dependsOn("wsdl2java")
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "12"
     }
 
     withType<ShadowJar> {
@@ -167,4 +167,7 @@ tasks {
         }
     }
 
+    "check" {
+        dependsOn("formatKotlin")
+    }
 }
