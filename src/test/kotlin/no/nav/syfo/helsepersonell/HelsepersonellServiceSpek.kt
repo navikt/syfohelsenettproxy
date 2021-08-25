@@ -1,18 +1,11 @@
+package no.nav.syfo.helsepersonell
+
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
-import java.time.LocalDate.now
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.GregorianCalendar
-import javax.xml.datatype.XMLGregorianCalendar
-import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
-import no.nav.syfo.helsepersonell.Behandler
-import no.nav.syfo.helsepersonell.HelsepersonellRedis
-import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.common.no.Periode
@@ -24,9 +17,15 @@ import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMess
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Tilleggskompetanse
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
+import java.time.LocalDate.now
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.GregorianCalendar
+import javax.xml.datatype.XMLGregorianCalendar
+import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellServiceSpek : Spek({
 
@@ -36,7 +35,7 @@ class HelsepersonellServiceSpek : Spek({
     beforeEachTest {
         clearAllMocks()
         every { mock.hentPersonMedPersonnummer("fnr", any()) } returns
-                getPerson()
+            getPerson()
         every { mock.hentPerson(any(), any()) } returns getPerson()
     }
 
@@ -55,7 +54,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
 
             val cal = slot.captured
-            cal.toGregorianCalendar().toZonedDateTime().toLocalDate().shouldEqual(idag)
+            cal.toGregorianCalendar().toZonedDateTime().toLocalDate().shouldBeEqualTo(idag)
         }
 
         it("Henter behandler fra redis") {
@@ -104,7 +103,7 @@ class HelsepersonellServiceSpek : Spek({
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPerson(any(), any()) } throws IHPR2ServiceHentPersonGenericFaultFaultFaultMessage("MESSAGE")
             val behandler = service.finnBehandlerFraHprNummer("1000001")
-            behandler shouldEqual getBehandler()
+            behandler shouldBeEqualTo getBehandler()
             verify(exactly = 1) { mock.hentPerson(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
             verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
@@ -114,7 +113,7 @@ class HelsepersonellServiceSpek : Spek({
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("MESSAGE")
             val behandler = service.finnBehandler("fnr")
-            behandler shouldEqual getBehandler()
+            behandler shouldBeEqualTo getBehandler()
             verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
@@ -124,7 +123,7 @@ class HelsepersonellServiceSpek : Spek({
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandler("fnr")
-            behandler shouldEqual getBehandler()
+            behandler shouldBeEqualTo getBehandler()
             verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
@@ -134,7 +133,7 @@ class HelsepersonellServiceSpek : Spek({
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPerson(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandlerFraHprNummer("1000001")
-            behandler shouldEqual getBehandler()
+            behandler shouldBeEqualTo getBehandler()
             verify(exactly = 1) { mock.hentPerson(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
             verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
@@ -150,53 +149,59 @@ private fun getBehandler() = Behandler(
 private fun getPerson(): Person {
     return Person().apply {
         godkjenninger = ArrayOfGodkjenning().apply {
-            godkjenning.add(Godkjenning().apply {
-                autorisasjon = Kode().apply {
-                    isAktiv = true
-                    oid = 7704
-                    verdi = "1"
-                }.apply {
-                    helsepersonellkategori = Kode().apply {
+            godkjenning.add(
+                Godkjenning().apply {
+                    autorisasjon = Kode().apply {
                         isAktiv = true
-                        verdi = null
-                        oid = 10
-                    }
-                }
-                tilleggskompetanser = ArrayOfTilleggskompetanse().apply {
-                    tilleggskompetanse.add(Tilleggskompetanse().apply {
-                        avsluttetStatus = Kode().apply {
-                            isAktiv = false
+                        oid = 7704
+                        verdi = "1"
+                    }.apply {
+                        helsepersonellkategori = Kode().apply {
+                            isAktiv = true
                             verdi = null
                             oid = 10
                         }
-                        eTag = ""
-                        gyldig = Periode().apply {
-                            fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                            til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                        }
-                        id = 20
-                        type = Kode().apply {
-                            isAktiv = true
-                            verdi = "1"
-                            oid = 7702
-                        }
-                    })
-                    tilleggskompetanse.add(Tilleggskompetanse().apply {
-                        avsluttetStatus = null
-                        eTag = ""
-                        gyldig = Periode().apply {
-                            fra = null
-                            til = null
-                        }
-                        id = 20
-                        type = Kode().apply {
-                            isAktiv = true
-                            verdi = "1"
-                            oid = 7702
-                        }
-                    })
+                    }
+                    tilleggskompetanser = ArrayOfTilleggskompetanse().apply {
+                        tilleggskompetanse.add(
+                            Tilleggskompetanse().apply {
+                                avsluttetStatus = Kode().apply {
+                                    isAktiv = false
+                                    verdi = null
+                                    oid = 10
+                                }
+                                eTag = ""
+                                gyldig = Periode().apply {
+                                    fra = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                                    til = datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                                }
+                                id = 20
+                                type = Kode().apply {
+                                    isAktiv = true
+                                    verdi = "1"
+                                    oid = 7702
+                                }
+                            }
+                        )
+                        tilleggskompetanse.add(
+                            Tilleggskompetanse().apply {
+                                avsluttetStatus = null
+                                eTag = ""
+                                gyldig = Periode().apply {
+                                    fra = null
+                                    til = null
+                                }
+                                id = 20
+                                type = Kode().apply {
+                                    isAktiv = true
+                                    verdi = "1"
+                                    oid = 7702
+                                }
+                            }
+                        )
+                    }
                 }
-            })
+            )
         }
     }
 }

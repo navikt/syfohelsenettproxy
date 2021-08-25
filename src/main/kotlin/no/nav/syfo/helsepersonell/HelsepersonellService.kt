@@ -1,10 +1,5 @@
 package no.nav.syfo.helsepersonell
 
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.GregorianCalendar
-import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
@@ -17,6 +12,11 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.GregorianCalendar
+import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
@@ -125,8 +125,10 @@ fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenni
     Godkjenning(
         helsepersonellkategori = ws2Kode(godkjenning.helsepersonellkategori),
         autorisasjon = ws2Kode(godkjenning.autorisasjon),
-        tillegskompetanse = when (godkjenning.tilleggskompetanser != null &&
-                godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()) {
+        tillegskompetanse = when (
+            godkjenning.tilleggskompetanser != null &&
+                godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()
+        ) {
             true -> godkjenning.tilleggskompetanser.tilleggskompetanse.map { ws2Tilleggskompetanse(it) }
             else -> null
         }

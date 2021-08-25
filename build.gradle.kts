@@ -8,8 +8,8 @@ version = "1.0.0"
 
 val coroutinesVersion = "1.4.2"
 val jacksonVersion = "2.12.0"
-val jaxbApiVersion = "2.3.1"
-val jaxbRuntimeVersion = "2.3.2"
+val jaxbApiVersion = "2.4.0-b180830.0359"
+val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.61"
 val ktorVersion = "1.5.1"
 val logbackVersion = "1.2.3"
@@ -18,16 +18,16 @@ val prometheusVersion = "0.9.0"
 val spekVersion = "2.0.17"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
-val jaxbBasicAntVersion = "1.11.1"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val smCommonVersion = "1.dff6489"
-val micrometerRegistryPrometheusVersion = "1.1.5"
 val jedisVersion = "3.1.0"
 val testcontainersVersion = "1.15.2"
+val mockkVersion = "1.9.3"
+val nimbusdsVersion = "9.2"
 
 plugins {
     java
@@ -40,8 +40,8 @@ plugins {
 
 buildscript {
     dependencies {
-        classpath("javax.xml.bind:jaxb-api:2.3.1")
-        classpath("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+        classpath("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+        classpath("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
         classpath("com.sun.activation:javax.activation:1.2.0")
         classpath("com.sun.xml.ws:jaxws-tools:2.3.1") {
             exclude(group = "com.sun.xml.ws", module = "policy")
@@ -49,13 +49,22 @@ buildscript {
     }
 }
 
+val githubUser: String by project
+val githubPassword: String by project
+
 repositories {
-    maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "http://packages.confluent.io/maven/")
     maven(url = "https://kotlin.bintray.com/kotlinx")
     mavenCentral()
     jcenter()
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
+    }
 }
 
 val navWsdl= configurations.create("navWsdl") {
@@ -74,15 +83,14 @@ dependencies {
 
     implementation(kotlin("stdlib"))
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation ("io.ktor:ktor-metrics-micrometer:$ktorVersion")
-    implementation ("io.micrometer:micrometer-registry-prometheus:$micrometerRegistryPrometheusVersion")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
+    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
 
     implementation ("io.ktor:ktor-server-netty:$ktorVersion")
     implementation ("io.ktor:ktor-jackson:$ktorVersion")
     implementation ("io.ktor:ktor-auth:$ktorVersion")
     implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$ktorVersion")
 
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -92,8 +100,8 @@ dependencies {
     implementation ("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
-    implementation("no.nav.syfo.sm:syfosm-common-ws:$smCommonVersion")
-    implementation("no.nav.syfo.sm:syfosm-common-networking:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
 
     implementation ("org.apache.commons:commons-text:$commonsTextVersion")
     implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
@@ -112,9 +120,8 @@ dependencies {
     implementation("redis.clients:jedis:$jedisVersion")
 
     testImplementation ("org.amshove.kluent:kluent:$kluentVersion")
-    testImplementation ("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
-    testImplementation ("com.nimbusds:nimbus-jose-jwt:7.5.1")
-    testImplementation("io.mockk:mockk:1.9.3")
+    testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
@@ -123,7 +130,6 @@ dependencies {
     testRuntimeOnly ("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
         exclude(group = "org.jetbrains.kotlin")
     }
-    testRuntimeOnly("org.jetbrains.spek:spek-junit-platform-engine:1.1.5")
 }
 
 
