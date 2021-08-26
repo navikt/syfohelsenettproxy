@@ -21,7 +21,10 @@ data class Environment(
     val smregistreringBackendClientId: String = getEnvVar("SMREGISTRERING_BACKEND_CLIENT_ID"),
     val vaultPath: String = "/var/run/secrets/nais.io/vault/credentials.json",
     val redisHost: String = getEnvVar("REDIS_HOST", "syfohelsenettproxy-redis.teamsykmelding.svc.nais.local"),
-    val redisPort: Int = getEnvVar("REDIS_PORT_SYKMELDINGER", "6379").toInt()
+    val redisPort: Int = getEnvVar("REDIS_PORT_SYKMELDINGER", "6379").toInt(),
+    val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
+    val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
+    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER")
 )
 
 data class VaultSecrets(
