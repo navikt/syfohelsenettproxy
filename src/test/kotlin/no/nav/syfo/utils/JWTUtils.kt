@@ -1,4 +1,4 @@
-package utils
+package no.nav.syfo.utils
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
@@ -11,13 +11,13 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
+import no.nav.syfo.getFileAsString
 import java.io.IOException
 import java.text.ParseException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.Date
 import java.util.UUID
-import no.nav.syfo.utils.getFileAsString
 
 const val keyId = "localhost-signer"
 

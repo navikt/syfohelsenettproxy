@@ -1,12 +1,12 @@
 package no.nav.syfo.helsepersonell
 
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
 import no.nav.syfo.objectMapper
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: String) {
     fun save(behandler: Behandler, timestamp: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)) {
