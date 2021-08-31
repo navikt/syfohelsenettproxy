@@ -53,11 +53,11 @@ val githubUser: String by project
 val githubPassword: String by project
 
 repositories {
+    mavenCentral()
+    jcenter()
     maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "http://packages.confluent.io/maven/")
     maven(url = "https://kotlin.bintray.com/kotlinx")
-    mavenCentral()
-    jcenter()
     maven {
         url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
         credentials {
