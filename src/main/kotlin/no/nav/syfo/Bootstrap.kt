@@ -47,6 +47,10 @@ fun main() {
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
+    val jwkProviderAadV2 = JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
     DefaultExports.initialize()
     val applicationState = ApplicationState()
 
@@ -79,7 +83,8 @@ fun main() {
         applicationState = applicationState,
         helsepersonellService = helsepersonellService,
         jwkProvider = jwkProvider,
-        authorizedUsers = authorizedUsers
+        authorizedUsers = authorizedUsers,
+        jwkProviderAadV2 = jwkProviderAadV2
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)
     applicationServer.start()

@@ -33,6 +33,23 @@ spec:
     requests:
       cpu: 100m
       memory: 128Mi
+  azure:
+    application:
+      enabled: true
+      tenant: trygdeetaten.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: syfosmmottak
+        - application: syfosmregler
+        - application: syfosminfotrygd
+        - application: syfosmpapirmottak
+        - application: syfosmpapirregler
+        - application: smregistrering-backend
+        - application: pale-2
+        - application: pale-2-regler
+        - application: padm2
+          namespace: default
   vault:
     enabled: true
     paths:

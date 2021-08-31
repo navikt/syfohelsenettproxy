@@ -60,13 +60,16 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url", audience: List<S
         syfosmpapirmottakClientId = "papirmottak",
         padm2ReglerClientId = "padmregler",
         padm2ClientId = "padm",
-        smregistreringBackendClientId = "smregistrering"
+        smregistreringBackendClientId = "smregistrering",
+        clientIdV2 = "helsenett-clientId-v2",
+        jwkKeysUrlV2 = "https://keys.url",
+        jwtIssuerV2 = "https://sts.issuer.net/myidV2"
     )
 
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()
     val jwkProvider = JwkProviderBuilder(uri).build()
 
-    application.setupAuth(env, jwkProvider, audience)
+    application.setupAuth(env, jwkProvider, audience, jwkProvider)
     return env
 }
