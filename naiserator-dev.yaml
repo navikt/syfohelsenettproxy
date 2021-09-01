@@ -46,7 +46,6 @@ spec:
         - application: syfosmpapirmottak
         - application: syfosmpapirregler
         - application: smregistrering-backend
-        - application: pale-2
         - application: pale-2-regler
         - application: padm2
           namespace: default
