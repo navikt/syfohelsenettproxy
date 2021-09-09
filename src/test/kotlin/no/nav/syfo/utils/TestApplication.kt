@@ -58,7 +58,6 @@ fun TestApplicationEngine.setUpAuth(jwkKeysUrl: String = "url", audience: List<S
         syfosmreglerClientId = "smregler",
         syfosmpapirreglerClientId = "papirregler",
         syfosmpapirmottakClientId = "papirmottak",
-        padm2ReglerClientId = "padmregler",
         padm2ClientId = "padm",
         smregistreringBackendClientId = "smregistrering",
         clientIdV2 = "helsenett-clientId-v2",
