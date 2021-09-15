@@ -64,7 +64,6 @@ fun main() {
         environment.syfosmpapirmottakClientId,
         vaultSecrets.pale2ClientId,
         vaultSecrets.pale2ReglerClientId,
-        environment.padm2ReglerClientId,
         environment.padm2ClientId,
         environment.smregistreringBackendClientId
     )

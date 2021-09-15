@@ -48,7 +48,8 @@ spec:
         - application: smregistrering-backend
         - application: pale-2-regler
         - application: padm2
-          namespace: default
+          namespace: teamsykefravr
+          cluster: dev-fss
   vault:
     enabled: true
     paths:
@@ -86,8 +87,6 @@ spec:
       value: c35dd346-0d3d-4b68-b883-a324c0b1098d
     - name: SYFOSMPAPIRMOTTAK_CLIENT_ID
       value: a99ce657-bce8-4f11-8dd6-5624038f4820
-    - name: PADM2REGLER_CLIENT_ID
-      value: d9cb3ab1-39ac-4844-81ec-123f437575aa
     - name: PADM2_CLIENT_ID
       value: 611a6cf3-de8a-4fa0-a72e-d79db961a9bd
     - name: SMREGISTRERING_BACKEND_CLIENT_ID
