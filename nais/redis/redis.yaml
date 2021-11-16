@@ -6,6 +6,9 @@ metadata:
     team: teamsykmelding
   name: syfohelsenettproxy-redis
   namespace: teamsykmelding
+  annotations:
+    nais.io/run-as-group: "0" # Fix permissions for bitnami/redis
+    nais.io/read-only-file-system: "false" # Fix permissions for bitnami/redis
 spec:
   image: bitnami/redis:latest # or a custom Redis-image
   port: 6379
