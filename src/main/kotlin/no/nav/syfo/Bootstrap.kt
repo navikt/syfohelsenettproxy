@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
@@ -33,20 +32,13 @@ val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 
-@KtorExperimentalAPI
 fun main() {
     val environment = Environment()
     val vaultSecrets = VaultSecrets(
         serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
         serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
-        pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
-        pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
         redisPassword = getEnvVar("REDIS_PASSWORD")
     )
-    val jwkProvider = JwkProviderBuilder(URL(environment.jwkKeysUrl))
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
     val jwkProviderAadV2 = JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -55,18 +47,6 @@ fun main() {
     val applicationState = ApplicationState()
 
     val jedisPool = JedisPool(JedisPoolConfig(), environment.redisHost, environment.redisPort)
-
-    val authorizedUsers = listOf(
-        environment.syfosmmottakClientId,
-        environment.syfosminfotrygdClientId,
-        environment.syfosmreglerClientId,
-        environment.syfosmpapirreglerClientId,
-        environment.syfosmpapirmottakClientId,
-        vaultSecrets.pale2ClientId,
-        vaultSecrets.pale2ReglerClientId,
-        environment.padm2ClientId,
-        environment.smregistreringBackendClientId
-    )
 
     val helsepersonellV1 = helsepersonellV1(
         environment.helsepersonellv1EndpointURL,
@@ -81,8 +61,6 @@ fun main() {
         environment = environment,
         applicationState = applicationState,
         helsepersonellService = helsepersonellService,
-        jwkProvider = jwkProvider,
-        authorizedUsers = authorizedUsers,
         jwkProviderAadV2 = jwkProviderAadV2
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)

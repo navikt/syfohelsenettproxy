@@ -20,22 +20,19 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import io.ktor.util.KtorExperimentalAPI
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.registerBehandlerApi
+import org.slf4j.event.Level
 import java.util.UUID
 
-@KtorExperimentalAPI
 fun createApplicationEngine(
     environment: Environment,
     applicationState: ApplicationState,
     helsepersonellService: HelsepersonellService,
-    jwkProvider: JwkProvider,
-    authorizedUsers: List<String>,
     jwkProviderAadV2: JwkProvider
 ): ApplicationEngine =
     embeddedServer(Netty, environment.applicationPort) {
@@ -49,11 +46,10 @@ fun createApplicationEngine(
         }
         setupAuth(
             environment = environment,
-            jwkProvider = jwkProvider,
-            authorizedUsers = authorizedUsers,
             jwkProviderAadV2 = jwkProviderAadV2
         )
         install(CallLogging) {
+            level = Level.TRACE
             mdc("Nav-Callid") { call ->
                 call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
             }
@@ -66,11 +62,6 @@ fun createApplicationEngine(
 
         routing {
             registerNaisApi(applicationState)
-            route("/api") {
-                authenticate("servicebrukerAADv1") {
-                    registerBehandlerApi(helsepersonellService)
-                }
-            }
             route("/api/v2") {
                 authenticate("servicebrukerAADv2") {
                     registerBehandlerApi(helsepersonellService)
