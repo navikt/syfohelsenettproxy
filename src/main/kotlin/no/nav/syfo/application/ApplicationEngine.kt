@@ -26,6 +26,7 @@ import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.registerBehandlerApi
+import org.slf4j.event.Level
 import java.util.UUID
 
 fun createApplicationEngine(
@@ -48,6 +49,7 @@ fun createApplicationEngine(
             jwkProviderAadV2 = jwkProviderAadV2
         )
         install(CallLogging) {
+            level = Level.TRACE
             mdc("Nav-Callid") { call ->
                 call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
             }
