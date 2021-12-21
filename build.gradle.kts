@@ -13,7 +13,7 @@ val kluentVersion = "1.68"
 val ktorVersion = "1.6.7"
 val logbackVersion = "1.2.8"
 val logstashEncoderVersion = "7.0.1"
-val prometheusVersion = "0.12.0"
+val prometheusVersion = "0.13.0"
 val spekVersion = "2.0.17"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
@@ -54,7 +54,6 @@ val githubPassword: String by project
 
 repositories {
     mavenCentral()
-    //maven(url = "http://packages.confluent.io/maven/")
     maven {
         url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
         credentials {
@@ -69,14 +68,17 @@ val navWsdl= configurations.create("navWsdl") {
 }
 
 dependencies {
-    /*wsdl2java("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
-    wsdl2java("javax.activation:activation:$javaxActivationVersion")
-    wsdl2java("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
-    wsdl2java("javax.xml.bind:jaxb-api:$jaxbApiVersion")
-    wsdl2java("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
-    wsdl2java("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
+    cxfCodegen("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    cxfCodegen("javax.activation:activation:$javaxActivationVersion")
+    cxfCodegen("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
+    cxfCodegen("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    cxfCodegen("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
+    cxfCodegen("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
-    }*/
+    }
+    cxfCodegen("com.sun.xml.bind:jaxb-impl:2.3.3")
+    cxfCodegen("jakarta.xml.ws:jakarta.xml.ws-api:2.3.3")
+    cxfCodegen("jakarta.annotation:jakarta.annotation-api:1.3.5")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
@@ -142,8 +144,17 @@ tasks {
         }
     }
 
+    cxfCodegen {
+        wsdl2java {
+            register("helsepersonellregisteret") {
+                wsdl.set(file("$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl"))
+                bindingFiles.add("$projectDir/src/main/resources/xjb/binding.xml")
+            }
+        }
+    }
+
     withType<KotlinCompile> {
-        dependsOn("wsdl2java")
+        dependsOn("wsdl2javaHelsepersonellregisteret")
         kotlinOptions.jvmTarget = "17"
     }
 
@@ -153,35 +164,6 @@ tasks {
             include("bus-extensions.txt")
         }
     }
-
-    /*withType<Wsdl2JavaTask> {
-        wsdlDir = file("$projectDir/src/main/resources/wsdl")
-        wsdlsToGenerate = listOf(
-            mutableListOf("-xjc", "-b", "$projectDir/src/main/resources/xjb/binding.xml", "$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl")
-        )
-    }*/
-
-    withType(io.mateo.cxf.codegen.wsdl2java.Wsdl2JavaTask::class).configureEach {
-        cxfCodegen {
-            wsdl2java {
-                register("helsepersonellregisteret") {
-                    wsdl.set(file("$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl"))
-                }
-            }
-        }
-    }
-
-    /*cxfCodegen {
-        wsdl2java {
-            register("example") {
-                wsdl.set(file("path/to/example.wsdl"))
-                outputDir.set(file("$buildDir/generated-java"))
-                markGenerated.set(true)
-                packageNames.set(listOf("com.example", "com.foo.bar"))
-                asyncMethods.set(listOf("foo", "bar"))
-            }
-        }
-    }*/
 
     withType<Test> {
         useJUnitPlatform {

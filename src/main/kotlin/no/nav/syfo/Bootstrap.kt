@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
@@ -33,7 +32,6 @@ val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 
-@KtorExperimentalAPI
 fun main() {
     val environment = Environment()
     val vaultSecrets = VaultSecrets(
