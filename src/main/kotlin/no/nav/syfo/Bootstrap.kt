@@ -37,14 +37,8 @@ fun main() {
     val vaultSecrets = VaultSecrets(
         serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
         serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
-        pale2ClientId = getFileAsString("/secrets/azuread/pale-2/client_id"),
-        pale2ReglerClientId = getFileAsString("/secrets/azuread/pale-2-regler/client_id"),
         redisPassword = getEnvVar("REDIS_PASSWORD")
     )
-    val jwkProvider = JwkProviderBuilder(URL(environment.jwkKeysUrl))
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
     val jwkProviderAadV2 = JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -53,18 +47,6 @@ fun main() {
     val applicationState = ApplicationState()
 
     val jedisPool = JedisPool(JedisPoolConfig(), environment.redisHost, environment.redisPort)
-
-    val authorizedUsers = listOf(
-        environment.syfosmmottakClientId,
-        environment.syfosminfotrygdClientId,
-        environment.syfosmreglerClientId,
-        environment.syfosmpapirreglerClientId,
-        environment.syfosmpapirmottakClientId,
-        vaultSecrets.pale2ClientId,
-        vaultSecrets.pale2ReglerClientId,
-        environment.padm2ClientId,
-        environment.smregistreringBackendClientId
-    )
 
     val helsepersonellV1 = helsepersonellV1(
         environment.helsepersonellv1EndpointURL,
@@ -79,8 +61,6 @@ fun main() {
         environment = environment,
         applicationState = applicationState,
         helsepersonellService = helsepersonellService,
-        jwkProvider = jwkProvider,
-        authorizedUsers = authorizedUsers,
         jwkProviderAadV2 = jwkProviderAadV2
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)

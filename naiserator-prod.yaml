@@ -53,10 +53,6 @@ spec:
   vault:
     enabled: true
     paths:
-      - kvPath: /azuread/data/prod/creds/pale-2
-        mountPath: /secrets/azuread/pale-2
-      - kvPath: /azuread/data/prod/creds/pale-2-regler
-        mountPath: /secrets/azuread/pale-2-regler
       - kvPath: serviceuser/data/prod/srvsyfohelsenettproxy
         mountPath: /secrets/serviceuser
   webproxy: true
@@ -69,25 +65,3 @@ spec:
       value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://pep-gw.oera.no:9443/samhandler/helse/helsepersonell/v1
-    - name: CLIENT_ID
-      value: b813133d-82b8-46ef-be96-3b903ea6c048
-    - name: AADACCESSTOKEN_URL
-      value: https://login.microsoftonline.com/navno.onmicrosoft.com/oauth2/token
-    - name: AADDISCOVERY_URL
-      value: https://login.microsoftonline.com/navno.onmicrosoft.com/.well-known/openid-configuration
-    - name: JWT_ISSUER
-      value: https://sts.windows.net/62366534-1ec3-4962-8869-9b5535279d0b/
-    - name: SYFOSMREGLER_CLIENT_ID
-      value: 97b74a7f-7cc8-475b-ac1e-6a198824e44c
-    - name: SYFOSMMOTTAK_CLIENT_ID
-      value: 8ed7cd5f-5b91-4af4-89e9-791ae25dc4d1
-    - name: SYFOSMINFOTRYGD_CLIENT_ID
-      value: 2c9d40f1-81c2-4f8d-b862-aabd14ab901c
-    - name: SYFOSMPAPIRREGLER_CLIENT_ID
-      value: 77a0df77-18de-4bab-887a-ed65f5c44927
-    - name: SYFOSMPAPIRMOTTAK_CLIENT_ID
-      value: 9d4d6e11-1717-44f7-b76c-1a671847bb32
-    - name: PADM2_CLIENT_ID
-      value: 3269be53-5374-4548-8584-9d9cd150df30
-    - name: SMREGISTRERING_BACKEND_CLIENT_ID
-      value: 88adf8ed-fed1-4022-bbc6-da222e4795eb

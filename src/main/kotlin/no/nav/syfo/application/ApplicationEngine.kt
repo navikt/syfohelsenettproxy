@@ -32,8 +32,6 @@ fun createApplicationEngine(
     environment: Environment,
     applicationState: ApplicationState,
     helsepersonellService: HelsepersonellService,
-    jwkProvider: JwkProvider,
-    authorizedUsers: List<String>,
     jwkProviderAadV2: JwkProvider
 ): ApplicationEngine =
     embeddedServer(Netty, environment.applicationPort) {
@@ -47,8 +45,6 @@ fun createApplicationEngine(
         }
         setupAuth(
             environment = environment,
-            jwkProvider = jwkProvider,
-            authorizedUsers = authorizedUsers,
             jwkProviderAadV2 = jwkProviderAadV2
         )
         install(CallLogging) {
@@ -64,11 +60,6 @@ fun createApplicationEngine(
 
         routing {
             registerNaisApi(applicationState)
-            route("/api") {
-                authenticate("servicebrukerAADv1") {
-                    registerBehandlerApi(helsepersonellService)
-                }
-            }
             route("/api/v2") {
                 authenticate("servicebrukerAADv2") {
                     registerBehandlerApi(helsepersonellService)

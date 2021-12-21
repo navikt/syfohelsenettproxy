@@ -31,9 +31,9 @@ object AuthorizationSpek : Spek({
     describe("Authorization") {
         with(TestApplicationEngine()) {
             setUpTestApplication()
-            setUpAuth("http://localhost:$randomPort/fake.jwt", listOf("consumerClientId"))
+            setUpAuth()
             application.routing {
-                authenticate("servicebrukerAADv1") { get("/testApi") { call.respond(HttpStatusCode.OK) } }
+                authenticate("servicebrukerAADv2") { get("/testApi") { call.respond(HttpStatusCode.OK) } }
             }
 
             it("Uten token gir 401") {
@@ -46,16 +46,6 @@ object AuthorizationSpek : Spek({
                 with(
                     handleRequest(HttpMethod.Get, "/testApi") {
                         addHeader("Authorization", "Bearer ${genereateJWT(audience = "another audience")}")
-                    }
-                ) {
-                    response.status()?.shouldBeEqualTo(HttpStatusCode.Unauthorized)
-                }
-            }
-
-            it("ConsumerId mangler i authorized users git 401") {
-                with(
-                    handleRequest(HttpMethod.Get, "/testApi") {
-                        addHeader("Authorization", "Bearer ${genereateJWT(consumerClientId = "my random app")}")
                     }
                 ) {
                     response.status()?.shouldBeEqualTo(HttpStatusCode.Unauthorized)

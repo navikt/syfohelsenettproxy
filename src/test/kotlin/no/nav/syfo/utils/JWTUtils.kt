@@ -38,7 +38,7 @@ fun fakeJWTApi(randomPort: Int): NettyApplicationEngine {
  */
 fun genereateJWT(
     consumerClientId: String? = "consumerClientId",
-    audience: String? = "helsenett-clientId",
+    audience: String? = "helsenett-clientId-v2",
     expiry: LocalDateTime? = LocalDateTime.now().plusHours(1)
 ): String? {
     val now = Date()
@@ -48,7 +48,7 @@ fun genereateJWT(
     return JWT.create()
         .withKeyId(keyId)
         .withSubject("subject")
-        .withIssuer("https://sts.issuer.net/myid")
+        .withIssuer("https://sts.issuer.net/myidV2")
         .withAudience(audience)
         .withJWTId(UUID.randomUUID().toString())
         .withClaim("ver", "1.0")
@@ -56,6 +56,7 @@ fun genereateJWT(
         .withClaim("auth_time", now)
         .withClaim("nbf", now)
         .withClaim("iat", now)
+        .withClaim("azp", consumerClientId)
         .withClaim("appid", consumerClientId)
         .withClaim("exp", Date.from(expiry?.atZone(ZoneId.systemDefault())?.toInstant()))
         .sign(alg)
