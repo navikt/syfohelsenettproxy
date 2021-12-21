@@ -1,20 +1,19 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
-import no.nils.wsdl2java.Wsdl2JavaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.4.2"
-val jacksonVersion = "2.12.0"
+val coroutinesVersion = "1.5.1"
+val jacksonVersion = "2.13.0"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
-val kluentVersion = "1.61"
-val ktorVersion = "1.5.1"
-val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "6.5"
-val prometheusVersion = "0.9.0"
+val kluentVersion = "1.68"
+val ktorVersion = "1.6.7"
+val logbackVersion = "1.2.8"
+val logstashEncoderVersion = "7.0.1"
+val prometheusVersion = "0.12.0"
 val spekVersion = "2.0.17"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
@@ -23,19 +22,20 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.dff6489"
-val jedisVersion = "3.1.0"
-val testcontainersVersion = "1.15.2"
-val mockkVersion = "1.9.3"
-val nimbusdsVersion = "9.2"
+val smCommonVersion = "1.a92720c"
+val jedisVersion = "3.7.1"
+val testcontainersVersion = "1.16.2"
+val mockkVersion = "1.12.1"
+val nimbusdsVersion = "9.15.2"
+val kotlinVersion = "1.6.0"
 
 plugins {
     java
-    id("no.nils.wsdl2java") version "0.10"
-    kotlin("jvm") version "1.4.21"
-    id("org.jmailen.kotlinter") version "3.3.0"
-    id("com.diffplug.spotless") version "5.8.2"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("io.mateo.cxf-codegen") version "1.0.0-rc.3"
+    kotlin("jvm") version "1.6.0"
+    id("org.jmailen.kotlinter") version "3.6.0"
+    id("com.diffplug.spotless") version "5.16.0"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 buildscript {
@@ -54,10 +54,7 @@ val githubPassword: String by project
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
-    maven(url = "http://packages.confluent.io/maven/")
-    maven(url = "https://kotlin.bintray.com/kotlinx")
+    //maven(url = "http://packages.confluent.io/maven/")
     maven {
         url = uri("https://maven.pkg.github.com/navikt/syfosm-common")
         credentials {
@@ -72,16 +69,16 @@ val navWsdl= configurations.create("navWsdl") {
 }
 
 dependencies {
-    wsdl2java("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    /*wsdl2java("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
     wsdl2java("javax.activation:activation:$javaxActivationVersion")
     wsdl2java("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
     wsdl2java("javax.xml.bind:jaxb-api:$jaxbApiVersion")
     wsdl2java("javax.xml.ws:jaxws-api:$javaxJaxwsApiVersion")
     wsdl2java("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
-    }
+    }*/
 
-    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
@@ -147,7 +144,7 @@ tasks {
 
     withType<KotlinCompile> {
         dependsOn("wsdl2java")
-        kotlinOptions.jvmTarget = "12"
+        kotlinOptions.jvmTarget = "17"
     }
 
     withType<ShadowJar> {
@@ -157,12 +154,34 @@ tasks {
         }
     }
 
-    withType<Wsdl2JavaTask> {
+    /*withType<Wsdl2JavaTask> {
         wsdlDir = file("$projectDir/src/main/resources/wsdl")
         wsdlsToGenerate = listOf(
             mutableListOf("-xjc", "-b", "$projectDir/src/main/resources/xjb/binding.xml", "$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl")
         )
+    }*/
+
+    withType(io.mateo.cxf.codegen.wsdl2java.Wsdl2JavaTask::class).configureEach {
+        cxfCodegen {
+            wsdl2java {
+                register("helsepersonellregisteret") {
+                    wsdl.set(file("$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl"))
+                }
+            }
+        }
     }
+
+    /*cxfCodegen {
+        wsdl2java {
+            register("example") {
+                wsdl.set(file("path/to/example.wsdl"))
+                outputDir.set(file("$buildDir/generated-java"))
+                markGenerated.set(true)
+                packageNames.set(listOf("com.example", "com.foo.bar"))
+                asyncMethods.set(listOf("foo", "bar"))
+            }
+        }
+    }*/
 
     withType<Test> {
         useJUnitPlatform {
