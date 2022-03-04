@@ -50,6 +50,9 @@ spec:
         - application: padm2
           namespace: teamsykefravr
           cluster: dev-fss
+        - application: padm2
+          namespace: teamsykefravr
+          cluster: dev-gcp
   vault:
     enabled: true
     paths:
@@ -60,6 +63,7 @@ spec:
     - secret: syfohelsenettproxy-redis-password
   ingresses:
     - "https://syfohelsenettproxy.nais.preprod.local"
+    - "https://syfohelsenettproxy.dev-fss-pub.nais.io"
   env:
     - name: SECURITY_TOKEN_SERVICE_URL
       value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
