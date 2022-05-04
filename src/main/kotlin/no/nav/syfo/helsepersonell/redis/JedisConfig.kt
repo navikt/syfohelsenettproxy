@@ -1,12 +1,13 @@
 package no.nav.syfo.helsepersonell.redis
 
 import redis.clients.jedis.JedisPoolConfig
+import java.time.Duration
 
 class JedisConfig : JedisPoolConfig() {
     init {
         testWhileIdle = true
-        minEvictableIdleTimeMillis = 300000
-        timeBetweenEvictionRunsMillis = 60_000
+        minEvictableIdleTime = Duration.ofMillis(300000)
+        timeBetweenEvictionRuns = Duration.ofMillis(60_000)
         maxTotal = 20
         maxIdle = 20
         maxWaitMillis = 1000

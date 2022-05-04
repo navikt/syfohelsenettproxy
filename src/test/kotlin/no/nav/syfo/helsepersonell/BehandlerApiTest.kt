@@ -1,8 +1,9 @@
 package no.nav.syfo.helsepersonell
 
+import io.kotest.core.spec.style.FunSpec
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.routing.routing
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every
@@ -19,15 +20,13 @@ import no.nhn.schemas.reg.hprv2.Person
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldBeNull
 import org.amshove.kluent.shouldNotBeNull
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 
-class BehandlerApiTest : Spek({
+class BehandlerApiTest : FunSpec({
     val wsMock = mockk<IHPR2Service>()
     val redis = mockk<HelsepersonellRedis>()
     val helsePersonService = HelsepersonellService(wsMock, redis)
 
-    beforeEachTest {
+    beforeTest {
         every { wsMock.hentPersonMedPersonnummer("fnr", any()) } returns
             Person().apply {
                 godkjenninger = ArrayOfGodkjenning().apply {
@@ -77,13 +76,13 @@ class BehandlerApiTest : Spek({
         every { redis.save(any(), any()) } returns Unit
     }
 
-    describe("Helsepersonell gitt fnr") {
+    context("Helsepersonell gitt fnr") {
         with(TestApplicationEngine()) {
             setUpTestApplication()
             application.routing {
                 registerBehandlerApi(helsePersonService)
             }
-            it("Finner behandlingskode på behandler") {
+            test("Finner behandlingskode på behandler") {
                 with(
                     handleRequest(HttpMethod.Get, "/behandler") {
                         addHeader("behandlerFnr", "fnr")
@@ -106,7 +105,7 @@ class BehandlerApiTest : Spek({
                 }
             }
 
-            it("Sender feilmelding videre til konsumenten") {
+            test("Sender feilmelding videre til konsumenten") {
                 every {
                     wsMock.hentPersonMedPersonnummer(
                         any(),
@@ -128,7 +127,7 @@ class BehandlerApiTest : Spek({
                 }
             }
 
-            it("Should return 404 when personnr ikke funnet") {
+            test("Should return 404 when personnr ikke funnet") {
                 every {
                     wsMock.hentPersonMedPersonnummer(
                         any(),
@@ -149,13 +148,13 @@ class BehandlerApiTest : Spek({
         }
     }
 
-    describe("Helsepersonell gitt hpr-nummer") {
+    context("Helsepersonell gitt hpr-nummer") {
         with(TestApplicationEngine()) {
             setUpTestApplication()
             application.routing {
                 registerBehandlerApi(helsePersonService)
             }
-            it("Henter riktig info for behandler") {
+            test("Henter riktig info for behandler") {
                 with(
                     handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
                         addHeader("hprNummer", "1234")
@@ -182,7 +181,7 @@ class BehandlerApiTest : Spek({
                 }
             }
 
-            it("Sender feilmelding videre til konsumenten") {
+            test("Sender feilmelding videre til konsumenten") {
                 every {
                     wsMock.hentPerson(
                         any(),
@@ -204,7 +203,7 @@ class BehandlerApiTest : Spek({
                 }
             }
 
-            it("Return 404 when HPR-nr is not found") {
+            test("Return 404 when HPR-nr is not found") {
                 every {
                     wsMock.hentPerson(
                         any(),
@@ -222,7 +221,7 @@ class BehandlerApiTest : Spek({
                 }
             }
 
-            it("Return 404 when HPR-nr ikke er oppgitt") {
+            test("Return 404 when HPR-nr ikke er oppgitt") {
                 every {
                     wsMock.hentPerson(
                         any(),

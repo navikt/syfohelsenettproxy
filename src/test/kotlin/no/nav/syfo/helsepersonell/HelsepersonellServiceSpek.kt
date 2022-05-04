@@ -1,5 +1,6 @@
 package no.nav.syfo.helsepersonell
 
+import io.kotest.core.spec.style.FunSpec
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -18,8 +19,6 @@ import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaul
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Tilleggskompetanse
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.time.LocalDate.now
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -27,22 +26,22 @@ import java.util.GregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 
-class HelsepersonellServiceSpek : Spek({
+class HelsepersonellServiceSpek : FunSpec({
 
     val mock = mockk<IHPR2Service>()
     val helsepersonellRedis = mockk<HelsepersonellRedis>(relaxed = true)
 
-    beforeEachTest {
+    beforeTest {
         clearAllMocks()
         every { mock.hentPersonMedPersonnummer("fnr", any()) } returns
             getPerson()
         every { mock.hentPerson(any(), any()) } returns getPerson()
     }
 
-    describe("HelsepersonellService") {
+    context("HelsepersonellService") {
         val service = HelsepersonellService(mock, helsepersonellRedis)
 
-        it("Kaller WS med korrekte argumenter") {
+        test("Kaller WS med korrekte argumenter") {
 
             every { helsepersonellRedis.getFromFnr(any()) } returns null
 
@@ -57,14 +56,14 @@ class HelsepersonellServiceSpek : Spek({
             cal.toGregorianCalendar().toZonedDateTime().toLocalDate().shouldBeEqualTo(idag)
         }
 
-        it("Henter behandler fra redis") {
+        test("Henter behandler fra redis") {
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(behandler = getBehandler(), timestamp = OffsetDateTime.now(ZoneOffset.UTC))
             val behandler = service.finnBehandler("fnr")
             verify(exactly = 0) { mock.hentPersonMedPersonnummer(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
         }
-        it("Henter behandler og lagrer i redis") {
+        test("Henter behandler og lagrer i redis") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(behandler = getBehandler(), timestamp = OffsetDateTime.now(ZoneOffset.UTC))
             val behandler = service.finnBehandlerFraHprNummer("1000001")
             verify(exactly = 0) { mock.hentPersonMedPersonnummer(any(), any()) }
@@ -74,7 +73,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
         }
 
-        it("Henter behandler fra redis med HPR") {
+        test("Henter behandler fra redis med HPR") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns null
             val behandler = service.finnBehandlerFraHprNummer("1000001")
             verify(exactly = 1) { mock.hentPerson(any(), any()) }
@@ -83,7 +82,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
         }
 
-        it("Henter på nytt fra WS om redis timestamp er gammelt") {
+        test("Henter på nytt fra WS om redis timestamp er gammelt") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(61), behandler = getBehandler())
             val behandler = service.finnBehandlerFraHprNummer("1000001")
             verify(exactly = 1) { mock.hentPerson(any(), any()) }
@@ -91,7 +90,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        it("Henter ikke på nytt redist timestamp er nytt") {
+        test("Henter ikke på nytt redist timestamp er nytt") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(59), behandler = getBehandler())
             val behandler = service.finnBehandlerFraHprNummer("1000001")
             verify(exactly = 0) { mock.hentPerson(any(), any()) }
@@ -99,7 +98,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        it("Skal bruke redis om det feiler mot helsenett for hpr") {
+        test("Skal bruke redis om det feiler mot helsenett for hpr") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPerson(any(), any()) } throws IHPR2ServiceHentPersonGenericFaultFaultFaultMessage("MESSAGE")
             val behandler = service.finnBehandlerFraHprNummer("1000001")
@@ -109,7 +108,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        it("Skal bruke redis om det feiler mot helsenett for fnr") {
+        test("Skal bruke redis om det feiler mot helsenett for fnr") {
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("MESSAGE")
             val behandler = service.finnBehandler("fnr")
@@ -119,7 +118,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        it("SKal bruke redis ved SOAPFaultException for FNR") {
+        test("SKal bruke redis ved SOAPFaultException for FNR") {
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandler("fnr")
@@ -129,7 +128,7 @@ class HelsepersonellServiceSpek : Spek({
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        it("SKal bruke redis ved SOAPFaultException for HPR") {
+        test("SKal bruke redis ved SOAPFaultException for HPR") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPerson(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandlerFraHprNummer("1000001")

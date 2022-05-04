@@ -1,17 +1,16 @@
 package no.nav.syfo.helsepersonell.redis
 
+import io.kotest.core.spec.style.FunSpec
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import org.amshove.kluent.shouldBeEqualTo
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.GenericContainer
 import redis.clients.jedis.JedisPool
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-class HelsepersonellRedisITTest : Spek({
+class HelsepersonellRedisITTest : FunSpec({
 
     val redisContainer: GenericContainer<Nothing> = GenericContainer("navikt/secure-redis:5.0.3-alpine-2")
     redisContainer.withExposedPorts(6379)
@@ -24,14 +23,14 @@ class HelsepersonellRedisITTest : Spek({
 
     redisContainer.start()
 
-    val jedisPool = JedisPool(JedisConfig(), redisContainer.containerIpAddress, redisContainer.getMappedPort(6379))
+    val jedisPool = JedisPool(JedisConfig(), redisContainer.host, redisContainer.getMappedPort(6379))
 
     val helsepesronellRedis = HelsepersonellRedis(jedisPool, "secret")
-    afterGroup {
+    afterSpec {
         redisContainer.stop()
     }
 
-    beforeEachTest {
+    beforeTest {
         val jedis = jedisPool.resource
         jedis.auth("secret")
         jedis.keys("**").forEach {
@@ -41,8 +40,8 @@ class HelsepersonellRedisITTest : Spek({
         jedis.close()
     }
 
-    describe("Test redis") {
-        it("Should cache behandler in redis") {
+    context("Test redis") {
+        test("Should cache behandler in redis") {
             val behandler = behandler()
 
             helsepesronellRedis.save(behandler)
@@ -54,7 +53,7 @@ class HelsepersonellRedisITTest : Spek({
             cachedBehandlerHpr shouldBeEqualTo JedisBehandlerModel(timestamp = cachedBehandlerFnr.timestamp, behandler = behandler)
         }
 
-        it("should not save when fnr is empty") {
+        test("should not save when fnr is empty") {
             val behandler = behandler().copy(fnr = "")
 
             helsepesronellRedis.save(behandler)
@@ -65,7 +64,7 @@ class HelsepersonellRedisITTest : Spek({
             cachedBehandlerHpr shouldBeEqualTo JedisBehandlerModel(timestamp = cachedBehandlerHpr!!.timestamp, behandler = behandler)
         }
 
-        it("Should not save when hprNummer = null") {
+        test("Should not save when hprNummer = null") {
             val behandler = behandler().copy(hprNummer = null)
 
             helsepesronellRedis.save(behandler)
@@ -76,12 +75,12 @@ class HelsepersonellRedisITTest : Spek({
             cachedBehandlerHpr shouldBeEqualTo null
         }
 
-        it("should get null behandler") {
+        test("should get null behandler") {
             val behandler = helsepesronellRedis.getFromHpr("10000001")
             behandler shouldBeEqualTo null
         }
 
-        it("Should update when redis is older than 1 Hour") {
+        test("Should update when redis is older than 1 Hour") {
             val timestamp = OffsetDateTime.now(ZoneOffset.UTC)
             helsepesronellRedis.save(behandler(), timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(1))
             helsepesronellRedis.save(behandler(), timestamp)
