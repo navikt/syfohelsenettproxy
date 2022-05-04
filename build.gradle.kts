@@ -12,7 +12,7 @@ val jacksonBomVersion = "2.13.2.20220328"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.68"
-val ktorVersion = "1.6.7"
+val ktorVersion = "2.0.0"
 val logbackVersion = "1.2.11"
 val logstashEncoderVersion = "7.1.1"
 val prometheusVersion = "0.15.0"
@@ -24,7 +24,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.a92720c"
+val smCommonVersion = "1.c55f4d2"
 val jedisVersion = "4.2.2"
 val testcontainersVersion = "1.17.1"
 val mockkVersion = "1.12.3"
@@ -88,10 +88,14 @@ dependencies {
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_common:$prometheusVersion")
 
-    implementation ("io.ktor:ktor-server-netty:$ktorVersion")
-    implementation ("io.ktor:ktor-jackson:$ktorVersion")
-    implementation ("io.ktor:ktor-auth:$ktorVersion")
-    implementation ("io.ktor:ktor-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
     implementation ("ch.qos.logback:logback-classic:$logbackVersion")
     implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
@@ -104,7 +108,6 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonPatchVersion")
 
     implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
-    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
 
     implementation ("org.apache.commons:commons-text:$commonsTextVersion")
     implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")

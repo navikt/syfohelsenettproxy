@@ -3,7 +3,7 @@ package no.nav.syfo.helsepersonell
 import io.kotest.core.spec.style.FunSpec
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.routing.routing
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every

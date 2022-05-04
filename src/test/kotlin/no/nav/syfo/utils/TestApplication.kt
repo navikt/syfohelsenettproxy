@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.features.CallLogging
-import io.ktor.features.ContentNegotiation
-import io.ktor.features.StatusPages
 import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
-import io.ktor.response.respond
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.install
+import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
 import io.ktor.server.testing.TestApplicationEngine
 import no.nav.syfo.Environment
 import no.nav.syfo.application.setupAuth
@@ -28,7 +27,7 @@ fun TestApplicationEngine.setUpTestApplication() {
         }
     }
     application.install(StatusPages) {
-        exception<HelsepersonellException> { e ->
+        exception<HelsepersonellException> { call, e ->
             call.respond(HttpStatusCode.InternalServerError, e.feilmelding)
         }
     }

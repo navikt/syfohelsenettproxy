@@ -1,13 +1,13 @@
 package no.nav.syfo.application
 
 import io.kotest.core.spec.style.FunSpec
-import io.ktor.application.call
-import io.ktor.auth.authenticate
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
-import io.ktor.response.respond
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.server.application.call
+import io.ktor.server.auth.authenticate
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import no.nav.syfo.utils.fakeJWTApi
