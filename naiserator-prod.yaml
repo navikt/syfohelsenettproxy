@@ -53,6 +53,9 @@ spec:
         - application: padm2
           namespace: teamsykefravr
           cluster: prod-gcp
+        - application: hm-brille-api
+          namespace: teamdigihot
+          cluster: prod-gcp
   vault:
     enabled: true
     paths:
