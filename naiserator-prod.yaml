@@ -43,6 +43,9 @@ spec:
         - application: syfosmmottak
         - application: syfosmregler
         - application: syfosminfotrygd
+        - application: syfosminfotrygd
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: syfosmpapirmottak
         - application: syfosmpapirregler
         - application: smregistrering-backend
