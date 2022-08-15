@@ -42,7 +42,9 @@ spec:
       rules:
         - application: syfosmmottak
         - application: syfosmregler
-        - application: syfosminfotrygd
+        - application: syfosmregler
+          namespace: teamsykmelding
+          cluster: dev-gcp
         - application: syfosminfotrygd
           namespace: teamsykmelding
           cluster: dev-gcp
@@ -50,9 +52,6 @@ spec:
         - application: syfosmpapirregler
         - application: smregistrering-backend
         - application: pale-2-regler
-        - application: padm2
-          namespace: teamsykefravr
-          cluster: dev-fss
         - application: padm2
           namespace: teamsykefravr
           cluster: dev-gcp
