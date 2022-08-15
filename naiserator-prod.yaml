@@ -52,6 +52,8 @@ spec:
         - application: syfosmpapirregler
         - application: smregistrering-backend
         - application: pale-2-regler
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: padm2
           namespace: teamsykefravr
           cluster: prod-gcp
