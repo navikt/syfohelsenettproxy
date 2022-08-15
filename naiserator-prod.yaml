@@ -53,7 +53,7 @@ spec:
         - application: smregistrering-backend
         - application: pale-2-regler
           namespace: teamsykmelding
-          cluster: dev-gcp
+          cluster: prod-gcp
         - application: padm2
           namespace: teamsykefravr
           cluster: prod-gcp
