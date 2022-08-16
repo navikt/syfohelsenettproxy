@@ -41,6 +41,9 @@ spec:
     inbound:
       rules:
         - application: syfosmmottak
+        - application: syfosmmottak
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: syfosmregler
         - application: syfosmregler
           namespace: teamsykmelding
