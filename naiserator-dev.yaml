@@ -41,10 +41,8 @@ spec:
     inbound:
       rules:
         - application: syfosmmottak
-        - application: syfosmmottak
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: syfosmregler
         - application: syfosmregler
           namespace: teamsykmelding
           cluster: dev-gcp
@@ -53,6 +51,9 @@ spec:
           cluster: dev-gcp
         - application: syfosmpapirmottak
         - application: syfosmpapirregler
+        - application: syfosmpapirregler
+          namespace: teamsykmelding
+          cluster: dev-gcp
         - application: smregistrering-backend
         - application: pale-2-regler
         - application: pale-2-regler
