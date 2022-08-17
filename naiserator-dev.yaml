@@ -54,8 +54,10 @@ spec:
         - application: syfosmpapirregler
           namespace: teamsykmelding
           cluster: dev-gcp
+        - application: syfosmpapirmottak
+          namespace: teamsykmelding
+          cluster: dev-gcp
         - application: smregistrering-backend
-        - application: pale-2-regler
         - application: pale-2-regler
           namespace: teamsykmelding
           cluster: dev-gcp

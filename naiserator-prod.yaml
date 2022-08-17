@@ -50,12 +50,14 @@ spec:
           namespace: teamsykmelding
           cluster: prod-gcp
         - application: syfosmpapirmottak
+        - application: syfosmpapirmottak
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: syfosmpapirregler
         - application: syfosmpapirregler
           namespace: teamsykmelding
           cluster: prod-gcp
         - application: smregistrering-backend
-        - application: pale-2-regler
         - application: pale-2-regler
           namespace: teamsykmelding
           cluster: prod-gcp
