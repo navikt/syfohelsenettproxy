@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration debug="true">
-
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%green(%d{HH:mm:ss}) %cyan([%-5.5t]) %boldCyan(%0.-5p) %yellow(%-20.20logger{19}) %cyan(:) %m%n</pattern>
+<configuration>
+    <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider" />
         </encoder>
     </appender>
 
-    <logger name="no.nav.syfo.syfobtsysmock" level="DEBUG"/>
+    <logger name="no.nav" level="INFO"/>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="stdout_json"/>
     </root>
 </configuration>
