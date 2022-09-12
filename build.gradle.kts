@@ -5,16 +5,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.6.1"
-val jacksonVersion = "2.13.3"
+val coroutinesVersion = "1.6.4"
+val jacksonVersion = "2.13.4"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.68"
-val ktorVersion = "2.0.1"
-val logbackVersion = "1.2.11"
-val logstashEncoderVersion = "7.1.1"
+val ktorVersion = "2.1.1"
+val logbackVersion = "1.4.0"
+val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.15.0"
-val kotestVersion = "5.3.0"
+val kotestVersion = "5.4.2"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.4"
 val javaxAnnotationApiVersion = "1.3.2"
@@ -22,17 +22,20 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.f132f2b"
+val smCommonVersion = "1.cbb3aed"
 val jedisVersion = "4.2.3"
-val testcontainersVersion = "1.17.1"
-val mockkVersion = "1.12.4"
-val nimbusdsVersion = "9.22"
-val kotlinVersion = "1.6.21"
+val testcontainersVersion = "1.17.3"
+val mockkVersion = "1.12.7"
+val nimbusdsVersion = "9.24.3"
+val kotlinVersion = "1.7.10"
+val jaxbImplVersion = "2.3.3"
+val wsApiVersion = "2.3.3"
+val jakartaAnnotationApiVersion = "1.3.5"
 
 plugins {
     java
     id("io.mateo.cxf-codegen") version "1.0.0-rc.3"
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.10"
     id("org.jmailen.kotlinter") version "3.10.0"
     id("com.diffplug.spotless") version "6.5.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -63,7 +66,7 @@ repositories {
     }
 }
 
-val navWsdl= configurations.create("navWsdl") {
+val navWsdl = configurations.create("navWsdl") {
     isTransitive = false
 }
 
@@ -76,13 +79,13 @@ dependencies {
     cxfCodegen("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
-    cxfCodegen("com.sun.xml.bind:jaxb-impl:2.3.3")
-    cxfCodegen("jakarta.xml.ws:jakarta.xml.ws-api:2.3.3")
-    cxfCodegen("jakarta.annotation:jakarta.annotation-api:1.3.5")
+    cxfCodegen("com.sun.xml.bind:jaxb-impl:$jaxbImplVersion")
+    cxfCodegen("jakarta.xml.ws:jakarta.xml.ws-api:$wsApiVersion")
+    cxfCodegen("jakarta.annotation:jakarta.annotation-api:$jakartaAnnotationApiVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_common:$prometheusVersion")
 
@@ -95,34 +98,34 @@ dependencies {
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
 
-    implementation ("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation ("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    implementation ("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
-    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation ("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
 
-    implementation ("org.apache.commons:commons-text:$commonsTextVersion")
-    implementation ("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
-    implementation ("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
+    implementation("org.apache.commons:commons-text:$commonsTextVersion")
+    implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
+    implementation("org.apache.cxf:cxf-rt-ws-security:$cxfVersion")
 
-    implementation ("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
-    implementation ("javax.xml.bind:jaxb-api:$jaxbApiVersion")
-    implementation ("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
-    implementation ("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
-    implementation ("javax.activation:activation:$javaxActivationVersion")
+    implementation("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
+    implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
+    implementation("org.glassfish.jaxb:jaxb-runtime:$jaxbRuntimeVersion")
+    implementation("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
+    implementation("javax.activation:activation:$javaxActivationVersion")
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
     implementation("redis.clients:jedis:$jedisVersion")
 
-    testImplementation ("org.amshove.kluent:kluent:$kluentVersion")
-    testImplementation ("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
+    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
@@ -164,10 +167,11 @@ tasks {
     }
 
     withType<Test> {
-        useJUnitPlatform {
-        }
+        useJUnitPlatform {}
         testLogging {
-            showStandardStreams = true
+            events("skipped", "failed")
+            showStackTraces = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
 
