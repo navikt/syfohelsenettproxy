@@ -10,13 +10,13 @@ val jacksonVersion = "2.13.4"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.68"
-val ktorVersion = "2.1.1"
-val logbackVersion = "1.4.0"
+val ktorVersion = "2.1.2"
+val logbackVersion = "1.4.3"
 val logstashEncoderVersion = "7.2"
-val prometheusVersion = "0.15.0"
-val kotestVersion = "5.4.2"
+val prometheusVersion = "0.16.0"
+val kotestVersion = "5.5.0"
 val cxfVersion = "3.2.7"
-val commonsTextVersion = "1.4"
+val commonsTextVersion = "1.10.0"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
@@ -24,18 +24,18 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val smCommonVersion = "1.cbb3aed"
 val jedisVersion = "4.2.3"
-val testcontainersVersion = "1.17.3"
-val mockkVersion = "1.12.7"
+val testcontainersVersion = "1.17.4"
+val mockkVersion = "1.13.2"
 val nimbusdsVersion = "9.24.3"
-val kotlinVersion = "1.7.10"
+val kotlinVersion = "1.7.20"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 
 plugins {
     java
-    id("io.mateo.cxf-codegen") version "1.0.0-rc.3"
-    kotlin("jvm") version "1.7.10"
+    id("io.mateo.cxf-codegen") version "1.0.1"
+    kotlin("jvm") version "1.7.20"
     id("org.jmailen.kotlinter") version "3.10.0"
     id("com.diffplug.spotless") version "6.5.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -82,6 +82,7 @@ dependencies {
     cxfCodegen("com.sun.xml.bind:jaxb-impl:$jaxbImplVersion")
     cxfCodegen("jakarta.xml.ws:jakarta.xml.ws-api:$wsApiVersion")
     cxfCodegen("jakarta.annotation:jakarta.annotation-api:$jakartaAnnotationApiVersion")
+    cxfCodegen("org.apache.commons:commons-text:$commonsTextVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
