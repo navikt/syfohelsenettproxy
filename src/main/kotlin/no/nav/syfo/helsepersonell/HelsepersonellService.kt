@@ -39,7 +39,7 @@ class HelsepersonellService(
         }
         try {
             return retry(
-                callName = "insertCorrespondenceBasicV2",
+                callName = "HentPersonMedPersonnummer",
                 retryIntervals = arrayOf(500L, 1000L, 300L),
                 legalExceptions = arrayOf(
                     IOException::class,
