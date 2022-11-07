@@ -9,12 +9,12 @@ val coroutinesVersion = "1.6.4"
 val jacksonVersion = "2.13.4"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
-val kluentVersion = "1.68"
-val ktorVersion = "2.1.2"
-val logbackVersion = "1.4.3"
+val kluentVersion = "1.72"
+val ktorVersion = "2.1.3"
+val logbackVersion = "1.4.4"
 val logstashEncoderVersion = "7.2"
 val prometheusVersion = "0.16.0"
-val kotestVersion = "5.5.0"
+val kotestVersion = "5.5.3"
 val cxfVersion = "3.2.7"
 val commonsTextVersion = "1.10.0"
 val javaxAnnotationApiVersion = "1.3.2"
@@ -26,7 +26,7 @@ val smCommonVersion = "1.cbb3aed"
 val jedisVersion = "4.2.3"
 val testcontainersVersion = "1.17.4"
 val mockkVersion = "1.13.2"
-val nimbusdsVersion = "9.24.3"
+val nimbusdsVersion = "9.25.6"
 val kotlinVersion = "1.7.20"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
@@ -108,6 +108,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
 
     implementation("org.apache.commons:commons-text:$commonsTextVersion")
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")

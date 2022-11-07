@@ -1,6 +1,7 @@
 package no.nav.syfo.helsepersonell
 
 import no.nav.syfo.datatypeFactory
+import no.nav.syfo.helpers.retry
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
@@ -12,6 +13,7 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -30,19 +32,30 @@ class HelsepersonellService(
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
     private val HPR_NR_IKKE_OPPGITT = "ArgumentException: HPR-nummer må oppgis"
 
-    fun finnBehandler(behandlersPersonnummer: String): Behandler? {
+    suspend fun finnBehandler(behandlersPersonnummer: String): Behandler? {
         val fromRedis = helsepersonellRedis.getFromFnr(behandlersPersonnummer)
         if (fromRedis != null && shouldUseRedisModel(fromRedis)) {
             return fromRedis.behandler
         }
         try {
-            return helsepersonellV1.hentPersonMedPersonnummer(
-                behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-            ).let { ws2Behandler(it) }
-                .also {
-                    log.info("Hentet behandler")
-                    helsepersonellRedis.save(it)
-                }
+            return retry(
+                callName = "insertCorrespondenceBasicV2",
+                retryIntervals = arrayOf(500L, 1000L, 300L),
+                legalExceptions = arrayOf(
+                    IOException::class,
+                    IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage::class,
+                    SOAPFaultException::class
+                )
+            ) {
+
+                helsepersonellV1.hentPersonMedPersonnummer(
+                    behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                ).let { ws2Behandler(it) }
+                    .also {
+                        log.info("Hentet behandler")
+                        helsepersonellRedis.save(it)
+                    }
+            }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
