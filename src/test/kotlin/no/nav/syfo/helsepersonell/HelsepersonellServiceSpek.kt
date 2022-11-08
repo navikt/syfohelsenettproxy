@@ -113,22 +113,22 @@ class HelsepersonellServiceSpek : FunSpec({
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("MESSAGE")
             val behandler = service.finnBehandler("fnr")
             behandler shouldBeEqualTo getBehandler()
-            verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
+            verify(exactly = 4) { mock.hentPersonMedPersonnummer(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        test("SKal bruke redis ved SOAPFaultException for FNR") {
+        test("Skal bruke redis ved SOAPFaultException for FNR") {
             every { helsepersonellRedis.getFromFnr("fnr") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPersonMedPersonnummer(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandler("fnr")
             behandler shouldBeEqualTo getBehandler()
-            verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
+            verify(exactly = 4) { mock.hentPersonMedPersonnummer(any(), any()) }
             verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
             verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
             verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
         }
-        test("SKal bruke redis ved SOAPFaultException for HPR") {
+        test("Skal bruke redis ved SOAPFaultException for HPR") {
             every { helsepersonellRedis.getFromHpr("1000001") } returns JedisBehandlerModel(timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120), behandler = getBehandler())
             every { mock.hentPerson(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
             val behandler = service.finnBehandlerFraHprNummer("1000001")
