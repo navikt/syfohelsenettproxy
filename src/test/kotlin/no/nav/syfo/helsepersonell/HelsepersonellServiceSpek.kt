@@ -142,7 +142,12 @@ class HelsepersonellServiceSpek : FunSpec({
 })
 
 private fun getBehandler() = Behandler(
-    emptyList(), "fnr", 1000001, "fornavn", null, "etternavn"
+    emptyList(),
+    "fnr",
+    1000001,
+    "fornavn",
+    null,
+    "etternavn"
 )
 
 private fun getPerson(): Person {

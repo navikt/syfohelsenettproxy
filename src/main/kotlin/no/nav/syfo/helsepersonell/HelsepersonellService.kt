@@ -47,9 +47,9 @@ class HelsepersonellService(
                     SOAPFaultException::class
                 )
             ) {
-
                 helsepersonellV1.hentPersonMedPersonnummer(
-                    behandlersPersonnummer, datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                    behandlersPersonnummer,
+                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
                 ).let { ws2Behandler(it) }
                     .also {
                         log.info("Hentet behandler")
@@ -80,7 +80,8 @@ class HelsepersonellService(
         }
         try {
             return helsepersonellV1.hentPerson(
-                Integer.valueOf(hprNummer), datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                Integer.valueOf(hprNummer),
+                datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
             ).let { ws2Behandler(it) }
                 .also {
                     log.info("Hentet behandler for HPR-nummer")
@@ -212,13 +213,13 @@ fun helsepersonellV1(
     securityTokenServiceUrl: String
 ) = createPort<IHPR2Service>(endpointUrl) {
     proxy {
-
         // TODO: Contact someone about this hacky workaround
         // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8 payload
         val interceptor = object : AbstractSoapInterceptor(Phase.RECEIVE) {
             override fun handleMessage(message: SoapMessage?) {
-                if (message != null)
+                if (message != null) {
                     message[Message.ENCODING] = "utf-8"
+                }
             }
         }
         inInterceptors.add(interceptor)
