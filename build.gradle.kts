@@ -84,6 +84,7 @@ dependencies {
     cxfCodegen("jakarta.xml.ws:jakarta.xml.ws-api:$wsApiVersion")
     cxfCodegen("jakarta.annotation:jakarta.annotation-api:$jakartaAnnotationApiVersion")
     cxfCodegen("org.apache.commons:commons-text:$commonsTextVersion")
+    cxfCodegen("org.apache.cxf:cxf-core:$cxfVersion")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 
