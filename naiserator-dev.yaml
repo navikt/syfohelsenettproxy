@@ -50,13 +50,11 @@ spec:
           namespace: teamsykmelding
           cluster: dev-gcp
         - application: syfosmpapirregler
-        - application: syfosmpapirregler
           namespace: teamsykmelding
           cluster: dev-gcp
         - application: syfosmpapirmottak
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: smregistrering-backend
         - application: smregistrering-backend
           namespace: teamsykmelding
           cluster: dev-gcp
@@ -70,6 +68,9 @@ spec:
           namespace: teamdigihot
           cluster: dev-gcp
         - application: pale-2-sak
+          namespace: teamsykmelding
+          cluster: dev-gcp
+        - application: teamsykmelding-mock-backend
           namespace: teamsykmelding
           cluster: dev-gcp
   vault:
