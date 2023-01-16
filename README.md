@@ -16,27 +16,34 @@ REST-endepunkter som løser våre problemer, og holde ute datamodellene fra hels
 ## Flytkart
 Dette er det eit oversiktsbilde av flyten i applikasjonen
 ```mermaid
-  graph LR;
+  graph LR
   
-      syfohelsenettproxy --- STS;
-      syfohelsenettproxy --- pep-gw;      
+      syfohelsenettproxy --- STS
+      syfohelsenettproxy --- pep-gw    
       pep-gw --- nhn; 
  ```
 
 ## Bygg & Deploy
-På grunn av særnorske tegn i klassenavn / encoding i WSDLen som vi baserer oss på bygger ikke dette prosjektet ut av boksen på Windows. Det er en kjent feil, men vi har ikke funnet en god løsning på det enda. Appen bygges og deployes fra GHA
+På grunn av særnorske tegn i klassenavn / encoding i WSDLen som vi baserer oss på bygger ikke dette prosjektet ut av 
+boksen på Windows. Det er en kjent feil, men vi har ikke funnet en god løsning på det enda. Appen bygges og deployes fra GHA
 
 #### Gradle kommandoer for bygg og test
-For å bygge lokalt og kjøre integrasjonstestene kan du ganske enkelt kjøre `./gradlew clean build` eller på Windows
+For å bygge lokalt og kjøre integrasjonstestene kan du ganske enkelt kjøre 
+``` bash
+./gradlew clean build
+```
+eller på Windows
 `gradlew.bat clean build`
 
 ## Oppgradering av gradle wrapper
 Finn nyeste versjon av gradle her: https://gradle.org/releases/
 
-```./gradlew wrapper --gradle-version $gradleVersjon```
+``` bash
+./gradlew wrapper --gradle-version $gradleVersjon
+```
 
 ## Henvendelser
-Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub.
+Spørsmål knyttet til koden eller prosjektet kan stilles som issues her på GitHub
 
 ### For NAV-ansatte
 
