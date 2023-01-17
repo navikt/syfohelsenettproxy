@@ -35,11 +35,7 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 
 fun main() {
     val environment = Environment()
-    val vaultSecrets = VaultSecrets(
-        serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
-        serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
-        redisPassword = getEnvVar("REDIS_PASSWORD")
-    )
+    val serviceUser = ServiceUser()
     val jwkProviderAadV2 = JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
@@ -51,9 +47,8 @@ fun main() {
 
     val helsepersonellV1 = helsepersonellV1(
         environment.helsepersonellv1EndpointURL,
-        vaultSecrets.serviceuserUsername,
-        vaultSecrets.serviceuserPassword,
-        environment.securityTokenServiceUrl
+        serviceUser.serviceuserUsername,
+        serviceUser.serviceuserPassword
     )
 
     val helsepersonellService = HelsepersonellService(helsepersonellV1, HelsepersonellRedis(jedisPool, environment.redisSecret))

@@ -78,6 +78,7 @@ spec:
         - application: syfohelsenettproxy-redis
   webproxy: true
   envFrom:
+    - secret: syfohelsenettproxy-secrets
     - secret: syfohelsenettproxy-redis-password
   ingresses:
     - "https://syfohelsenettproxy.dev.intern.nav.no"
