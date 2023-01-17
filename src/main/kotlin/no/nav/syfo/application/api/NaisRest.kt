@@ -18,14 +18,14 @@ fun Routing.registerNaisApi(
     alivenessCheck: () -> Boolean = { applicationState.alive },
     collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
 ) {
-    get("/is_alive") {
+    get("/internal/is_alive") {
         if (alivenessCheck()) {
             call.respondText("I'm alive! :)")
         } else {
             call.respondText("I'm dead x_x", status = HttpStatusCode.InternalServerError)
         }
     }
-    get("/is_ready") {
+    get("/internal/is_ready") {
         if (readynessCheck()) {
             call.respondText("I'm ready! :)")
         } else {
@@ -35,7 +35,7 @@ fun Routing.registerNaisApi(
             )
         }
     }
-    get("/prometheus") {
+    get("/internal/prometheus") {
         val names = call.request.queryParameters.getAll("name[]")?.toSet() ?: setOf()
         call.respondTextWriter(ContentType.parse(TextFormat.CONTENT_TYPE_004)) {
             write004(this, collectorRegistry.filteredMetricFamilySamples(names))

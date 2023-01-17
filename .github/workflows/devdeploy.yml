@@ -68,6 +68,6 @@ jobs:
         uses: nais/deploy/actions/deploy@master
         env:
           APIKEY: ${{ secrets.TEAMSYKMELDING_DEPLOY_KEY }}
-          CLUSTER: dev-fss
+          CLUSTER: dev-gcp
           RESOURCE: naiserator-dev.yaml
           VAR: image=${{ needs.build.outputs.image }}

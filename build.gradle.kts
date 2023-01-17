@@ -108,7 +108,9 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
-    implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion")
+    implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion"){
+        exclude(group ="commons-collections", module = "commons-collections")
+    }
     implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
 
     implementation("org.apache.commons:commons-text:$commonsTextVersion")

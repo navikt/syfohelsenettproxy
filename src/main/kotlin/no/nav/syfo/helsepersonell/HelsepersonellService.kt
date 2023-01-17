@@ -232,25 +232,21 @@ data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
 fun helsepersonellV1(
     endpointUrl: String,
     serviceuserUsername: String,
-    serviceuserPassword: String,
-    securityTokenServiceUrl: String
-) =
-    createPort<IHPR2Service>(endpointUrl) {
-        proxy {
-            // TODO: Contact someone about this hacky workaround
-            // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
-            // payload
-            val interceptor =
-                object : AbstractSoapInterceptor(Phase.RECEIVE) {
-                    override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) {
-                            message[Message.ENCODING] = "utf-8"
-                        }
-                    }
+    serviceuserPassword: String
+) = createPort<IHPR2Service>(endpointUrl) {
+    proxy {
+        // TODO: Contact someone about this hacky workaround
+        // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8 payload
+        val interceptor = object : AbstractSoapInterceptor(Phase.RECEIVE) {
+            override fun handleMessage(message: SoapMessage?) {
+                if (message != null) {
+                    message[Message.ENCODING] = "utf-8"
                 }
-            inInterceptors.add(interceptor)
-            inFaultInterceptors.add(interceptor)
+            }
         }
-
-        port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
+        inInterceptors.add(interceptor)
+        inFaultInterceptors.add(interceptor)
     }
+
+    port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
+}

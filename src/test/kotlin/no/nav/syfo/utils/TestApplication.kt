@@ -42,14 +42,13 @@ fun TestApplicationEngine.setUpTestApplication() {
 }
 
 fun TestApplicationEngine.setUpAuth(): Environment {
-    val env =
-        Environment(
-            securityTokenServiceUrl = "url",
-            helsepersonellv1EndpointURL = "http://url",
-            clientIdV2 = "helsenett-clientId-v2",
-            jwkKeysUrlV2 = "url",
-            jwtIssuerV2 = "https://sts.issuer.net/myidV2"
-        )
+    val env = Environment(
+        helsepersonellv1EndpointURL = "http://url",
+        clientIdV2 = "helsenett-clientId-v2",
+        jwkKeysUrlV2 = "url",
+        jwtIssuerV2 = "https://sts.issuer.net/myidV2",
+        redisSecret = "secret"
+    )
 
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()

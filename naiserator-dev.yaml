@@ -13,19 +13,19 @@ spec:
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
-    path: /is_alive
+    path: /internal/is_alive
     initialDelay: 10
     timeout: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /is_ready
+    path: /internal/is_ready
     initialDelay: 30
     periodSeconds: 5
     timeout: 1
   prometheus:
     enabled: true
-    path: /prometheus
+    path: /internal/prometheus
   resources:
     limits:
       cpu: 500m
@@ -73,19 +73,14 @@ spec:
         - application: teamsykmelding-mock-backend
           namespace: teamsykmelding
           cluster: dev-gcp
-  vault:
-    enabled: true
-    paths:
-      - kvPath: serviceuser/data/dev/srvsyfohelsenettproxy
-        mountPath: /secrets/serviceuser
+    outbound:
+      rules:
+        - application: syfohelsenettproxy-redis
   webproxy: true
   envFrom:
     - secret: syfohelsenettproxy-redis-password
   ingresses:
-    - "https://syfohelsenettproxy.nais.preprod.local"
-    - "https://syfohelsenettproxy.dev-fss-pub.nais.io"
+    - "https://syfohelsenettproxy.dev.intern.nav.no"
   env:
-    - name: SECURITY_TOKEN_SERVICE_URL
-      value: https://sts-q1.preprod.local/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
-      value: https://pep-gw-q4.oera-q.local:9443/samhandler/helse/helsepersonell/v1
+      value: https://ws.test.nhn.no/v2/HPR/Basic

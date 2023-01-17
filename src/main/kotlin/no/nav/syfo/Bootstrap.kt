@@ -7,20 +7,19 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.prometheus.client.hotspot.DefaultExports
-import java.net.URL
-import java.util.concurrent.TimeUnit
-import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
 import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
-import no.nav.syfo.utils.getFileAsString
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import javax.xml.datatype.DatatypeFactory
 
 val objectMapper: ObjectMapper =
     ObjectMapper().apply {
@@ -36,35 +35,28 @@ val log: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 
 fun main() {
     val environment = Environment()
-    val vaultSecrets =
-        VaultSecrets(
-            serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
-            serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
-            redisPassword = getEnvVar("REDIS_PASSWORD")
-        )
-    val jwkProviderAadV2 =
-        JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
-            .cached(10, 24, TimeUnit.HOURS)
-            .rateLimited(10, 1, TimeUnit.MINUTES)
-            .build()
+    val vaultSecrets = VaultSecrets(
+        serviceuserPassword = getFileAsString("/secrets/serviceuser/password"),
+        serviceuserUsername = getFileAsString("/secrets/serviceuser/username"),
+        redisPassword = getEnvVar("REDIS_PASSWORD")
+    )
+    val jwkProviderAadV2 = JwkProviderBuilder(URL(environment.jwkKeysUrlV2))
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
     DefaultExports.initialize()
     val applicationState = ApplicationState()
 
     val jedisPool = JedisPool(JedisPoolConfig(), environment.redisHost, environment.redisPort)
 
-    val helsepersonellV1 =
-        helsepersonellV1(
-            environment.helsepersonellv1EndpointURL,
-            vaultSecrets.serviceuserUsername,
-            vaultSecrets.serviceuserPassword,
-            environment.securityTokenServiceUrl
-        )
+    val helsepersonellV1 = helsepersonellV1(
+        environment.helsepersonellv1EndpointURL,
+        vaultSecrets.serviceuserUsername,
+        vaultSecrets.serviceuserPassword,
+        environment.securityTokenServiceUrl
+    )
 
-    val helsepersonellService =
-        HelsepersonellService(
-            helsepersonellV1,
-            HelsepersonellRedis(jedisPool, vaultSecrets.redisPassword)
-        )
+    val helsepersonellService = HelsepersonellService(helsepersonellV1, HelsepersonellRedis(jedisPool, environment.redisSecret))
 
     val applicationEngine =
         createApplicationEngine(

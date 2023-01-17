@@ -8,17 +8,17 @@ on:
       - master
 jobs:
   deploy:
-    name: Deploy Redis to prod-fss
+    name: Deploy Redis to prod-gcp
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Deploy to prod-fss
+      - name: Deploy to prod-gcp
         uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.TEAMSYKMELDING_DEPLOY_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLUSTER: prod-fss
+          CLUSTER: prod-gcp
           TEAM: teamsykmelding
           RESOURCE: redis.yaml
           PRINT_PAYLOAD: true
