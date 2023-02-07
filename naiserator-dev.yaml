@@ -74,6 +74,8 @@ spec:
           namespace: teamsykmelding
           cluster: dev-gcp
     outbound:
+      external:
+        - host: https://ws.test.nhn.no
       rules:
         - application: syfohelsenettproxy-redis
   webproxy: true
