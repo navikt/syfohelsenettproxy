@@ -31,10 +31,14 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
             return@get
         }
 
-        when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
-            null -> call.respond(HttpStatusCode.NotFound, "Fant ikke behandler fra HPR-nummer")
-            else -> {
-                call.respond(behandler)
+        if (!hprNummer.all { Character.isDigit(it) }) {
+            call.respond(HttpStatusCode.NotFound, "Fant ikke behandler")
+        } else {
+            when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
+                null -> call.respond(HttpStatusCode.NotFound, "Fant ikke behandler fra HPR-nummer")
+                else -> {
+                    call.respond(behandler)
+                }
             }
         }
     }
