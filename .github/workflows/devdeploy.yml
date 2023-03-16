@@ -8,8 +8,6 @@ on:
       - '*'
       - '!master'
 
-env:
-  IMAGE: ghcr.io/${{ github.repository }}/syfohelsenettproxy:${{ github.sha }}
 
 jobs:
   snyk-test:
@@ -28,6 +26,9 @@ jobs:
           command: test
           args: --org=teamsykmelding --severity-threshold=high
   build:
+    permissions:
+      contents: "read"
+      id-token: "write"
     name: Checkout code and create docker tag
     runs-on: ubuntu-latest
     steps:
@@ -61,13 +62,16 @@ jobs:
           ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ./gradlew shadowJar -x test
-      - name: Build and publish Docker image
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker build --tag ${IMAGE} .
-          docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+      - name: docker-build-push
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: teamsykmelding
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
   deploy:
     name: Deploy to dev
     runs-on: ubuntu-latest
@@ -81,3 +85,4 @@ jobs:
           APIKEY: ${{ secrets.TEAMSYKMELDING_DEPLOY_KEY }}
           CLUSTER: dev-fss
           RESOURCE: naiserator-dev.yaml
+          VAR: image=${{ needs.build.outputs.image }}
