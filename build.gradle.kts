@@ -35,7 +35,7 @@ val jakartaAnnotationApiVersion = "1.3.5"
 plugins {
     java
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "1.8.|0"
+    kotlin("jvm") version "1.8.10"
     id("org.jmailen.kotlinter") version "3.12.0"
     id("com.diffplug.spotless") version "6.5.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
