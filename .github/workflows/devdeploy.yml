@@ -60,7 +60,7 @@ jobs:
   deploy:
     name: Deploy to dev
     runs-on: ubuntu-latest
-    needs: [ snyk-test, build ]
+    needs: [ build ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
