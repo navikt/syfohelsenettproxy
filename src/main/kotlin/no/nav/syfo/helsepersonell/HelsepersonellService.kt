@@ -14,6 +14,7 @@ import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.IHPR2ServicePingGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.Person
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
@@ -45,13 +46,13 @@ class HelsepersonellService(
                     arrayOf(
                         IOException::class,
                         IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage::class,
-                        SOAPFaultException::class
-                    )
+                        SOAPFaultException::class,
+                    ),
             ) {
                 helsepersonellV1
                     .hentPersonMedPersonnummer(
                         behandlersPersonnummer,
-                        datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                        datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                     )
                     .let { ws2Behandler(it) }
                     .also {
@@ -85,7 +86,7 @@ class HelsepersonellService(
             return helsepersonellV1
                 .hentPerson(
                     Integer.valueOf(hprNummer),
-                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
                 .also {
@@ -109,6 +110,18 @@ class HelsepersonellService(
         }
     }
 
+    fun ping(requestId: String): String? {
+        return try {
+            helsepersonellV1.ping(requestId)
+        } catch (e: IHPR2ServicePingGenericFaultFaultFaultMessage) {
+            log.error("Helsenett gir feilmelding {}", e.message)
+            null
+        } catch (e: SOAPFaultException) {
+            log.error("Helsenett gir feilmelding {}", e.message)
+            null
+        }
+    }
+
     private fun returnJedisOrThrow(fromRedis: JedisBehandlerModel?, e: Exception) =
         fromRedis?.behandler.let {
             log.info("Returning behandler found in REDIS")
@@ -118,7 +131,7 @@ class HelsepersonellService(
 
     private fun shouldUseRedisModel(redisBehandlerModel: JedisBehandlerModel): Boolean {
         return redisBehandlerModel.timestamp.isAfter(
-            OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS)
+            OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS),
         )
     }
 
@@ -138,7 +151,7 @@ fun ws2Behandler(person: Person): Behandler =
         hprNummer = person.hprNummer,
         fornavn = person.fornavn,
         mellomnavn = person.mellomnavn,
-        etternavn = person.etternavn
+        etternavn = person.etternavn,
     )
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
@@ -155,7 +168,7 @@ fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenni
                         ws2Tilleggskompetanse(it)
                     }
                 else -> null
-            }
+            },
     )
 
 fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
@@ -170,7 +183,7 @@ fun ws2Tilleggskompetanse(
         eTag = tillegskompetanse.eTag,
         gyldig = tillegskompetanse.gyldig?.let { ws2Periode(tillegskompetanse.gyldig) },
         id = tillegskompetanse.id,
-        type = tillegskompetanse.type?.let { ws2Kode(tillegskompetanse.type) }
+        type = tillegskompetanse.type?.let { ws2Kode(tillegskompetanse.type) },
     )
 
 fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
@@ -186,7 +199,7 @@ fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
                 ?.toGregorianCalendar()
                 ?.toZonedDateTime()
                 ?.withZoneSameInstant(ZoneOffset.UTC)
-                ?.toLocalDateTime()
+                ?.toLocalDateTime(),
     )
 
 data class Behandler(
