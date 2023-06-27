@@ -20,5 +20,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CLUSTER: prod-fss
           TEAM: teamsykmelding
-          RESOURCE: nais/redis/redis.yaml
+          RESOURCE: redis.yaml
           PRINT_PAYLOAD: true
