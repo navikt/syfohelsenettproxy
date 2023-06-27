@@ -13,11 +13,11 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.testing.TestApplicationEngine
+import java.nio.file.Paths
+import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.application.setupAuth
 import no.nav.syfo.helsepersonell.HelsepersonellException
-import java.nio.file.Paths
-import java.util.UUID
 
 fun TestApplicationEngine.setUpTestApplication() {
     start(true)
@@ -42,13 +42,14 @@ fun TestApplicationEngine.setUpTestApplication() {
 }
 
 fun TestApplicationEngine.setUpAuth(): Environment {
-    val env = Environment(
-        securityTokenServiceUrl = "url",
-        helsepersonellv1EndpointURL = "http://url",
-        clientIdV2 = "helsenett-clientId-v2",
-        jwkKeysUrlV2 = "url",
-        jwtIssuerV2 = "https://sts.issuer.net/myidV2"
-    )
+    val env =
+        Environment(
+            securityTokenServiceUrl = "url",
+            helsepersonellv1EndpointURL = "http://url",
+            clientIdV2 = "helsenett-clientId-v2",
+            jwkKeysUrlV2 = "url",
+            jwtIssuerV2 = "https://sts.issuer.net/myidV2"
+        )
 
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()

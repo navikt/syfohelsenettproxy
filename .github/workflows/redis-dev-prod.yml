@@ -2,7 +2,7 @@ name: deploy redis to prod
 on:
   push:
     paths:
-      - 'nais/redis/redis.yaml'
+      - 'redis.yaml'
       - '.github/workflows/redis**'
     branches:
       - master

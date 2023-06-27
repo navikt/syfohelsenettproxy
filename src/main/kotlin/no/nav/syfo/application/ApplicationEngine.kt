@@ -19,6 +19,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
@@ -26,7 +27,6 @@ import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.registerBehandlerApi
 import org.slf4j.event.Level
-import java.util.UUID
 
 fun createApplicationEngine(
     environment: Environment,
@@ -43,10 +43,7 @@ fun createApplicationEngine(
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             }
         }
-        setupAuth(
-            environment = environment,
-            jwkProviderAadV2 = jwkProviderAadV2
-        )
+        setupAuth(environment = environment, jwkProviderAadV2 = jwkProviderAadV2)
         install(CallLogging) {
             level = Level.TRACE
             mdc("Nav-Callid") { call ->
@@ -62,9 +59,7 @@ fun createApplicationEngine(
         routing {
             registerNaisApi(applicationState)
             route("/api/v2") {
-                authenticate("servicebrukerAADv2") {
-                    registerBehandlerApi(helsepersonellService)
-                }
+                authenticate("servicebrukerAADv2") { registerBehandlerApi(helsepersonellService) }
             }
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())

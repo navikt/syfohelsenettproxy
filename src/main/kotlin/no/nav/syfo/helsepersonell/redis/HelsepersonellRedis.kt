@@ -1,12 +1,12 @@
 package no.nav.syfo.helsepersonell
 
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
 import no.nav.syfo.objectMapper
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
 class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: String) {
     fun save(behandler: Behandler, timestamp: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)) {
@@ -37,19 +37,16 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
 
     fun getFromFnr(fnr: String): JedisBehandlerModel? {
         return when (fnr.isNotBlank()) {
-            true -> initRedis() { jedis ->
-                jedis.get("fnr:$fnr")?.let {
-                    getBehandlerFromRedis(jedis, it)
+            true ->
+                initRedis() { jedis ->
+                    jedis.get("fnr:$fnr")?.let { getBehandlerFromRedis(jedis, it) }
                 }
-            }
             false -> null
         }
     }
 
     fun getFromHpr(hprNummer: String): JedisBehandlerModel? {
-        return initRedis { jedis ->
-            getBehandlerFromRedis(jedis, hprNummer)
-        }
+        return initRedis { jedis -> getBehandlerFromRedis(jedis, hprNummer) }
     }
 
     private fun initRedis(block: (jedis: Jedis) -> JedisBehandlerModel?): JedisBehandlerModel? {
@@ -66,10 +63,7 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
         }
     }
 
-    private fun getBehandlerFromRedis(
-        jedis: Jedis,
-        hprNummer: String
-    ): JedisBehandlerModel? {
+    private fun getBehandlerFromRedis(jedis: Jedis, hprNummer: String): JedisBehandlerModel? {
         val behandlerString = jedis.get("hpr:$hprNummer")
         return when (behandlerString.isNullOrBlank()) {
             true -> null

@@ -10,11 +10,13 @@ import no.nav.syfo.log
 
 fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
     get("/behandler") {
-        val fnr = call.request.header("behandlerFnr") ?: run {
-            call.respond(HttpStatusCode.BadRequest, "Mangler header `behandlerFnr` med fnr")
-            log.warn("Mottatt kall som mangler header behandlerFnr")
-            return@get
-        }
+        val fnr =
+            call.request.header("behandlerFnr")
+                ?: run {
+                    call.respond(HttpStatusCode.BadRequest, "Mangler header `behandlerFnr` med fnr")
+                    log.warn("Mottatt kall som mangler header behandlerFnr")
+                    return@get
+                }
 
         when (val behandler = helsepersonellService.finnBehandler(fnr)) {
             null -> call.respond(HttpStatusCode.NotFound, "Fant ikke behandler")
@@ -25,11 +27,16 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
     }
 
     get("/behandlerMedHprNummer") {
-        val hprNummer = call.request.header("hprNummer") ?: run {
-            call.respond(HttpStatusCode.BadRequest, "Mangler header `hprNummer` med HPR-nummer")
-            log.warn("Mottatt kall som mangler header hprNummer")
-            return@get
-        }
+        val hprNummer =
+            call.request.header("hprNummer")
+                ?: run {
+                    call.respond(
+                        HttpStatusCode.BadRequest,
+                        "Mangler header `hprNummer` med HPR-nummer"
+                    )
+                    log.warn("Mottatt kall som mangler header hprNummer")
+                    return@get
+                }
 
         if (!hprNummer.all { Character.isDigit(it) }) {
             call.respond(HttpStatusCode.NotFound, "Fant ikke behandler")

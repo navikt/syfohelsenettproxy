@@ -6,13 +6,13 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion = "1.6.4"
-val jacksonVersion = "2.15.0"
+val jacksonVersion = "2.15.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.72"
-val ktorVersion = "2.3.0"
-val logbackVersion = "1.4.5"
-val logstashEncoderVersion = "7.3"
+val ktorVersion = "2.3.1"
+val logbackVersion = "1.4.8"
+val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
 val kotestVersion = "5.5.4"
 val cxfVersion = "3.5.5"
@@ -22,23 +22,23 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.1"
-val jedisVersion = "4.3.2"
+val smCommonVersion = "1.0.9"
+val jedisVersion = "4.4.3"
 val testcontainersVersion = "1.17.6"
-val mockkVersion = "1.13.2"
+val mockkVersion = "1.13.5"
 val nimbusdsVersion = "9.25.6"
-val kotlinVersion = "1.8.21"
+val kotlinVersion = "1.8.22"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
+val ktfmtVersion = "0.44"
 
 plugins {
     java
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "1.8.21"
-    id("org.jmailen.kotlinter") version "3.12.0"
-    id("com.diffplug.spotless") version "6.5.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.8.22"
+    id("com.diffplug.spotless") version "6.19.0"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 buildscript {
@@ -144,7 +144,6 @@ tasks {
     }
 
     create("printVersion") {
-
         doLast {
             println(project.version)
         }
@@ -179,8 +178,10 @@ tasks {
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
-
-    "check" {
-        dependsOn("formatKotlin")
+    spotless {
+        kotlin { ktfmt(ktfmtVersion).kotlinlangStyle() }
+        check {
+            dependsOn("spotlessApply")
+        }
     }
 }

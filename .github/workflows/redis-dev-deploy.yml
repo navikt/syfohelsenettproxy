@@ -2,7 +2,7 @@ name: Deploy redis to dev
 on:
   push:
     paths:
-      - 'nais/redis/redis.yaml'
+      - 'redis.yaml'
       - '.github/workflows/redis**'
     branches:
       - '*'

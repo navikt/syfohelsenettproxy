@@ -2,7 +2,7 @@ name: Deploy to dev
 on:
   push:
     paths-ignore:
-      - 'nais/redis/redis.yaml'
+      - 'redis.yaml'
       - '.github/workflows/redis**'
     branches:
       - '*'

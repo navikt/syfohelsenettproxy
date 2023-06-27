@@ -1,5 +1,11 @@
 package no.nav.syfo.helsepersonell
 
+import java.io.IOException
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.GregorianCalendar
+import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
@@ -13,12 +19,6 @@ import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
-import java.io.IOException
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.GregorianCalendar
-import javax.xml.ws.soap.SOAPFaultException
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
@@ -41,16 +41,19 @@ class HelsepersonellService(
             return retry(
                 callName = "HentPersonMedPersonnummer",
                 retryIntervals = arrayOf(500L, 1000L, 300L),
-                legalExceptions = arrayOf(
-                    IOException::class,
-                    IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage::class,
-                    SOAPFaultException::class
-                )
+                legalExceptions =
+                    arrayOf(
+                        IOException::class,
+                        IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage::class,
+                        SOAPFaultException::class
+                    )
             ) {
-                helsepersonellV1.hentPersonMedPersonnummer(
-                    behandlersPersonnummer,
-                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-                ).let { ws2Behandler(it) }
+                helsepersonellV1
+                    .hentPersonMedPersonnummer(
+                        behandlersPersonnummer,
+                        datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                    )
+                    .let { ws2Behandler(it) }
                     .also {
                         log.info("Hentet behandler")
                         helsepersonellRedis.save(it)
@@ -79,10 +82,12 @@ class HelsepersonellService(
             return fromRedis.behandler
         }
         try {
-            return helsepersonellV1.hentPerson(
-                Integer.valueOf(hprNummer),
-                datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
-            ).let { ws2Behandler(it) }
+            return helsepersonellV1
+                .hentPerson(
+                    Integer.valueOf(hprNummer),
+                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar())
+                )
+                .let { ws2Behandler(it) }
                 .also {
                     log.info("Hentet behandler for HPR-nummer")
                     helsepersonellRedis.save(it)
@@ -104,16 +109,17 @@ class HelsepersonellService(
         }
     }
 
-    private fun returnJedisOrThrow(
-        fromRedis: JedisBehandlerModel?,
-        e: Exception
-    ) = fromRedis?.behandler.let {
-        log.info("Returning behandler found in REDIS")
-        it
-    } ?: throw HelsepersonellException(message = e.message, cause = e.cause)
+    private fun returnJedisOrThrow(fromRedis: JedisBehandlerModel?, e: Exception) =
+        fromRedis?.behandler.let {
+            log.info("Returning behandler found in REDIS")
+            it
+        }
+            ?: throw HelsepersonellException(message = e.message, cause = e.cause)
 
     private fun shouldUseRedisModel(redisBehandlerModel: JedisBehandlerModel): Boolean {
-        return redisBehandlerModel.timestamp.isAfter(OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS))
+        return redisBehandlerModel.timestamp.isAfter(
+            OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS)
+        )
     }
 
     private fun behandlerNotFound(message: String?): Boolean {
@@ -139,25 +145,28 @@ fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenni
     Godkjenning(
         helsepersonellkategori = ws2Kode(godkjenning.helsepersonellkategori),
         autorisasjon = ws2Kode(godkjenning.autorisasjon),
-        tillegskompetanse = when (
-            godkjenning.tilleggskompetanser != null &&
-                godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()
-        ) {
-            true -> godkjenning.tilleggskompetanser.tilleggskompetanse.map { ws2Tilleggskompetanse(it) }
-            else -> null
-        }
+        tillegskompetanse =
+            when (
+                godkjenning.tilleggskompetanser != null &&
+                    godkjenning.tilleggskompetanser.tilleggskompetanse.isNotEmpty()
+            ) {
+                true ->
+                    godkjenning.tilleggskompetanser.tilleggskompetanse.map {
+                        ws2Tilleggskompetanse(it)
+                    }
+                else -> null
+            }
     )
 
 fun ws2Kode(kode: no.nhn.schemas.reg.common.no.Kode): Kode =
-    Kode(
-        aktiv = kode.isAktiv,
-        oid = kode.oid,
-        verdi = kode.verdi
-    )
+    Kode(aktiv = kode.isAktiv, oid = kode.oid, verdi = kode.verdi)
 
-fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggskompetanse): Tilleggskompetanse =
+fun ws2Tilleggskompetanse(
+    tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggskompetanse
+): Tilleggskompetanse =
     Tilleggskompetanse(
-        avsluttetStatus = tillegskompetanse.avsluttetStatus?.let { ws2Kode(tillegskompetanse.avsluttetStatus) },
+        avsluttetStatus =
+            tillegskompetanse.avsluttetStatus?.let { ws2Kode(tillegskompetanse.avsluttetStatus) },
         eTag = tillegskompetanse.eTag,
         gyldig = tillegskompetanse.gyldig?.let { ws2Periode(tillegskompetanse.gyldig) },
         id = tillegskompetanse.id,
@@ -166,10 +175,18 @@ fun ws2Tilleggskompetanse(tillegskompetanse: no.nhn.schemas.reg.hprv2.Tilleggsko
 
 fun ws2Periode(periode: no.nhn.schemas.reg.common.no.Periode): Periode =
     Periode(
-        fra = periode.fra?.toGregorianCalendar()?.toZonedDateTime()?.withZoneSameInstant(ZoneOffset.UTC)
-            ?.toLocalDateTime(),
-        til = periode.til?.toGregorianCalendar()?.toZonedDateTime()?.withZoneSameInstant(ZoneOffset.UTC)
-            ?.toLocalDateTime()
+        fra =
+            periode.fra
+                ?.toGregorianCalendar()
+                ?.toZonedDateTime()
+                ?.withZoneSameInstant(ZoneOffset.UTC)
+                ?.toLocalDateTime(),
+        til =
+            periode.til
+                ?.toGregorianCalendar()
+                ?.toZonedDateTime()
+                ?.withZoneSameInstant(ZoneOffset.UTC)
+                ?.toLocalDateTime()
     )
 
 data class Behandler(
@@ -187,11 +204,7 @@ data class Godkjenning(
     val tillegskompetanse: List<Tilleggskompetanse>? = null
 )
 
-data class Kode(
-    val aktiv: Boolean,
-    val oid: Int,
-    val verdi: String?
-)
+data class Kode(val aktiv: Boolean, val oid: Int, val verdi: String?)
 
 data class Tilleggskompetanse(
     val avsluttetStatus: Kode?,
@@ -201,30 +214,30 @@ data class Tilleggskompetanse(
     val type: Kode?
 )
 
-data class Periode(
-    val fra: LocalDateTime?,
-    val til: LocalDateTime?
-)
+data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
 
 fun helsepersonellV1(
     endpointUrl: String,
     serviceuserUsername: String,
     serviceuserPassword: String,
     securityTokenServiceUrl: String
-) = createPort<IHPR2Service>(endpointUrl) {
-    proxy {
-        // TODO: Contact someone about this hacky workaround
-        // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8 payload
-        val interceptor = object : AbstractSoapInterceptor(Phase.RECEIVE) {
-            override fun handleMessage(message: SoapMessage?) {
-                if (message != null) {
-                    message[Message.ENCODING] = "utf-8"
+) =
+    createPort<IHPR2Service>(endpointUrl) {
+        proxy {
+            // TODO: Contact someone about this hacky workaround
+            // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
+            // payload
+            val interceptor =
+                object : AbstractSoapInterceptor(Phase.RECEIVE) {
+                    override fun handleMessage(message: SoapMessage?) {
+                        if (message != null) {
+                            message[Message.ENCODING] = "utf-8"
+                        }
+                    }
                 }
-            }
+            inInterceptors.add(interceptor)
+            inFaultInterceptors.add(interceptor)
         }
-        inInterceptors.add(interceptor)
-        inFaultInterceptors.add(interceptor)
-    }
 
-    port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
-}
+        port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
+    }

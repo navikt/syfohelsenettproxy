@@ -1,7 +1,7 @@
 package no.nav.syfo.helsepersonell.redis
 
-import redis.clients.jedis.JedisPoolConfig
 import java.time.Duration
+import redis.clients.jedis.JedisPoolConfig
 
 class JedisConfig : JedisPoolConfig() {
     init {
