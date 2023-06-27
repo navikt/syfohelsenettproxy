@@ -26,6 +26,7 @@ import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.registerBehandlerApi
+import no.nav.syfo.helsepersonell.registerPingApi
 import org.slf4j.event.Level
 
 fun createApplicationEngine(
@@ -59,7 +60,10 @@ fun createApplicationEngine(
         routing {
             registerNaisApi(applicationState)
             route("/api/v2") {
-                authenticate("servicebrukerAADv2") { registerBehandlerApi(helsepersonellService) }
+                authenticate("servicebrukerAADv2") {
+                    registerBehandlerApi(helsepersonellService)
+                    registerPingApi(helsepersonellService)
+                }
             }
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
