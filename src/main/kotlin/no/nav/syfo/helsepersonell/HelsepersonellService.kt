@@ -233,20 +233,23 @@ fun helsepersonellV1(
     endpointUrl: String,
     serviceuserUsername: String,
     serviceuserPassword: String
-) = createPort<IHPR2Service>(endpointUrl) {
-    proxy {
-        // TODO: Contact someone about this hacky workaround
-        // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8 payload
-        val interceptor = object : AbstractSoapInterceptor(Phase.RECEIVE) {
-            override fun handleMessage(message: SoapMessage?) {
-                if (message != null) {
-                    message[Message.ENCODING] = "utf-8"
+) =
+    createPort<IHPR2Service>(endpointUrl) {
+        proxy {
+            // TODO: Contact someone about this hacky workaround
+            // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
+            // payload
+            val interceptor =
+                object : AbstractSoapInterceptor(Phase.RECEIVE) {
+                    override fun handleMessage(message: SoapMessage?) {
+                        if (message != null) {
+                            message[Message.ENCODING] = "utf-8"
+                        }
+                    }
                 }
-            }
+            inInterceptors.add(interceptor)
+            inFaultInterceptors.add(interceptor)
         }
-        inInterceptors.add(interceptor)
-        inFaultInterceptors.add(interceptor)
-    }
 
-    port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
-}
+        port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
+    }
