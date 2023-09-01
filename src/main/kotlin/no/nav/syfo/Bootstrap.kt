@@ -13,13 +13,12 @@ import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
-import no.nav.syfo.helsepersonell.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
+import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
+import no.nav.syfo.helsepersonell.redis.createJedisPool
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import redis.clients.jedis.JedisPool
-import redis.clients.jedis.JedisPoolConfig
 
 val objectMapper: ObjectMapper =
     ObjectMapper().apply {
@@ -44,7 +43,7 @@ fun main() {
     DefaultExports.initialize()
     val applicationState = ApplicationState()
 
-    val jedisPool = JedisPool(JedisPoolConfig(), environment.redisHost, environment.redisPort)
+    val jedisPool = createJedisPool()
 
     val helsepersonellV1 =
         helsepersonellV1(
@@ -54,10 +53,7 @@ fun main() {
         )
 
     val helsepersonellService =
-        HelsepersonellService(
-            helsepersonellV1,
-            HelsepersonellRedis(jedisPool, environment.redisSecret)
-        )
+        HelsepersonellService(helsepersonellV1, HelsepersonellRedis(jedisPool))
 
     val applicationEngine =
         createApplicationEngine(

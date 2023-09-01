@@ -8,8 +8,8 @@ metadata:
 spec:
   image: {{ image }}
   replicas:
-    min: 2
-    max: 4
+    min: 1
+    max: 2
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
@@ -28,8 +28,7 @@ spec:
     path: /internal/prometheus
   resources:
     limits:
-      cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 100m
       memory: 512Mi
@@ -37,6 +36,9 @@ spec:
     application:
       enabled: true
       tenant: trygdeetaten.no
+  redis:
+    - instance: syfohelsenettproxy
+      access: readwrite
   accessPolicy:
     inbound:
       rules:
@@ -76,12 +78,8 @@ spec:
     outbound:
       external:
         - host: ws.test.nhn.no
-      rules:
-        - application: syfohelsenettproxy-redis
-  webproxy: true
   envFrom:
     - secret: syfohelsenettproxy-secrets
-    - secret: syfohelsenettproxy-redis-password
   ingresses:
     - "https://syfohelsenettproxy.dev.intern.nav.no"
   env:

@@ -47,8 +47,7 @@ fun TestApplicationEngine.setUpAuth(): Environment {
             helsepersonellv1EndpointURL = "http://url",
             clientIdV2 = "helsenett-clientId-v2",
             jwkKeysUrlV2 = "url",
-            jwtIssuerV2 = "https://sts.issuer.net/myidV2",
-            redisSecret = "secret"
+            jwtIssuerV2 = "https://sts.issuer.net/myidV2"
         )
 
     val path = "src/test/resources/jwkset.json"

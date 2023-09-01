@@ -8,6 +8,7 @@ import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helpers.retry
+import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
