@@ -8,9 +8,9 @@ import redis.clients.jedis.JedisPool
 import redis.clients.jedis.JedisPoolConfig
 
 class RedisConfig(
-    redisUri: URI = URI(getEnvVar("REDIS_URI_NARMESTELEDER")),
-    val redisUsername: String = getEnvVar("REDIS_USERNAME_NARMESTELEDER"),
-    val redisPassword: String = getEnvVar("REDIS_PASSWORD_NARMESTELEDER"),
+    redisUri: URI = URI(getEnvVar("REDIS_URI_SYFOHELSENETTPROXY")),
+    val redisUsername: String = getEnvVar("REDIS_USERNAME_SYFOHELSENETTPROXY"),
+    val redisPassword: String = getEnvVar("REDIS_PASSWORD_SYFOHELSENETTPROXY"),
     val ssl: Boolean = true
 ) {
     val host: String = redisUri.host
