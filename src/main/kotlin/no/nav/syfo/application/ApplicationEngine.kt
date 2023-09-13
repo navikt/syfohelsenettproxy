@@ -46,7 +46,7 @@ fun createApplicationEngine(
         }
         setupAuth(environment = environment, jwkProviderAadV2 = jwkProviderAadV2)
         install(CallLogging) {
-            level = Level.WARN
+            level = Level.TRACE
             mdc("Nav-Callid") { call ->
                 call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
             }
