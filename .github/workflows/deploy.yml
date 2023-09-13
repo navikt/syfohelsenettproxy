@@ -1,4 +1,4 @@
-name: Deploy to dev and prod
+name: Deploy app to dev and prod
 on: push
 
 permissions:
