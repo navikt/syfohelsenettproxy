@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+
 group = "no.nav.syfo"
 version = "1.0.0"
 
@@ -159,6 +161,10 @@ tasks {
     }
 
     shadowJar {
+        transform(ServiceFileTransformer::class.java) {
+            setPath("META-INF/cxf")
+            include("bus-extensions.txt")
+        }
         archiveBaseName.set("app")
         archiveClassifier.set("")
         isZip64 = true
