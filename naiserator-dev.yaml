@@ -80,8 +80,6 @@ spec:
         - host: ws.test.nhn.no
   envFrom:
     - secret: syfohelsenettproxy-secrets
-  ingresses:
-    - "https://syfohelsenettproxy.dev.intern.nav.no"
   env:
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://ws.test.nhn.no/v2/HPR/Basic
