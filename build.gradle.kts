@@ -1,16 +1,12 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val coroutinesVersion = "1.6.4"
+val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.15.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.72"
-val ktorVersion = "2.3.1"
+val ktorVersion = "2.3.4"
 val logbackVersion = "1.4.8"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
@@ -22,24 +18,30 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.9"
+val smCommonVersion = "1.0.14"
 val jedisVersion = "4.4.3"
 val testcontainersVersion = "1.17.6"
 val mockkVersion = "1.13.5"
 val nimbusdsVersion = "9.25.6"
-val kotlinVersion = "1.8.22"
+val kotlinVersion = "1.9.10"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 
 plugins {
-    java
+    id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "1.8.22"
-    id("com.diffplug.spotless") version "6.19.0"
+    kotlin("jvm") version "1.9.10"
+    id("com.diffplug.spotless") version "6.21.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.cyclonedx.bom") version "1.7.4"
+}
+
+application {
+    mainClass.set("no.nav.syfo.BootstrapKt")
+
+    val isDevelopment: Boolean = project.ext.has("development")
+    applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
 buildscript {
@@ -142,15 +144,6 @@ dependencies {
 
 
 tasks {
-    withType<Jar> {
-        manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
-    }
-
-    create("printVersion") {
-        doLast {
-            println(project.version)
-        }
-    }
 
     cxfCodegen {
         wsdl2java {
@@ -161,26 +154,28 @@ tasks {
         }
     }
 
-    withType<KotlinCompile> {
+    compileKotlin {
         dependsOn("wsdl2javaHelsepersonellregisteret")
-        kotlinOptions.jvmTarget = "17"
     }
 
-    withType<ShadowJar> {
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
+    shadowJar {
+        archiveBaseName.set("app")
+        archiveClassifier.set("")
+        isZip64 = true
+        manifest {
+            attributes(
+                mapOf(
+                    "Main-Class" to "no.nav.syfo.BootstrapKt",
+                ),
+            )
         }
     }
 
-    withType<Test> {
+    test {
         useJUnitPlatform {}
-        testLogging {
-            events("skipped", "failed")
-            showStackTraces = true
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        }
+        testLogging.showStandardStreams = true
     }
+
     spotless {
         kotlin { ktfmt(ktfmtVersion).kotlinlangStyle() }
         check {
