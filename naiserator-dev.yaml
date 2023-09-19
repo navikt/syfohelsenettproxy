@@ -78,6 +78,9 @@ spec:
     outbound:
       external:
         - host: ws.test.nhn.no
+        - application: btsys
+          namespace: team-rocket
+          cluster: dev-fss
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
