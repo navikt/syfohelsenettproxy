@@ -73,6 +73,9 @@ spec:
         - application: teamsykmelding-mock-backend
           namespace: teamsykmelding
           cluster: dev-gcp
+        - application: btsys
+          namespace: team-rocket
+          cluster: dev-fss
   vault:
     enabled: true
     paths:

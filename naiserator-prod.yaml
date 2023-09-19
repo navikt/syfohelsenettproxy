@@ -70,6 +70,9 @@ spec:
         - application: pale-2-sak
           namespace: teamsykmelding
           cluster: prod-gcp
+        - application: btsys
+          namespace: team-rocket
+          cluster: prod-fss
   vault:
     enabled: true
     paths:
