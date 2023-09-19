@@ -72,13 +72,12 @@ spec:
         - application: pale-2-sak
           namespace: teamsykmelding
           cluster: prod-gcp
-    outbound:
-      external:
-        - host: ws.nhn.no
         - application: btsys
           namespace: team-rocket
           cluster: prod-fss
-
+    outbound:
+      external:
+        - host: ws.nhn.no
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
