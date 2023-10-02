@@ -80,9 +80,9 @@ spec:
           cluster: dev-fss
     outbound:
       external:
-        - host: ws.test.nhn.no
+        - host: ws.nhn.no
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
-      value: https://ws.test.nhn.no/v2/HPR/Basic
+      value: https://ws.nhn.no/v2/HPR/Basic
