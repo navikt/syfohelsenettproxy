@@ -1,5 +1,3 @@
-![Deploy to dev and prod](https://github.com/navikt/syfohelsenettproxy/workflows/Deploy%20to%20dev%20and%20prod/badge.svg)
-
 # Syfohelsenettproxy
 Denne appen fungerer som et skjold helsenett hvor fæle apier med særnorske tegn regjerer. Målet er å tilby konkrete
 REST-endepunkter som løser våre problemer, og holde ute datamodellene fra helsenett. 
