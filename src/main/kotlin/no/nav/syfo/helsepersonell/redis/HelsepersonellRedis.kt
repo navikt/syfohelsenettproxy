@@ -1,21 +1,20 @@
-package no.nav.syfo.helsepersonell
+package no.nav.syfo.helsepersonell.redis
 
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
-import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
+import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.log
 import no.nav.syfo.objectMapper
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
 
-class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: String) {
+class HelsepersonellRedis(var jedisPool: JedisPool) {
     fun save(behandler: Behandler, timestamp: OffsetDateTime = OffsetDateTime.now(ZoneOffset.UTC)) {
         var jedis: Jedis? = null
         try {
             when (behandler.hprNummer != null && "${behandler.hprNummer}".length > 1) {
                 true -> {
                     jedis = jedisPool.resource
-                    jedis.auth(redisSecret)
                     val jedisBehandlerModel = JedisBehandlerModel(timestamp, behandler)
                     jedis.set(
                         "hpr:${behandler.hprNummer}",
@@ -53,7 +52,6 @@ class HelsepersonellRedis(var jedisPool: JedisPool, private val redisSecret: Str
         var jedis: Jedis? = null
         return try {
             jedis = jedisPool.resource
-            jedis.auth(redisSecret)
             block.invoke(jedis)
         } catch (ex: Exception) {
             log.error("Could not get behandler in Redis", ex)

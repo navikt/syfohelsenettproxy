@@ -8,6 +8,7 @@ import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helpers.retry
+import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.log
 import no.nav.syfo.ws.createPort
@@ -232,8 +233,7 @@ data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
 fun helsepersonellV1(
     endpointUrl: String,
     serviceuserUsername: String,
-    serviceuserPassword: String,
-    securityTokenServiceUrl: String
+    serviceuserPassword: String
 ) =
     createPort<IHPR2Service>(endpointUrl) {
         proxy {
@@ -252,5 +252,5 @@ fun helsepersonellV1(
             inFaultInterceptors.add(interceptor)
         }
 
-        port { withSTS(serviceuserUsername, serviceuserPassword, securityTokenServiceUrl) }
+        port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }

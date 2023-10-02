@@ -13,6 +13,7 @@ import java.util.GregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
+import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.common.no.Periode

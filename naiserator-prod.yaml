@@ -13,23 +13,22 @@ spec:
     cpuThresholdPercentage: 90
   port: 8080
   liveness:
-    path: /is_alive
+    path: /internal/is_alive
     initialDelay: 10
     timeout: 5
     periodSeconds: 5
     failureThreshold: 30
   readiness:
-    path: /is_ready
+    path: /internal/is_ready
     initialDelay: 30
     periodSeconds: 5
     timeout: 1
   prometheus:
     enabled: true
-    path: /prometheus
+    path: /internal/prometheus
   resources:
     limits:
-      cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
     requests:
       cpu: 100m
       memory: 512Mi
@@ -37,6 +36,9 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+  redis:
+    - instance: syfohelsenettproxy
+      access: readwrite
   accessPolicy:
     inbound:
       rules:
@@ -73,19 +75,11 @@ spec:
         - application: btsys
           namespace: team-rocket
           cluster: prod-fss
-  vault:
-    enabled: true
-    paths:
-      - kvPath: serviceuser/data/prod/srvsyfohelsenettproxy
-        mountPath: /secrets/serviceuser
-  webproxy: true
+    outbound:
+      external:
+        - host: ws.nhn.no
   envFrom:
-    - secret: syfohelsenettproxy-redis-password
-  ingresses:
-    - "https://syfohelsenettproxy.nais.adeo.no"
-    - "https://syfohelsenettproxy.prod-fss-pub.nais.io"
+    - secret: syfohelsenettproxy-secrets
   env:
-    - name: SECURITY_TOKEN_SERVICE_URL
-      value: https://sts.adeo.no/SecurityTokenServiceProvider/
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
-      value: https://pep-gw.oera.no:9443/samhandler/helse/helsepersonell/v1
+      value: https://ws.nhn.no/v2/HPR/Basic

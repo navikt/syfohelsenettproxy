@@ -8,6 +8,7 @@ import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.handleRequest
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.objectMapper
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.common.no.Kode

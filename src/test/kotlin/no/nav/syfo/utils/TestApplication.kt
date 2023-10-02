@@ -44,7 +44,6 @@ fun TestApplicationEngine.setUpTestApplication() {
 fun TestApplicationEngine.setUpAuth(): Environment {
     val env =
         Environment(
-            securityTokenServiceUrl = "url",
             helsepersonellv1EndpointURL = "http://url",
             clientIdV2 = "helsenett-clientId-v2",
             jwkKeysUrlV2 = "url",

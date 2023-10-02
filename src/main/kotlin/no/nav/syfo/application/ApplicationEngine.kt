@@ -19,15 +19,15 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
-import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.registerBehandlerApi
 import no.nav.syfo.helsepersonell.registerPingApi
+import no.nav.syfo.log
 import org.slf4j.event.Level
+import java.util.*
 
 fun createApplicationEngine(
     environment: Environment,
@@ -52,8 +52,11 @@ fun createApplicationEngine(
             }
         }
         install(StatusPages) {
-            exception<HelsepersonellException> { call, e ->
-                call.respond(HttpStatusCode.InternalServerError, e.feilmelding)
+            exception<Throwable> { call, cause ->
+                call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
+
+                log.error("Caught exception", cause)
+                throw cause
             }
         }
 
