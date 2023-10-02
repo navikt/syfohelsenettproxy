@@ -82,7 +82,7 @@ spec:
       external:
         - host: ws.test.nhn.no
   ingresses:
-    - "https://syfohelsenettproxy.intern.nav.no"
+    - "https://syfohelsenettproxy.intern.dev.nav.no"
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
