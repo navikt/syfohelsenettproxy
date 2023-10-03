@@ -5,6 +5,21 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 15
+    ignore:
+      - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
+      - dependency-name: "com.sun.xml.ws:jaxws-tools"
+      - dependency-name: "javax.xml.ws:jaxws-api"
+      - dependency-name: "com.sun.xml.bind:jaxb-impl"
+      - dependency-name: "jakarta.xml.ws:jakarta.xml.ws-api"
+      - dependency-name: "jakarta.annotation:jakarta.annotation-api"
+      - dependency-name: "org.apache.cxf:cxf-core"
+      - dependency-name: "org.apache.cxf:cxf-rt-frontend-jaxws"
+      - dependency-name: "org.apache.cxf:cxf-rt-features-logging"
+      - dependency-name: "org.apache.cxf:cxf-rt-transports-http"
+      - dependency-name: "org.apache.cxf:cxf-rt-ws-security"
+      - dependency-name: "io.mateo.cxf-codegen"
+      - dependency-name: "org.apache.kafka:kafka_2.12"
+        update-types: [ "version-update:semver-major" ]
     groups:
       dependencies:
         patterns:
