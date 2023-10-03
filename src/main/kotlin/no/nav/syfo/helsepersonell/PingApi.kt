@@ -6,7 +6,7 @@ import io.ktor.server.request.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 fun Route.registerPingApi(helsepersonellService: HelsepersonellService) {
     get("/ping") {
@@ -14,7 +14,7 @@ fun Route.registerPingApi(helsepersonellService: HelsepersonellService) {
             call.request.header("requestId")
                 ?: run {
                     call.respond(HttpStatusCode.BadRequest, "Mangler header `requestId`")
-                    log.warn("Mottatt kall som mangler header requestId")
+                    logger.warn("Mottatt kall som mangler header requestId")
                     return@get
                 }
 

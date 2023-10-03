@@ -10,7 +10,7 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.Environment
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 fun Application.setupAuth(environment: Environment, jwkProviderAadV2: JwkProvider) {
     install(Authentication) {
@@ -29,12 +29,12 @@ fun Application.setupAuth(environment: Environment, jwkProviderAadV2: JwkProvide
 
 fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     val appid: String = credentials.payload.getClaim("azp").asString()
-    log.debug("authorization attempt for $appid")
+    logger.debug("authorization attempt for $appid")
     return credentials.payload.audience.contains(clientId)
 }
 
 fun unauthorized(credentials: JWTCredential): Principal? {
-    log.warn(
+    logger.warn(
         "Auth: Unexpected audience for jwt {}, {}",
         StructuredArguments.keyValue("issuer", credentials.payload.issuer),
         StructuredArguments.keyValue("audience", credentials.payload.audience)

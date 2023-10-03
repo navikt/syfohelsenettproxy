@@ -30,7 +30,9 @@ val objectMapper: ObjectMapper =
 
 val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
 
-val log: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
+val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
+
+val securelog = LoggerFactory.getLogger("securelog")
 
 fun main() {
     val environment = Environment()

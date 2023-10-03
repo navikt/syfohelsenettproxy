@@ -9,8 +9,8 @@ spec:
   image: {{ image }}
   replicas:
     min: 2
-    max: 4
-    cpuThresholdPercentage: 90
+    max: 6
+    cpuThresholdPercentage: 80
   port: 8080
   liveness:
     path: /internal/is_alive
@@ -27,8 +27,6 @@ spec:
     enabled: true
     path: /internal/prometheus
   resources:
-    limits:
-      memory: 2Gi
     requests:
       cpu: 100m
       memory: 512Mi
@@ -80,6 +78,8 @@ spec:
         - host: ws.nhn.no
   ingresses:
     - "https://syfohelsenettproxy.intern.nav.no"
+  secureLogs:
+    enabled: true
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:

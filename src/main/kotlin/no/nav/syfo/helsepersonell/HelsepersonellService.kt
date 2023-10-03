@@ -10,7 +10,8 @@ import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helpers.retry
 import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
-import no.nav.syfo.log
+import no.nav.syfo.logger
+import no.nav.syfo.securelog
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
@@ -57,23 +58,24 @@ class HelsepersonellService(
                     )
                     .let { ws2Behandler(it) }
                     .also {
-                        log.info("Hentet behandler")
+                        logger.info("Hentet behandler")
+                        securelog.info("Behandler objekt: $it")
                         helsepersonellRedis.save(it)
                     }
             }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
-                    log.warn("Helsenett gir feilmelding: {}", e.message)
+                    logger.warn("Helsenett gir feilmelding: {}", e.message)
                     null
                 }
                 else -> {
-                    log.error("Helsenett gir feilmelding: {}", e.message)
+                    logger.error("Helsenett gir feilmelding: {}", e.message)
                     returnJedisOrThrow(fromRedis, e)
                 }
             }
         } catch (e: SOAPFaultException) {
-            log.error("Helsenett gir feilmelding: {}", e.message)
+            logger.error("Helsenett gir feilmelding: {}", e.message)
             return returnJedisOrThrow(fromRedis, e)
         }
     }
@@ -91,22 +93,23 @@ class HelsepersonellService(
                 )
                 .let { ws2Behandler(it) }
                 .also {
-                    log.info("Hentet behandler for HPR-nummer")
+                    logger.info("Hentet behandler for HPR-nummer")
+                    securelog.info("Behandler objekt: $it")
                     helsepersonellRedis.save(it)
                 }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             return when {
                 behandlerNotFound(e.message) -> {
-                    log.warn("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+                    logger.warn("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
                     null
                 }
                 else -> {
-                    log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+                    logger.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
                     returnJedisOrThrow(fromRedis, e)
                 }
             }
         } catch (e: SOAPFaultException) {
-            log.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
+            logger.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
             return returnJedisOrThrow(fromRedis, e)
         }
     }
@@ -115,17 +118,17 @@ class HelsepersonellService(
         return try {
             helsepersonellV1.ping(requestId)
         } catch (e: IHPR2ServicePingGenericFaultFaultFaultMessage) {
-            log.error("Helsenett gir feilmelding {}", e.message)
+            logger.error("Helsenett gir feilmelding {}", e.message)
             null
         } catch (e: SOAPFaultException) {
-            log.error("Helsenett gir feilmelding {}", e.message)
+            logger.error("Helsenett gir feilmelding {}", e.message)
             null
         }
     }
 
     private fun returnJedisOrThrow(fromRedis: JedisBehandlerModel?, e: Exception) =
         fromRedis?.behandler.let {
-            log.info("Returning behandler found in REDIS")
+            logger.info("Returning behandler found in REDIS")
             it
         }
             ?: throw HelsepersonellException(message = e.message, cause = e.cause)

@@ -3,7 +3,7 @@ package no.nav.syfo.helsepersonell.redis
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import no.nav.syfo.helsepersonell.Behandler
-import no.nav.syfo.log
+import no.nav.syfo.logger
 import no.nav.syfo.objectMapper
 import redis.clients.jedis.Jedis
 import redis.clients.jedis.JedisPool
@@ -21,14 +21,14 @@ class HelsepersonellRedis(var jedisPool: JedisPool) {
                         objectMapper.writeValueAsString(jedisBehandlerModel)
                     )
                     when (behandler.fnr.isNullOrBlank()) {
-                        true -> log.warn("Behandler does not have fnr")
+                        true -> logger.warn("Behandler does not have fnr")
                         false -> jedis.set("fnr:${behandler.fnr}", "${behandler.hprNummer}")
                     }
                 }
-                false -> log.error("Behandler does not have HPR-number")
+                false -> logger.error("Behandler does not have HPR-number")
             }
         } catch (ex: Exception) {
-            log.error("Could not save behandler in Redis", ex)
+            logger.error("Could not save behandler in Redis", ex)
         } finally {
             jedis?.close()
         }
@@ -54,7 +54,7 @@ class HelsepersonellRedis(var jedisPool: JedisPool) {
             jedis = jedisPool.resource
             block.invoke(jedis)
         } catch (ex: Exception) {
-            log.error("Could not get behandler in Redis", ex)
+            logger.error("Could not get behandler in Redis", ex)
             null
         } finally {
             jedis?.close()

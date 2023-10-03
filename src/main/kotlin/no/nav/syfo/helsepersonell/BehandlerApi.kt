@@ -6,7 +6,7 @@ import io.ktor.server.request.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import no.nav.syfo.log
+import no.nav.syfo.logger
 
 fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
     get("/behandler") {
@@ -14,7 +14,7 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
             call.request.header("behandlerFnr")
                 ?: run {
                     call.respond(HttpStatusCode.BadRequest, "Mangler header `behandlerFnr` med fnr")
-                    log.warn("Mottatt kall som mangler header behandlerFnr")
+                    logger.warn("Mottatt kall som mangler header behandlerFnr")
                     return@get
                 }
 
@@ -34,7 +34,7 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
                         HttpStatusCode.BadRequest,
                         "Mangler header `hprNummer` med HPR-nummer"
                     )
-                    log.warn("Mottatt kall som mangler header hprNummer")
+                    logger.warn("Mottatt kall som mangler header hprNummer")
                     return@get
                 }
 

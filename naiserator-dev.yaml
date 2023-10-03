@@ -27,8 +27,6 @@ spec:
     enabled: true
     path: /internal/prometheus
   resources:
-    limits:
-      memory: 2Gi
     requests:
       cpu: 100m
       memory: 512Mi
@@ -83,6 +81,8 @@ spec:
         - host: ws.test.nhn.no
   ingresses:
     - "https://syfohelsenettproxy.intern.dev.nav.no"
+  secureLogs:
+    enabled: true
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
