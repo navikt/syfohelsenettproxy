@@ -138,7 +138,7 @@ class HelsepersonellServiceSpek :
                     IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("MESSAGE")
                 val behandler = service.finnBehandler("fnr")
                 behandler shouldBeEqualTo getBehandler()
-                verify(exactly = 4) { mock.hentPersonMedPersonnummer(any(), any()) }
+                verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
                 verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
                 verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
                 verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
@@ -153,7 +153,7 @@ class HelsepersonellServiceSpek :
                     SOAPFaultException(mockk(relaxed = true))
                 val behandler = service.finnBehandler("fnr")
                 behandler shouldBeEqualTo getBehandler()
-                verify(exactly = 4) { mock.hentPersonMedPersonnummer(any(), any()) }
+                verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
                 verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
                 verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
                 verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }

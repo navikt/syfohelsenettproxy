@@ -1,13 +1,11 @@
 package no.nav.syfo.helsepersonell
 
-import java.io.IOException
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
-import no.nav.syfo.helpers.retry
 import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
 import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
 import no.nav.syfo.logger
@@ -35,34 +33,23 @@ class HelsepersonellService(
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
     private val HPR_NR_IKKE_OPPGITT = "ArgumentException: HPR-nummer må oppgis"
 
-    suspend fun finnBehandler(behandlersPersonnummer: String): Behandler? {
+    fun finnBehandler(behandlersPersonnummer: String): Behandler? {
         val fromRedis = helsepersonellRedis.getFromFnr(behandlersPersonnummer)
         if (fromRedis != null && shouldUseRedisModel(fromRedis)) {
             return fromRedis.behandler
         }
-        try {
-            return retry(
-                callName = "HentPersonMedPersonnummer",
-                retryIntervals = arrayOf(500L, 1000L, 300L),
-                legalExceptions =
-                    arrayOf(
-                        IOException::class,
-                        IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage::class,
-                        SOAPFaultException::class,
-                    ),
-            ) {
-                helsepersonellV1
-                    .hentPersonMedPersonnummer(
-                        behandlersPersonnummer,
-                        datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
-                    )
-                    .let { ws2Behandler(it) }
-                    .also {
-                        logger.info("Hentet behandler")
-                        securelog.info("Behandler objekt: $it")
-                        helsepersonellRedis.save(it)
-                    }
-            }
+        return try {
+            helsepersonellV1
+                .hentPersonMedPersonnummer(
+                    behandlersPersonnummer,
+                    datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
+                )
+                .let { ws2Behandler(it) }
+                .also {
+                    logger.info("Hentet behandler for personnummer")
+                    securelog.info("Hentet behandler for personnummer behandler objekt: $it")
+                    helsepersonellRedis.save(it)
+                }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
@@ -94,7 +81,7 @@ class HelsepersonellService(
                 .let { ws2Behandler(it) }
                 .also {
                     logger.info("Hentet behandler for HPR-nummer")
-                    securelog.info("Behandler objekt: $it")
+                    securelog.info("Hentet behandler for HPR-nummer behandler objekt: $it")
                     helsepersonellRedis.save(it)
                 }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {

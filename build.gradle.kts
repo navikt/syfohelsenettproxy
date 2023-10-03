@@ -109,8 +109,6 @@ dependencies {
     implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion"){
         exclude(group ="commons-collections", module = "commons-collections")
     }
-    implementation("no.nav.helse:syfosm-common-networking:$smCommonVersion")
-
     implementation("org.apache.commons:commons-text:$commonsTextVersion")
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
     implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
@@ -172,7 +170,11 @@ tasks {
 
     test {
         useJUnitPlatform {}
-        testLogging.showStandardStreams = true
+        testLogging {
+            events("skipped", "failed")
+            showStackTraces = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
 
     spotless {
