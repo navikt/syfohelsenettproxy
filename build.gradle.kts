@@ -6,36 +6,36 @@ version = "1.0.0"
 val coroutinesVersion = "1.7.3"
 val jacksonVersion = "2.15.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
-val jaxbRuntimeVersion = "2.4.0-b180830.0438"
-val kluentVersion = "1.72"
+val jaxbRuntimeVersion = "4.0.3"
+val kluentVersion = "1.73"
 val ktorVersion = "2.3.4"
-val logbackVersion = "1.4.8"
+val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
 val prometheusVersion = "0.16.0"
-val kotestVersion = "5.5.4"
-val cxfVersion = "3.5.5"
+val kotestVersion = "5.7.2"
+val cxfVersion = "4.0.3"
 val commonsTextVersion = "1.10.0"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
-val jaxwsToolsVersion = "2.3.2"
-val javaxJaxwsApiVersion = "2.2.1"
+val jaxwsToolsVersion = "4.0.1"
+val javaxJaxwsApiVersion = "2.3.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "1.0.14"
-val jedisVersion = "4.4.3"
-val testcontainersVersion = "1.17.6"
-val mockkVersion = "1.13.5"
-val nimbusdsVersion = "9.25.6"
+val smCommonVersion = "2.0.2"
+val jedisVersion = "5.0.1"
+val testcontainersVersion = "1.19.1"
+val mockkVersion = "1.13.8"
+val nimbusdsVersion = "9.35"
 val kotlinVersion = "1.9.10"
-val jaxbImplVersion = "2.3.3"
-val wsApiVersion = "2.3.3"
-val jakartaAnnotationApiVersion = "1.3.5"
+val jaxbImplVersion = "4.0.3"
+val wsApiVersion = "4.0.0"
+val jakartaAnnotationApiVersion = "2.1.1"
 val ktfmtVersion = "0.44"
 
 plugins {
     id("application")
-    id("io.mateo.cxf-codegen") version "1.0.2"
+    id("io.mateo.cxf-codegen") version "2.0.0"
     kotlin("jvm") version "1.9.10"
-    id("com.diffplug.spotless") version "6.21.0"
+    id("com.diffplug.spotless") version "6.22.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -49,9 +49,9 @@ application {
 buildscript {
     dependencies {
         classpath("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-        classpath("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
+        classpath("org.glassfish.jaxb:jaxb-runtime:4.0.3")
         classpath("com.sun.activation:javax.activation:1.2.0")
-        classpath("com.sun.xml.ws:jaxws-tools:2.3.1") {
+        classpath("com.sun.xml.ws:jaxws-tools:4.0.1") {
             exclude(group = "com.sun.xml.ws", module = "policy")
         }
     }
