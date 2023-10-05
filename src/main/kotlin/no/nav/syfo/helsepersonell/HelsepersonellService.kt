@@ -144,10 +144,6 @@ fun ws2Behandler(person: Person): Behandler =
             mellomnavn = person.mellomnavn,
             etternavn = person.etternavn,
         )
-        .also {
-            securelog.info("person objekt nin: ${person.nin}")
-            securelog.info("person objekt isManglerNIN: ${person.isManglerNIN}")
-        }
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
     Godkjenning(
