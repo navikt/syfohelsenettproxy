@@ -145,17 +145,8 @@ fun ws2Behandler(person: Person): Behandler =
             etternavn = person.etternavn,
         )
         .also {
-            securelog.info("person objekt isManglerNIN:  ${person.isManglerNIN}")
-            if (
-                person.alternativeIder != null &&
-                    !person.alternativeIder.alternativId.isNullOrEmpty()
-            ) {
-                securelog.info(
-                    "person objekt alternativId:  ${person.alternativeIder.alternativId.forEach {
-                        ("${it.id}: ${it.type}: ${it.verdi} ")
-                    }}"
-                )
-            }
+            securelog.info("person objekt nin: ${person.nin}")
+            securelog.info("person objekt isManglerNIN: ${person.isManglerNIN}")
         }
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
