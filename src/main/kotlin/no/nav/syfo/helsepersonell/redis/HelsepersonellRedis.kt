@@ -21,7 +21,7 @@ class HelsepersonellRedis(var jedisPool: JedisPool) {
                         objectMapper.writeValueAsString(jedisBehandlerModel)
                     )
                     when (behandler.fnr.isNullOrBlank()) {
-                        true -> logger.info("Behandler does not have fnr from hpr")
+                        true -> logger.warn("Behandler does not have fnr from hpr")
                         false -> jedis.set("fnr:${behandler.fnr}", "${behandler.hprNummer}")
                     }
                 }

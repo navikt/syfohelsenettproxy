@@ -143,7 +143,7 @@ fun ws2Behandler(person: Person): Behandler =
         fornavn = person.fornavn,
         mellomnavn = person.mellomnavn,
         etternavn = person.etternavn,
-    )
+    ).also { securelog.info("person objekt: $person") }
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
     Godkjenning(
