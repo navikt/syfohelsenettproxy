@@ -22,9 +22,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class BehandlerApiTest {
-    val wsMock = mockk<IHPR2Service>()
-    val redis = mockk<HelsepersonellRedis>()
-    val helsePersonService = HelsepersonellService(wsMock, redis)
+    private val wsMock = mockk<IHPR2Service>()
+    private val redis = mockk<HelsepersonellRedis>()
+    private val helsePersonService = HelsepersonellService(wsMock, redis)
 
     @BeforeEach
     fun beforeEach() {
@@ -87,7 +87,6 @@ internal class BehandlerApiTest {
         every { redis.save(any(), any()) } returns Unit
     }
 
-
     @Test
     internal fun `Helsepersonell gitt fnr finner behandlingskode paa behandler`() {
         with(TestApplicationEngine()) {
@@ -104,10 +103,7 @@ internal class BehandlerApiTest {
                     objectMapper.readValue(response.content!!, Behandler::class.java)
                 behandler.godkjenninger.size.shouldBeEqualTo(1)
                 behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
-                behandler.godkjenninger[0]
-                    .helsepersonellkategori
-                    ?.aktiv
-                    .shouldBeEqualTo(true)
+                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
                 behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
                 behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
 
@@ -182,10 +178,7 @@ internal class BehandlerApiTest {
                     objectMapper.readValue(response.content!!, Behandler::class.java)
                 behandler.godkjenninger.size.shouldBeEqualTo(1)
                 behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
-                behandler.godkjenninger[0]
-                    .helsepersonellkategori
-                    ?.aktiv
-                    .shouldBeEqualTo(true)
+                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
                 behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
                 behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
 
@@ -265,6 +258,4 @@ internal class BehandlerApiTest {
             }
         }
     }
-
-
 }

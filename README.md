@@ -6,7 +6,7 @@ REST-endepunkter som løser våre problemer, og holde ute datamodellene fra hels
 * Kotlin
 * Ktor
 * Gradle
-* Kotest
+* Junit
 * Jackson
 * SOAP
 * Docker

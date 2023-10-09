@@ -137,13 +137,13 @@ class HelsepersonellService(
 
 fun ws2Behandler(person: Person): Behandler =
     Behandler(
-            godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
-            fnr = person.nin,
-            hprNummer = person.hprNummer,
-            fornavn = person.fornavn,
-            mellomnavn = person.mellomnavn,
-            etternavn = person.etternavn,
-        )
+        godkjenninger = person.godkjenninger.godkjenning.map { ws2Godkjenning(it) },
+        fnr = person.nin,
+        hprNummer = person.hprNummer,
+        fornavn = person.fornavn,
+        mellomnavn = person.mellomnavn,
+        etternavn = person.etternavn,
+    )
 
 fun ws2Godkjenning(godkjenning: no.nhn.schemas.reg.hprv2.Godkjenning): Godkjenning =
     Godkjenning(
