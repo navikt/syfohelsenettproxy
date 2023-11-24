@@ -24,7 +24,7 @@ val jedisVersion = "5.1.0"
 val testcontainersVersion = "1.19.3"
 val mockkVersion = "1.13.8"
 val nimbusdsVersion = "9.37.1"
-val kotlinVersion = "1.9.20"
+val kotlinVersion = "1.9.21"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -35,7 +35,7 @@ val jsonVersion = "20231013"
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "1.9.20"
+    kotlin("jvm") version "1.9.21"
     id("com.diffplug.spotless") version "6.22.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
