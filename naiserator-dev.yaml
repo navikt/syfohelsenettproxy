@@ -76,6 +76,12 @@ spec:
         - application: btsys
           namespace: team-rocket
           cluster: dev-fss
+        - application: gosys-q2
+          namespace: isa
+          cluster: dev-fss
+        - application: gosys-q1
+          namespace: isa
+          cluster: dev-fss
     outbound:
       external:
         - host: ws.test.nhn.no
