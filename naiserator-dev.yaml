@@ -76,6 +76,12 @@ spec:
         - application: btsys
           namespace: team-rocket
           cluster: dev-fss
+        - application: journalforing-frontend-q2
+          namespace: isa
+          cluster: dev-gcp
+        - application: journalforing-frontend-q1
+          namespace: isa
+          cluster: dev-gcp
     outbound:
       external:
         - host: ws.test.nhn.no
