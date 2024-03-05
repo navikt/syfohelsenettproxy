@@ -24,7 +24,7 @@ class SykmelderService(private val helsepersonellService: HelsepersonellService)
 
         val erAktivSykmelder =
             aktiveGodkjenninger.any {
-                it.helsepersonellkategori?.verdi in listOf(LEGE, TANNLEGE, MANUELLTERAPEUT)
+                it.helsepersonellkategori?.verdi in listOf(LEGE, MANUELLTERAPEUT)
             } ||
                 aktiveGodkjenninger.any {
                     it.helsepersonellkategori?.verdi in listOf(FYSIO, KIROPRAKTOR) &&
