@@ -8,6 +8,9 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -16,8 +19,9 @@ import io.ktor.server.testing.TestApplicationEngine
 import java.nio.file.Paths
 import java.util.UUID
 import no.nav.syfo.Environment
-import no.nav.syfo.application.setupAuth
 import no.nav.syfo.helsepersonell.HelsepersonellException
+import no.nav.syfo.plugins.harTilgang
+import no.nav.syfo.plugins.unauthorized
 
 fun TestApplicationEngine.setUpTestApplication() {
     start(true)
@@ -47,13 +51,25 @@ fun TestApplicationEngine.setUpAuth(): Environment {
             helsepersonellv1EndpointURL = "http://url",
             clientIdV2 = "helsenett-clientId-v2",
             jwkKeysUrlV2 = "url",
-            jwtIssuerV2 = "https://sts.issuer.net/myidV2"
+            jwtIssuerV2 = "https://sts.issuer.net/myidV2",
+            tokenXWellKnownUrl = "http://url",
+            clientIdTokenX = "tokenx-clientId",
         )
 
     val path = "src/test/resources/jwkset.json"
     val uri = Paths.get(path).toUri().toURL()
     val jwkProvider = JwkProviderBuilder(uri).build()
 
-    application.setupAuth(env, jwkProvider)
+    application.install(Authentication) {
+        jwt(name = "servicebrukerAADv2") {
+            verifier(jwkProvider, env.jwtIssuerV2)
+            validate { credentials ->
+                when {
+                    harTilgang(credentials, env.clientIdV2) -> JWTPrincipal(credentials.payload)
+                    else -> unauthorized(credentials)
+                }
+            }
+        }
+    }
     return env
 }

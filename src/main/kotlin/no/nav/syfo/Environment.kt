@@ -6,7 +6,9 @@ data class Environment(
     val helsepersonellv1EndpointURL: String = getEnvVar("HELSEPERSONELL_V1_ENDPOINT_URL"),
     val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
     val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
-    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER")
+    val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
+    val tokenXWellKnownUrl: String = getEnvVar("TOKEN_X_WELL_KNOWN_URL"),
+    val clientIdTokenX: String = getEnvVar("TOKEN_X_CLIENT_ID"),
 )
 
 data class ServiceUser(

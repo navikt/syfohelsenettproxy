@@ -31,6 +31,7 @@ val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.10.2"
 val jsonVersion = "20240205"
+val koinVersion = "3.5.3"
 
 plugins {
     id("application")
@@ -41,7 +42,7 @@ plugins {
 }
 
 application {
-    mainClass.set("no.nav.syfo.BootstrapKt")
+    mainClass.set("no.nav.syfo.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -98,7 +99,9 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-
+    implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
@@ -132,6 +135,8 @@ dependencies {
             because("override transient from redis.clients:jedis")
         }
     }
+    implementation("io.insert-koin:koin-ktor:$koinVersion")
+    implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
@@ -171,7 +176,7 @@ tasks {
         manifest {
             attributes(
                 mapOf(
-                    "Main-Class" to "no.nav.syfo.BootstrapKt",
+                    "Main-Class" to "no.nav.syfo.ApplicationKt",
                 ),
             )
         }

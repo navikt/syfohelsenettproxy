@@ -43,6 +43,9 @@ spec:
         - application: syfosmmottak
           namespace: teamsykmelding
           cluster: prod-gcp
+        - application: statistikkforsykmelder-legacy
+          namespace: teamsykmelding
+          cluster: prod-gcp
         - application: syfosmregler
           namespace: teamsykmelding
           cluster: prod-gcp
@@ -79,6 +82,8 @@ spec:
   ingresses:
     - "https://syfohelsenettproxy.intern.nav.no"
   secureLogs:
+    enabled: true
+  tokenx:
     enabled: true
   envFrom:
     - secret: syfohelsenettproxy-secrets
