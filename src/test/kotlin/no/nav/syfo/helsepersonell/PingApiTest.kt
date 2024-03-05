@@ -38,7 +38,7 @@ internal class PingApiTest {
             setUpTestApplication()
             application.routing { registerPingApi(helsePersonService) }
             with(handleRequest(HttpMethod.Get, "/ping") { addHeader("requestId", "1") }) {
-                response.status()?.shouldBeEqualTo(io.ktor.http.HttpStatusCode.OK)
+                response.status()?.shouldBeEqualTo(HttpStatusCode.OK)
                 val pingResponse = response.content!!
 
                 pingResponse.shouldBeEqualTo("pong")

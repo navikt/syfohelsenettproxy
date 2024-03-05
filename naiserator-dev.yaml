@@ -89,6 +89,8 @@ spec:
     - "https://syfohelsenettproxy.intern.dev.nav.no"
   secureLogs:
     enabled: true
+  tokenx:
+    enabled: true
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
