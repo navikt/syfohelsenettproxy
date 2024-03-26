@@ -76,6 +76,9 @@ spec:
         - application: btsys
           namespace: team-rocket
           cluster: dev-fss
+        - application: btsys
+          namespace: team-rocket
+          cluster: dev-gcp
         - application: journalforing-frontend-q2
           namespace: isa
           cluster: dev-gcp
