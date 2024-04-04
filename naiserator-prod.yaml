@@ -76,7 +76,7 @@ spec:
         - application: btsys
           namespace: team-rocket
           cluster: prod-fss
-        - application: btsys
+        - application: btsys-api
           namespace: team-rocket
           cluster: prod-gcp
     outbound:
