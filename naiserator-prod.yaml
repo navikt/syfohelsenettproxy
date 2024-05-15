@@ -71,6 +71,9 @@ spec:
         - application: padm2
           namespace: teamsykefravr
           cluster: prod-gcp
+        - application: isdialogmelding
+          namespace: teamsykefravr
+          cluster: prod-gcp
         - application: hm-brille-api
           namespace: teamdigihot
           cluster: prod-gcp
