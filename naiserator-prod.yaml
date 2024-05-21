@@ -83,6 +83,9 @@ spec:
         - application: btsys-api
           namespace: team-rocket
           cluster: prod-gcp
+        - application: journalforing-frontend
+          namespace: isa
+          cluster: prod-gcp
     outbound:
       external:
         - host: ws.nhn.no
