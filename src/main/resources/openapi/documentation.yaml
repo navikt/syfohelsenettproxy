@@ -1,0 +1,246 @@
+openapi: "3.1.0"
+info:
+  title: "syfohelsenettproxy API"
+  description: "syfohelsenettproxy API"
+  version: "1.0.0"
+servers:
+  - url: "https://syfohelsenettproxy.intern.dev.nav.no"
+    description: dev server
+  - url: "https://syfohelsenettproxy.intern.nav.no"
+    description: prod server
+paths:
+  /internal/is_alive:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm alive! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm dead x_x"
+  /internal/is_ready:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm ready! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Please wait! I'm not ready :("
+  /internal/prometheus:
+    get:
+      description: ""
+      parameters:
+      - name: "name[]"
+        in: "query"
+        required: false
+        schema:
+          type: "array"
+          items:
+            type: "string"
+  /api/v2/behandler:
+    get:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Mangler header `behandlerFnr` med fnr"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Fant ikke behandler"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Behandler"
+  /api/v2/behandlerMedHprNummer:
+    get:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Mangler header `hprNummer` med HPR-nummer"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Fant ikke behandler fra HPR-nummer"
+                Example#2:
+                  value: "Fant ikke behandler"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Behandler"
+  /api/v2/ping:
+    get:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Mangler header `requestId`"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Ping svarte ikkje"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+  /rest/v1/hentperson:
+    get:
+      description: ""
+      responses:
+        "401":
+          description: "Unauthorized"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "No principal"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Person"
+components:
+  schemas:
+    Kode:
+      type: "object"
+      properties:
+        aktiv:
+          type: "boolean"
+        oid:
+          type: "integer"
+          format: "int32"
+        verdi:
+          type: "string"
+    Periode:
+      type: "object"
+      properties:
+        fra:
+          type: "string"
+          format: "date-time"
+        til:
+          type: "string"
+          format: "date-time"
+    Tilleggskompetanse:
+      type: "object"
+      properties:
+        avsluttetStatus:
+          $ref: "#/components/schemas/Kode"
+        eTag:
+          type: "string"
+        gyldig:
+          $ref: "#/components/schemas/Periode"
+        id:
+          type: "integer"
+          format: "int32"
+        type:
+          $ref: "#/components/schemas/Kode"
+    Godkjenning:
+      type: "object"
+      properties:
+        helsepersonellkategori:
+          $ref: "#/components/schemas/Kode"
+        autorisasjon:
+          $ref: "#/components/schemas/Kode"
+        tillegskompetanse:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Tilleggskompetanse"
+    Behandler:
+      type: "object"
+      properties:
+        godkjenninger:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Godkjenning"
+        fnr:
+          type: "string"
+        hprNummer:
+          type: "integer"
+          format: "int32"
+        fornavn:
+          type: "string"
+        mellomnavn:
+          type: "string"
+        etternavn:
+          type: "string"
+      required:
+      - "godkjenninger"
+    Person:
+      type: "object"
+      properties:
+        erSykmelder:
+          type: "boolean"
+        navn:
+          type: "string"
+      required:
+      - "navn"
