@@ -6,64 +6,7 @@ info:
 servers:
   - url: "https://syfohelsenettproxy.intern.dev.nav.no"
     description: dev server
-  - url: "https://syfohelsenettproxy.intern.nav.no"
-    description: prod server
 paths:
-  /internal/is_alive:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            text/plain:
-              schema:
-                type: "string"
-              examples:
-                Example#1:
-                  value: "I'm alive! :)"
-        "500":
-          description: "Internal Server Error"
-          content:
-            text/plain:
-              schema:
-                type: "string"
-              examples:
-                Example#1:
-                  value: "I'm dead x_x"
-  /internal/is_ready:
-    get:
-      description: ""
-      responses:
-        "200":
-          description: "OK"
-          content:
-            text/plain:
-              schema:
-                type: "string"
-              examples:
-                Example#1:
-                  value: "I'm ready! :)"
-        "500":
-          description: "Internal Server Error"
-          content:
-            text/plain:
-              schema:
-                type: "string"
-              examples:
-                Example#1:
-                  value: "Please wait! I'm not ready :("
-  /internal/prometheus:
-    get:
-      description: ""
-      parameters:
-      - name: "name[]"
-        in: "query"
-        required: false
-        schema:
-          type: "array"
-          items:
-            type: "string"
   /api/v2/behandler:
     get:
       description: ""
