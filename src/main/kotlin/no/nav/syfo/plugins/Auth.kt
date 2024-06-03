@@ -52,6 +52,7 @@ fun Application.configureAuth() {
                             principal = principal,
                         )
                     }
+
                     else -> unauthorized(credentials)
                 }
             }
@@ -71,7 +72,7 @@ fun Application.configureAuth() {
 fun finnFnrFraToken(principal: JWTPrincipal): String {
     return if (
         principal.payload.getClaim("pid") != null &&
-            !principal.payload.getClaim("pid").asString().isNullOrEmpty()
+        !principal.payload.getClaim("pid").asString().isNullOrEmpty()
     ) {
         logger.debug("Bruker fnr fra pid-claim")
         principal.payload.getClaim("pid").asString()
@@ -132,15 +133,15 @@ fun getTokenXAuthConfig(env: Environment): AuthConfiguration {
 
 fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     val appid: String = credentials.payload.getClaim("azp").asString()
-    no.nav.syfo.logger.debug("authorization attempt for $appid")
+    logger.info("authorization attempt for $appid")
     return credentials.payload.audience.contains(clientId)
 }
 
 fun unauthorized(credentials: JWTCredential): Principal? {
-    no.nav.syfo.logger.warn(
-        "Auth: Unexpected audience for jwt {}, {}",
-        StructuredArguments.keyValue("issuer", credentials.payload.issuer),
-        StructuredArguments.keyValue("audience", credentials.payload.audience)
+    logger.warn(
+            "Auth: Unexpected audience for jwt {}, {}",
+            StructuredArguments.keyValue("issuer", credentials.payload.issuer),
+            StructuredArguments.keyValue("audience", credentials.payload.audience),
     )
     return null
 }
