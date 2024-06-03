@@ -22,7 +22,8 @@ import io.ktor.server.auth.Principal
 import io.ktor.server.auth.jwt.JWTCredential
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
-import java.net.URL
+import java.net.URI
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import net.logstash.logback.argument.StructuredArguments
@@ -52,7 +53,6 @@ fun Application.configureAuth() {
                             principal = principal,
                         )
                     }
-
                     else -> unauthorized(credentials)
                 }
             }
@@ -72,7 +72,7 @@ fun Application.configureAuth() {
 fun finnFnrFraToken(principal: JWTPrincipal): String {
     return if (
         principal.payload.getClaim("pid") != null &&
-        !principal.payload.getClaim("pid").asString().isNullOrEmpty()
+            !principal.payload.getClaim("pid").asString().isNullOrEmpty()
     ) {
         logger.debug("Bruker fnr fra pid-claim")
         principal.payload.getClaim("pid").asString()
@@ -103,8 +103,8 @@ class AuthConfiguration(
 
 fun getAadAuthConfig(env: Environment): AuthConfiguration {
     val jwkProviderAadV2 =
-        JwkProviderBuilder(URL(env.jwkKeysUrlV2))
-            .cached(10, 24, TimeUnit.HOURS)
+        JwkProviderBuilder(URI.create(env.jwkKeysUrlV2).toURL())
+            .cached(10, Duration.ofHours(24))
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
 
@@ -118,8 +118,8 @@ fun getAadAuthConfig(env: Environment): AuthConfiguration {
 fun getTokenXAuthConfig(env: Environment): AuthConfiguration {
     val wellKnown = getWellKnownTokenX(env.tokenXWellKnownUrl)
     val jwkProviderTokenX =
-        JwkProviderBuilder(URL(wellKnown.jwks_uri))
-            .cached(10, 24, TimeUnit.HOURS)
+        JwkProviderBuilder(URI.create(wellKnown.jwks_uri).toURL())
+            .cached(10, Duration.ofHours(24))
             .rateLimited(10, 1, TimeUnit.MINUTES)
             .build()
     val tokenXIssuer = wellKnown.issuer
@@ -139,9 +139,9 @@ fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
 
 fun unauthorized(credentials: JWTCredential): Principal? {
     logger.warn(
-            "Auth: Unexpected audience for jwt {}, {}",
-            StructuredArguments.keyValue("issuer", credentials.payload.issuer),
-            StructuredArguments.keyValue("audience", credentials.payload.audience),
+        "Auth: Unexpected audience for jwt {}, {}",
+        StructuredArguments.keyValue("issuer", credentials.payload.issuer),
+        StructuredArguments.keyValue("audience", credentials.payload.audience),
     )
     return null
 }

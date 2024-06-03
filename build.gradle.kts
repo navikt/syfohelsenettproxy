@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "no.nav.syfo"
 version = "1.0.0"
@@ -32,6 +33,7 @@ val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.10.2"
 val jsonVersion = "20240303"
 val koinVersion = "3.5.6"
+val javaVersion = JvmTarget.JVM_21
 
 plugins {
     id("application")
@@ -151,6 +153,11 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+kotlin {
+    compilerOptions {
+        jvmTarget = javaVersion
+    }
+}
 
 tasks {
 
