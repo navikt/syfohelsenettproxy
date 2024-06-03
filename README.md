@@ -80,6 +80,10 @@ Finn nyeste versjon av gradle her: https://gradle.org/releases/
 ./gradlew wrapper --gradle-version $gradleVersjon
 ```
 
+#### Api doc
+https://syfohelsenettproxy.intern.dev.nav.no:8080/swagger
+
+
 ## Henvendelser
 Dette prosjeket er vedlikeholdt av [navikt/teamsykmelding](CODEOWNERS)
 

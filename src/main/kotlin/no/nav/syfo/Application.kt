@@ -15,6 +15,7 @@ import no.nav.syfo.plugins.configureContentNegotiation
 import no.nav.syfo.plugins.configureModules
 import no.nav.syfo.plugins.configureNaisThings
 import no.nav.syfo.plugins.configureRouting
+import no.nav.syfo.plugins.configureSwagger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -42,4 +43,5 @@ fun Application.module() {
     configureAuth()
     configureNaisThings()
     configureRouting()
+    configureSwagger()
 }
