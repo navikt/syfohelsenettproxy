@@ -81,7 +81,7 @@ Finn nyeste versjon av gradle her: https://gradle.org/releases/
 ```
 
 #### Api doc
-https://syfohelsenettproxy.intern.dev.nav.no:8080/swagger
+https://syfohelsenettproxy.intern.dev.nav.no/openapi
 
 
 ## Henvendelser

@@ -6,5 +6,5 @@ import io.ktor.server.routing.routing
 
 fun Application.configureSwagger() {
 
-    routing { swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml") }
+    routing { swaggerUI(path = "openapi", swaggerFile = "openapi/documentation.yaml") }
 }
