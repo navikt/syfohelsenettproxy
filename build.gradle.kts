@@ -33,6 +33,7 @@ val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.10.3"
 val jsonVersion = "20240303"
 val koinVersion = "3.5.6"
+val commonsCompressVersion = "1.26.2"
 val javaVersion = JvmTarget.JVM_21
 
 plugins {
@@ -147,6 +148,11 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+    constraints {
+        implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
+            because("Due to vulnerabilities, see CVE-2024-26308")
+        }
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
