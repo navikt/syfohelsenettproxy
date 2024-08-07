@@ -70,7 +70,7 @@ spec:
         - application: pale-2-sak
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: teamsykmelding-mock-backend
+        - application: teamsykmelding-mock
           namespace: teamsykmelding
           cluster: dev-gcp
         - application: btsys
