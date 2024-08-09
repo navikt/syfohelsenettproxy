@@ -33,7 +33,7 @@ val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.10.3"
 val jsonVersion = "20240303"
 val koinVersion = "3.5.6"
-val commonsCompressVersion = "1.26.2"
+val commonsCompressVersion = "1.27.0"
 val javaVersion = JvmTarget.JVM_21
 
 plugins {
