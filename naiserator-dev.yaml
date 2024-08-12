@@ -89,6 +89,9 @@ spec:
         - application: journalforing-frontend-q1
           namespace: isa
           cluster: dev-gcp
+        - application: helse-arbeidsforhold-standalone
+          namespace: tsm
+          cluster: dev-gcp
     outbound:
       external:
         - host: ws.test.nhn.no
