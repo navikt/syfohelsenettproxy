@@ -20,7 +20,6 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val smCommonVersion = "2.0.8"
 val jedisVersion = "5.1.4"
 val testcontainersVersion = "1.20.1"
 val mockkVersion = "1.13.12"
@@ -115,9 +114,7 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
-    implementation("no.nav.helse:syfosm-common-ws:$smCommonVersion"){
-        exclude(group ="commons-collections", module = "commons-collections")
-    }
+
     implementation("org.apache.commons:commons-text:$commonsTextVersion")
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
     implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
