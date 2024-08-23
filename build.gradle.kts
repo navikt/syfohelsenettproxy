@@ -20,11 +20,11 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val jedisVersion = "5.1.4"
+val jedisVersion = "5.1.5"
 val testcontainersVersion = "1.20.1"
 val mockkVersion = "1.13.12"
 val nimbusdsVersion = "9.40"
-val kotlinVersion = "2.0.10"
+val kotlinVersion = "2.0.20"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -38,7 +38,7 @@ val javaVersion = JvmTarget.JVM_21
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "2.0.10"
+    kotlin("jvm") version "2.0.20"
     id("com.diffplug.spotless") version "6.25.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
