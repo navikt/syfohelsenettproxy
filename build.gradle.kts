@@ -23,7 +23,7 @@ val javaxActivationVersion = "1.1.1"
 val jedisVersion = "5.1.5"
 val testcontainersVersion = "1.20.1"
 val mockkVersion = "1.13.12"
-val nimbusdsVersion = "9.40"
+val nimbusdsVersion = "9.41"
 val kotlinVersion = "2.0.20"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
@@ -40,7 +40,7 @@ plugins {
     id("io.mateo.cxf-codegen") version "1.0.2"
     kotlin("jvm") version "2.0.20"
     id("com.diffplug.spotless") version "6.25.0"
-    id("com.gradleup.shadow") version "8.3.0"
+    id("com.gradleup.shadow") version "8.3.1"
 }
 
 application {
