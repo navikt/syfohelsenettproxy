@@ -54,6 +54,7 @@ fun TestApplicationEngine.setUpAuth(): Environment {
             jwtIssuerV2 = "https://sts.issuer.net/myidV2",
             tokenXWellKnownUrl = "http://url",
             clientIdTokenX = "tokenx-clientId",
+            fastlegeinformasjonv2EndpointURL = "http://url",
         )
 
     val path = "src/test/resources/jwkset.json"

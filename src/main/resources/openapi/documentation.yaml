@@ -1,4 +1,4 @@
-openapi: "3.0.0"
+openapi: "3.1.0"
 info:
   title: "syfohelsenettproxy API"
   description: "syfohelsenettproxy API"
@@ -7,6 +7,61 @@ servers:
   - url: "https://syfohelsenettproxy.intern.dev.nav.no"
     description: dev server
 paths:
+  /internal/is_alive:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm alive! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm dead x_x"
+  /internal/is_ready:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "I'm ready! :)"
+        "500":
+          description: "Internal Server Error"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Please wait! I'm not ready :("
+  /internal/prometheus:
+    get:
+      description: ""
+      parameters:
+      - name: "name[]"
+        in: "query"
+        required: false
+        schema:
+          type: "array"
+          items:
+            type: "string"
   /api/v2/behandler:
     get:
       description: ""
@@ -65,6 +120,25 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Behandler"
+  /api/v2/fastlegeinformasjon:
+    get:
+      description: ""
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Mangler header `kommunenr` med kommunenr"
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ExportGPContracts"
   /api/v2/ping:
     get:
       description: ""
@@ -178,6 +252,16 @@ components:
           type: "string"
       required:
       - "godkjenninger"
+    ExportGPContracts:
+      type: "object"
+      properties:
+        exportGPContractsResult:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+      required:
+      - "exportGPContractsResult"
     Person:
       type: "object"
       properties:
