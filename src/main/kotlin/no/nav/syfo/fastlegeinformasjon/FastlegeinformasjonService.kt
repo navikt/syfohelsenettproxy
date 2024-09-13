@@ -7,7 +7,6 @@ import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
-import no.nhn.schemas.reg.flr.FlrExportService
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
 import org.apache.cxf.binding.soap.SoapMessage

@@ -60,11 +60,12 @@ val fastlegeinformasjonModule = module {
     single {
         val env = get<Environment>()
         val serviceUser = get<ServiceUser>()
-        val operation = fastlegeinformasjonV2(
-            env.fastlegeinformasjonv2EndpointURL,
-            serviceUser.serviceuserUsername,
-            serviceUser.serviceuserPassword,
-        )
+        val operation =
+            fastlegeinformasjonV2(
+                env.fastlegeinformasjonv2EndpointURL,
+                serviceUser.serviceuserUsername,
+                serviceUser.serviceuserPassword,
+            )
         FastlegeinformasjonService(operation)
     }
 }
