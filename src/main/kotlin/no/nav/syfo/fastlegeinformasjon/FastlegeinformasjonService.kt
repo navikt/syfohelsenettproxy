@@ -79,7 +79,7 @@ fun fastlegeinformasjonV2(
     serviceuserUsername: String,
     serviceuserPassword: String
 ) =
-    createPort<FlrExportService>(endpointUrl) {
+    createPort<IFlrExportOperations>(endpointUrl) {
         proxy {
             // TODO: Contact someone about this hacky workaround
             // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
