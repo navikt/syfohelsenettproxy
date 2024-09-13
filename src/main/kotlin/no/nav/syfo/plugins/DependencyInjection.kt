@@ -64,7 +64,7 @@ val fastlegeinformasjonModule = module {
             env.fastlegeinformasjonv2EndpointURL,
             serviceUser.serviceuserUsername,
             serviceUser.serviceuserPassword,
-        ).basicHttpBindingIFlrExportOperations
+        )
         FastlegeinformasjonService(operation)
     }
 }
