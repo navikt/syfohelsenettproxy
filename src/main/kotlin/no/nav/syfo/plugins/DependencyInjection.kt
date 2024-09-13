@@ -60,12 +60,12 @@ val fastlegeinformasjonModule = module {
     single {
         val env = get<Environment>()
         val serviceUser = get<ServiceUser>()
-        fastlegeinformasjonV2(
+        val operation = fastlegeinformasjonV2(
             env.fastlegeinformasjonv2EndpointURL,
             serviceUser.serviceuserUsername,
             serviceUser.serviceuserPassword,
-        )
+        ).basicHttpBindingIFlrExportOperations
+        FastlegeinformasjonService(operation)
     }
-    single { FastlegeinformasjonService(get()) }
 }
 val sfsModule = module { single { SykmelderService(get()) } }
