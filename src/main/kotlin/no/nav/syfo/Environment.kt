@@ -4,6 +4,7 @@ data class Environment(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "syfohelsenettproxy"),
     val helsepersonellv1EndpointURL: String = getEnvVar("HELSEPERSONELL_V1_ENDPOINT_URL"),
+    val fastlegeinformasjonv2EndpointURL: String = getEnvVar("FASTLEGEINFORMASJON_V2_ENDPOINT_URL"),
     val clientIdV2: String = getEnvVar("AZURE_APP_CLIENT_ID"),
     val jwkKeysUrlV2: String = getEnvVar("AZURE_OPENID_CONFIG_JWKS_URI"),
     val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),

@@ -98,3 +98,5 @@ spec:
   env:
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://ws.nhn.no/v2/HPR/Basic
+    - name: FASTLEGEINFORMASJON_V2_ENDPOINT_URL
+      value: https://ws.nhn.no/v2/flrexport
