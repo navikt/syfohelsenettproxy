@@ -31,7 +31,7 @@ val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.11.0"
 val jsonVersion = "20240303"
-val koinVersion = "3.5.6"
+val koinVersion = "4.0.0"
 val commonsCompressVersion = "1.27.1"
 val javaVersion = JvmTarget.JVM_21
 
