@@ -52,6 +52,10 @@ Finn nyeste versjon av gradle her: https://gradle.org/releases/
 #### Api dokumtentasjon
 https://syfohelsenettproxy.intern.dev.nav.no/openapi
 
+#### NHN sin dokumentasjon av soap grensesnitt
+ - Flrexport: https://register-web.test.nhn.no/docs/api/NHN.DtoContracts.Flr.Service.IFlrExportOperations.html
+ - HPR: https://register-web.test.nhn.no/docs/api/NHN.Palantir.WebServices.Contracts.HPRv2.Service.IHPR2Service.html
+
 ## Henvendelser
 Dette prosjeket er vedlikeholdt av [navikt/teamsykmelding](CODEOWNERS)
 
