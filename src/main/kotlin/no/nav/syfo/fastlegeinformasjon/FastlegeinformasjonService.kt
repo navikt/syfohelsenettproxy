@@ -17,7 +17,7 @@ class FastlegeinformasjonService(
     private val fastlegeInformsjonOperations: IFlrExportOperations,
 ) {
 
-    fun hentFastlegeinformasjon(kommuneNr: String): ExportGPContracts {
+    fun hentFastlegeinformasjonExport(kommuneNr: String): ByteArray {
 
         val contractsQueryParameters: ContractsQueryParameters =
             createContractsQueryParameters(
@@ -25,17 +25,20 @@ class FastlegeinformasjonService(
             )
 
         return try {
-            fastlegeInformsjonOperations
-                .exportGPContracts(contractsQueryParameters)
-                .let { ws2ExportGPContracts(it) }
-                .also {
-                    logger.info("Hentet fastlegeinformasjon for kommunenr: $kommuneNr")
-                }
+            fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters).also {
+                logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommuneNr")
+            }
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
             logger.error("Helsenett gir ein generisk feilmelding: {}", e.message)
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
             logger.error("Helsenett gir feilmelding: {}", e.message)
+            throw FastlegeinformasjonException(message = e.message, cause = e.cause)
+        } catch (e: Exception) {
+            logger.error(
+                "Generel feil oppstod i hentet exportGPContracts feilmelding: {}",
+                e.message
+            )
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         }
     }
@@ -56,14 +59,7 @@ class FastlegeinformasjonService(
 
         return contractsQueryParameters
     }
-
-    private fun ws2ExportGPContracts(exportGPContractsResponse: ByteArray): ExportGPContracts =
-        ExportGPContracts(
-            exportGPContractsResult = exportGPContractsResponse,
-        )
 }
-
-data class ExportGPContracts(val exportGPContractsResult: ByteArray)
 
 fun fastlegeinformasjonV2(
     endpointUrl: String,

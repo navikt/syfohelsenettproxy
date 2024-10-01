@@ -74,10 +74,10 @@ fun finnFnrFraToken(principal: JWTPrincipal): String {
         principal.payload.getClaim("pid") != null &&
             !principal.payload.getClaim("pid").asString().isNullOrEmpty()
     ) {
-        logger.debug("Bruker fnr fra pid-claim")
+        logger.info("Bruker fnr fra pid-claim")
         principal.payload.getClaim("pid").asString()
     } else {
-        logger.debug("Bruker fnr fra subject")
+        logger.info("Bruker fnr fra subject")
         principal.payload.subject
     }
 }

@@ -21,8 +21,9 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                     return@get
                 }
 
-        val fastlegeinformasjon = fastlegeinformasjonService.hentFastlegeinformasjon(kommunenr)
+        val fastlegeinformasjonexport =
+            fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
-        call.respond(fastlegeinformasjon)
+        call.respond(fastlegeinformasjonexport)
     }
 }
