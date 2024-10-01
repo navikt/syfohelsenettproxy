@@ -7,7 +7,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import no.nav.syfo.logger
-import no.nav.syfo.securelog
 
 fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: FastlegeinformasjonService) {
     get("/fastlegeinformasjon") {
@@ -23,7 +22,6 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                 }
 
         val fastlegeinformasjon = fastlegeinformasjonService.hentFastlegeinformasjon(kommunenr)
-        securelog.info("fastlegeinformasjon is: ${fastlegeinformasjon.exportGPContractsResult}")
 
         call.respond(fastlegeinformasjon)
     }

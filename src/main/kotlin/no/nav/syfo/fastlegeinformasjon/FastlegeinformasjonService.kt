@@ -2,7 +2,6 @@ package no.nav.syfo.fastlegeinformasjon
 
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
-import no.nav.syfo.securelog
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
@@ -28,7 +27,6 @@ class FastlegeinformasjonService(
                 .let { ws2ExportGPContracts(it) }
                 .also {
                     logger.info("Hentet fastlegeinformasjon for kommunenr: $kommuneNr")
-                    securelog.info("Hentet fastlegeinformasjon for kommunenr object: $it")
                 }
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
             logger.error("Helsenett gir ein generisk feilmelding: {}", e.message)
