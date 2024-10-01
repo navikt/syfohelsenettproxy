@@ -22,8 +22,6 @@ class FastlegeinformasjonService(
 
         val contractsQueryParameters: ContractsQueryParameters =
             createContractsQueryParameters(
-                historicalData = false,
-                fullPersonInfo = false,
                 kommuneNr = kommuneNr,
             )
 
@@ -44,11 +42,7 @@ class FastlegeinformasjonService(
         }
     }
 
-    private fun createContractsQueryParameters(
-        historicalData: Boolean,
-        fullPersonInfo: Boolean,
-        kommuneNr: String
-    ): ContractsQueryParameters {
+    private fun createContractsQueryParameters(kommuneNr: String): ContractsQueryParameters {
 
         val kode = Code()
         kode.codeValue = kommuneNr
@@ -58,8 +52,8 @@ class FastlegeinformasjonService(
         arrayOfCode.code.add(kode)
 
         val contractsQueryParameters = ContractsQueryParameters()
-        contractsQueryParameters.isGetFullPersonInfo = historicalData
-        contractsQueryParameters.isGetHistoricalData = fullPersonInfo
+        contractsQueryParameters.isGetFullPersonInfo = false
+        contractsQueryParameters.isGetHistoricalData = false
         contractsQueryParameters.municipalities = arrayOfCode
 
         return contractsQueryParameters
