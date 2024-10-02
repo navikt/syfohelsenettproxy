@@ -32,7 +32,6 @@ import no.nav.syfo.application.metrics.AUTH_AZP_APP_ID
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
-import kotlin.inc
 
 private val logger = LoggerFactory.getLogger("Application.configureAuth")
 

@@ -49,14 +49,10 @@ internal class TimeoutFeature(private val timeout: Long) : AbstractFeature() {
     override fun initialize(client: Client, bus: Bus) {
         val conduit = client.conduit
         if (conduit is HTTPConduit) {
-            val policy = HTTPClientPolicy().apply {
-                receiveTimeout = this@TimeoutFeature.timeout
-            }
+            val policy = HTTPClientPolicy().apply { receiveTimeout = this@TimeoutFeature.timeout }
             conduit.client = policy
         }
 
         super.initialize(client, bus)
     }
 }
-
-

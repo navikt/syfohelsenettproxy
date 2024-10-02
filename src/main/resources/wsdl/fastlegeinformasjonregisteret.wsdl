@@ -4,18 +4,45 @@
 				  xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
 				  xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex"
 				  xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy"
-				  xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:i0="urn:notused"
-				  xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+				  xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract"
+				  xmlns:i0="urn:notused" xmlns:wsp="http://www.w3.org/ns/ws-policy"
+				  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 				  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
 				  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
 				  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
-				  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://schemas.nhn.no/reg/flr"
+				  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+				  xmlns:tns="http://schemas.nhn.no/reg/flr"
 				  xmlns:wsa10="http://www.w3.org/2005/08/addressing"
 				  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
 				  xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
-				  xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-				  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				  xsi:schemaLocation="http://www.w3.org/2007/05/addressing/metadata ">
+				  xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+	<wsp:Policy wsu:Id="BasicHttpBinding_IFlrExportOperations_policy">
+		<wsp:ExactlyOne>
+			<wsp:All>
+				<wsoma:OptimizedMimeSerialization xmlns:wsoma="http://schemas.xmlsoap.org/ws/2004/09/policy/optimizedmimeserialization"/>
+				<http:BasicAuthentication xmlns:http="http://schemas.microsoft.com/ws/06/2004/policy/http"/>
+				<sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+					<wsp:Policy>
+						<sp:TransportToken>
+							<wsp:Policy>
+								<sp:HttpsToken RequireClientCertificate="false"/>
+							</wsp:Policy>
+						</sp:TransportToken>
+						<sp:AlgorithmSuite>
+							<wsp:Policy>
+								<sp:Basic256/>
+							</wsp:Policy>
+						</sp:AlgorithmSuite>
+						<sp:Layout>
+							<wsp:Policy>
+								<sp:Strict/>
+							</wsp:Policy>
+						</sp:Layout>
+					</wsp:Policy>
+				</sp:TransportBinding>
+			</wsp:All>
+		</wsp:ExactlyOne>
+	</wsp:Policy>
 	<wsdl:types>
 		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.nhn.no/reg/flr"
 				   xmlns:xs="http://www.w3.org/2001/XMLSchema">
@@ -135,17 +162,13 @@
 	</wsdl:message>
 	<wsdl:portType name="IFlrExportOperations">
 		<wsdl:operation name="ExportGPContracts">
-			<wsdl:input wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContracts"
-						message="tns:IFlrExportOperations_ExportGPContracts_InputMessage"/>
-			<wsdl:output wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContractsResponse"
-						 message="tns:IFlrExportOperations_ExportGPContracts_OutputMessage"/>
-			<wsdl:fault
-					wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContractsGenericFaultFault"
-					name="GenericFaultFault"
-					message="tns:IFlrExportOperations_ExportGPContracts_GenericFaultFault_FaultMessage"/>
+			<wsdl:input wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContracts" message="tns:IFlrExportOperations_ExportGPContracts_InputMessage"/>
+			<wsdl:output wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContractsResponse" message="tns:IFlrExportOperations_ExportGPContracts_OutputMessage"/>
+			<wsdl:fault wsam:Action="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContractsGenericFaultFault" name="GenericFaultFault" message="tns:IFlrExportOperations_ExportGPContracts_GenericFaultFault_FaultMessage"/>
 		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="BasicHttpBinding_IFlrExportOperations" type="tns:IFlrExportOperations">
+		<wsp:PolicyReference URI="#BasicHttpBinding_IFlrExportOperations_policy"/>
 		<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
 		<wsdl:operation name="ExportGPContracts">
 			<soap:operation soapAction="http://schemas.nhn.no/reg/flr/IFlrExportOperations/ExportGPContracts"
@@ -163,7 +186,7 @@
 	</wsdl:binding>
 	<wsdl:service name="FlrExportService">
 		<wsdl:port name="BasicHttpBinding_IFlrExportOperations" binding="tns:BasicHttpBinding_IFlrExportOperations">
-			<soap:address location="https://ws-web.test.nhn.no/v2/flrexport"/>
+			<soap:address location="https://register-at.test.nhn.no/v2/flrexport"/>
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>
