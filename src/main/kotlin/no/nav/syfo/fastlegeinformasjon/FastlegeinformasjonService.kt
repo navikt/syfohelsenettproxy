@@ -2,16 +2,14 @@ package no.nav.syfo.fastlegeinformasjon
 
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
+import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
-import org.apache.cxf.binding.soap.SoapMessage
-import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
-import org.apache.cxf.message.Message
-import org.apache.cxf.phase.Phase
+import org.apache.cxf.ws.addressing.WSAddressingFeature
 
 class FastlegeinformasjonService(
     private val fastlegeInformsjonOperations: IFlrExportOperations,
@@ -68,20 +66,10 @@ fun fastlegeinformasjonV2(
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
         proxy {
-            // TODO: Contact someone about this hacky workaround
-            // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
-            // payload
-            val interceptor =
-                object : AbstractSoapInterceptor(Phase.RECEIVE) {
-                    override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) {
-                            message[Message.ENCODING] = "utf-8"
-                        }
-                    }
-                }
-            inInterceptors.add(interceptor)
-            inFaultInterceptors.add(interceptor)
+            features.add(WSAddressingFeature())
+            features.add(TimeoutFeature(1000*60*5))
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
+
