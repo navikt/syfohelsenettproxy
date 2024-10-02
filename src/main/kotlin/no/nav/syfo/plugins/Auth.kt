@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.Environment
+import no.nav.syfo.application.metrics.AUTH_AZP_APP_ID
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
@@ -74,10 +75,10 @@ fun finnFnrFraToken(principal: JWTPrincipal): String {
         principal.payload.getClaim("pid") != null &&
             !principal.payload.getClaim("pid").asString().isNullOrEmpty()
     ) {
-        logger.debug("Bruker fnr fra pid-claim")
+        logger.info("Bruker fnr fra pid-claim")
         principal.payload.getClaim("pid").asString()
     } else {
-        logger.debug("Bruker fnr fra subject")
+        logger.info("Bruker fnr fra subject")
         principal.payload.subject
     }
 }
@@ -133,7 +134,7 @@ fun getTokenXAuthConfig(env: Environment): AuthConfiguration {
 
 fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     val appid: String = credentials.payload.getClaim("azp").asString()
-    logger.info("authorization attempt for $appid")
+    AUTH_AZP_APP_ID.labels(appid).inc()
     return credentials.payload.audience.contains(clientId)
 }
 

@@ -138,7 +138,10 @@ paths:
           content:
             '*/*':
               schema:
-                $ref: "#/components/schemas/ExportGPContracts"
+                type: "array"
+                items:
+                  type: "string"
+                  format: "byte"
   /api/v2/ping:
     get:
       description: ""
@@ -252,16 +255,6 @@ components:
           type: "string"
       required:
       - "godkjenninger"
-    ExportGPContracts:
-      type: "object"
-      properties:
-        exportGPContractsResult:
-          type: "array"
-          items:
-            type: "string"
-            format: "byte"
-      required:
-      - "exportGPContractsResult"
     Person:
       type: "object"
       properties:
