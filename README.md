@@ -23,7 +23,7 @@ java -version
 Dette er det eit oversiktsbilde av flyten i applikasjonen
 ```mermaid
   flowchart LR
-  
+      syfohelsenettproxy <-- API --> random-application
       syfohelsenettproxy <---> azure-ad
       syfohelsenettproxy <--> redis
       syfohelsenettproxy <--> nhn;
