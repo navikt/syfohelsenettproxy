@@ -2,7 +2,6 @@ package no.nav.syfo.fastlegeinformasjon
 
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
-import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
@@ -23,9 +22,7 @@ class FastlegeinformasjonService(
             )
 
         return try {
-            fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters).also {
-                logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommuneNr")
-            }
+            fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
             logger.error("Helsenett gir ein generisk feilmelding: {}", e.message)
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
@@ -65,10 +62,6 @@ fun fastlegeinformasjonV2(
     serviceuserPassword: String
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
-        proxy {
-            features.add(WSAddressingFeature())
-            features.add(TimeoutFeature(1000 * 60 * 5))
-        }
-
+        proxy { features.add(WSAddressingFeature()) }
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }

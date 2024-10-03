@@ -24,6 +24,8 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
         val fastlegeinformasjonexport =
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
+        logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+
         call.respond(fastlegeinformasjonexport)
     }
 }

@@ -1,12 +1,8 @@
 package no.nav.syfo.ws
 
-import org.apache.cxf.Bus
-import org.apache.cxf.endpoint.Client
-import org.apache.cxf.feature.AbstractFeature
 import org.apache.cxf.frontend.ClientProxy
 import org.apache.cxf.jaxws.JaxWsProxyFactoryBean
 import org.apache.cxf.transport.http.HTTPConduit
-import org.apache.cxf.transports.http.configuration.HTTPClientPolicy
 
 class PortConfigurator<T> {
     var proxyConfigurator: JaxWsProxyFactoryBean.() -> Unit = {}
@@ -43,16 +39,3 @@ inline fun <reified T> createPort(
                 .create() as T)
             .apply { configurator.portConfigurator(this) }
     }
-
-internal class TimeoutFeature(private val timeout: Long) : AbstractFeature() {
-
-    override fun initialize(client: Client, bus: Bus) {
-        val conduit = client.conduit
-        if (conduit is HTTPConduit) {
-            val policy = HTTPClientPolicy().apply { receiveTimeout = this@TimeoutFeature.timeout }
-            conduit.client = policy
-        }
-
-        super.initialize(client, bus)
-    }
-}
