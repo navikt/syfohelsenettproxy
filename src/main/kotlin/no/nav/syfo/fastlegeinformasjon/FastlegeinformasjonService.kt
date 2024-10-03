@@ -1,6 +1,5 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
@@ -8,7 +7,11 @@ import no.nhn.register.common2.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
-import org.apache.cxf.ws.addressing.WSAddressingFeature
+import org.apache.cxf.binding.soap.SoapMessage
+import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
+import org.apache.cxf.message.Message
+import org.apache.cxf.phase.Phase
+import javax.xml.ws.soap.SOAPFaultException
 
 class FastlegeinformasjonService(
     private val fastlegeInformsjonOperations: IFlrExportOperations,
@@ -32,7 +35,7 @@ class FastlegeinformasjonService(
         } catch (e: Exception) {
             logger.error(
                 "Generel feil oppstod i hentet exportGPContracts feilmelding: {}",
-                e.message
+                e.message,
             )
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         }
@@ -62,6 +65,20 @@ fun fastlegeinformasjonV2(
     serviceuserPassword: String
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
-        proxy { features.add(WSAddressingFeature()) }
+        proxy {
+            // TODO: Contact someone about this hacky workaround
+            // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
+            // payload
+            val interceptor =
+                object : AbstractSoapInterceptor(Phase.RECEIVE) {
+                    override fun handleMessage(message: SoapMessage?) {
+                        if (message != null) {
+                            message[Message.ENCODING] = "utf-8"
+                        }
+                    }
+                }
+            inInterceptors.add(interceptor)
+            inFaultInterceptors.add(interceptor)
+        }
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
