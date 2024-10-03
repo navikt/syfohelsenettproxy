@@ -13,10 +13,10 @@ val HTTP_HISTOGRAM: Histogram =
         .help("http requests durations for incoming requests in seconds")
         .register()
 
-val AUTH_AZP_APP_ID: Counter =
+val AUTH_AZP_NAME: Counter =
     Counter.build()
         .namespace(METRICS_NS)
-        .name("auth_azp_app_id")
-        .labelNames("appid")
-        .help("Counts the the application ID of the auth azp")
+        .name("auth_azp_name")
+        .labelNames("name")
+        .help("Counts the the Human-readable client name of azp_name claim")
         .register()
