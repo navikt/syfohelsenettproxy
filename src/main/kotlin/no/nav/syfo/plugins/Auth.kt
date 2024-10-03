@@ -29,6 +29,7 @@ import kotlinx.coroutines.runBlocking
 import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.Environment
 import no.nav.syfo.application.metrics.AUTH_AZP_APP_ID
+import no.nav.syfo.securelog
 import org.koin.core.qualifier.named
 import org.koin.ktor.ext.inject
 import org.slf4j.LoggerFactory
@@ -134,6 +135,7 @@ fun getTokenXAuthConfig(env: Environment): AuthConfiguration {
 
 fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     val appid: String = credentials.payload.getClaim("azp").asString()
+    securelog.info("App name: ${credentials.payload.getClaim("azp_name")?.asString()}")
     AUTH_AZP_APP_ID.labels(appid).inc()
     return credentials.payload.audience.contains(clientId)
 }
