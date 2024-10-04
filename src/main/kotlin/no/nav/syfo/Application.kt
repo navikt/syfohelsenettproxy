@@ -35,16 +35,7 @@ val objectMapper =
 
 fun main() {
     DefaultExports.initialize()
-    val embeddedServer = embeddedServer(Netty, port = 8080, module = Application::module)
-
-    Runtime.getRuntime()
-        .addShutdownHook(
-            Thread {
-                logger.info("Shutting down application from shutdown hook")
-                embeddedServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
-            },
-        )
-    embeddedServer.start(true)
+    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
 }
 
 fun Application.module() {
