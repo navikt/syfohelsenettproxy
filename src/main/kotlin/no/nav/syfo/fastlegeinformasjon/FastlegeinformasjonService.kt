@@ -1,16 +1,14 @@
 package no.nav.syfo.fastlegeinformasjon
 
+import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
-import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
-
 import org.apache.cxf.ws.addressing.WSAddressingFeature
-import javax.xml.ws.soap.SOAPFaultException
 
 class FastlegeinformasjonService(
     private val fastlegeInformsjonOperations: IFlrExportOperations,
@@ -64,9 +62,6 @@ fun fastlegeinformasjonV2(
     serviceuserPassword: String
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
-        proxy {
-            features.add(WSAddressingFeature())
-            features.add(TimeoutFeature(1000 * 60 * 5))
-        }
+        proxy { features.add(WSAddressingFeature()) }
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }

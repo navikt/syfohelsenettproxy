@@ -12,6 +12,8 @@ import java.util.UUID
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
+import no.nav.syfo.logger
+import no.nav.syfo.securelog
 import org.koin.ktor.ext.inject
 import org.slf4j.event.Level
 
@@ -26,10 +28,11 @@ fun Application.configureNaisThings() {
     }
     install(StatusPages) {
         exception<Throwable> { call, cause ->
+            logger.error("Caught exception ${cause.message}")
+            securelog.error("Caught exception", cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
-
-            no.nav.syfo.logger.error("Caught exception", cause)
-            throw cause
+            applicationState.alive = false
+            applicationState.ready = false
         }
     }
     routing { registerNaisApi(applicationState) }

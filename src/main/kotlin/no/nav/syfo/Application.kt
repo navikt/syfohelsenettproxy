@@ -9,6 +9,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.prometheus.client.hotspot.DefaultExports
+import java.util.concurrent.TimeUnit
 import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.plugins.configureAuth
 import no.nav.syfo.plugins.configureContentNegotiation
@@ -34,7 +35,16 @@ val objectMapper =
 
 fun main() {
     DefaultExports.initialize()
-    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
+    val embeddedServer = embeddedServer(Netty, port = 8080, module = Application::module)
+
+    Runtime.getRuntime()
+        .addShutdownHook(
+            Thread {
+                logger.info("Shutting down application from shutdown hook")
+                embeddedServer.stop(TimeUnit.SECONDS.toMillis(10), TimeUnit.SECONDS.toMillis(10))
+            },
+        )
+    embeddedServer.start(true)
 }
 
 fun Application.module() {
