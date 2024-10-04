@@ -24,8 +24,15 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
         val fastlegeinformasjonexport =
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
-        logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+        if (fastlegeinformasjonexport == null) {
+            call.respond(
+                HttpStatusCode.NotFound,
+                "Fant ikke fastlegeinformasjonexport for kommunenr: $kommunenr",
+            )
+        } else {
+            logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
 
-        call.respond(fastlegeinformasjonexport)
+            call.respond(fastlegeinformasjonexport)
+        }
     }
 }
