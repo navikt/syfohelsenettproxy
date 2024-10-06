@@ -32,10 +32,10 @@ spec:
       runtime: java
   resources:
     limits:
-      memory: 8048Mi
+      memory: 9048Mi
     requests:
       cpu: 100m
-      memory: 6048Mi
+      memory: 7048Mi
   azure:
     application:
       enabled: true
