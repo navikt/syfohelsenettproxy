@@ -1,5 +1,6 @@
 package no.nav.syfo.fastlegeinformasjon
 
+import no.nav.syfo.ws.TimeoutFeature
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
 import no.nav.syfo.ws.createPort
@@ -62,6 +63,7 @@ fun fastlegeinformasjonV2(
     serviceuserPassword: String
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
-        proxy { features.add(WSAddressingFeature()) }
+        proxy { features.add(WSAddressingFeature()) 
+features.add(TimeoutFeature(1000*60*5))}
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
