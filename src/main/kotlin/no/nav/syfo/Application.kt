@@ -9,7 +9,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.prometheus.client.hotspot.DefaultExports
-import java.util.concurrent.TimeUnit
 import javax.xml.datatype.DatatypeFactory
 import no.nav.syfo.plugins.configureAuth
 import no.nav.syfo.plugins.configureContentNegotiation

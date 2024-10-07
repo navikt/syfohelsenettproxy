@@ -1,8 +1,8 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import no.nav.syfo.ws.TimeoutFeature
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
+import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
 import no.nhn.register.common2.Code
@@ -15,7 +15,7 @@ class FastlegeinformasjonService(
     private val fastlegeInformsjonOperations: IFlrExportOperations,
 ) {
 
-    fun hentFastlegeinformasjonExport(kommuneNr: String): ByteArray? {
+    fun hentFastlegeinformasjonExport(kommuneNr: String): ByteArray {
 
         val contractsQueryParameters: ContractsQueryParameters =
             createContractsQueryParameters(
@@ -26,16 +26,16 @@ class FastlegeinformasjonService(
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
             logger.error("Helsenett gir ein generisk feilmelding: {}", e.message)
-            return null
+            throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
             logger.error("Helsenett gir feilmelding: {}", e.message)
-            return null
+            throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: Exception) {
             logger.error(
                 "Generel feil oppstod i hentet exportGPContracts feilmelding: {}",
                 e.message,
             )
-            return null
+            throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         }
     }
 
@@ -63,7 +63,9 @@ fun fastlegeinformasjonV2(
     serviceuserPassword: String
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
-        proxy { features.add(WSAddressingFeature()) 
-features.add(TimeoutFeature(1000*60*5))}
+        proxy {
+            features.add(WSAddressingFeature())
+            features.add(TimeoutFeature(1000 * 60 * 5))
+        }
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
