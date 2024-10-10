@@ -1,5 +1,7 @@
 package no.nav.syfo.helsepersonell
 
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
@@ -89,173 +91,170 @@ internal class BehandlerApiTest {
 
     @Test
     internal fun `Helsepersonell gitt fnr finner behandlingskode paa behandler`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
-            with(
-                handleRequest(HttpMethod.Get, "/behandler") {
-                    addHeader("behandlerFnr", "fnr")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.OK)
-                val behandler: Behandler =
-                    objectMapper.readValue(response.content!!, Behandler::class.java)
-                behandler.godkjenninger.size.shouldBeEqualTo(1)
-                behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
-                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
-                behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
-                behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
+            routing { registerBehandlerApi(helsePersonService) }
 
-                behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
-                behandler.godkjenninger[0].autorisasjon?.aktiv.shouldBeEqualTo(true)
-                behandler.godkjenninger[0].autorisasjon?.oid.shouldBeEqualTo(7704)
-                behandler.godkjenninger[0].autorisasjon?.verdi.shouldBeEqualTo("1")
-            }
+            val response =
+                client.get("/behandler") {
+                    header("behandlerFnr", "fnr")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
+            val behandler: Behandler =
+                objectMapper.readValue(response.bodyAsText(), Behandler::class.java)
+            behandler.godkjenninger.size.shouldBeEqualTo(1)
+            behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
+            behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
+            behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
+            behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
+
+            behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
+            behandler.godkjenninger[0].autorisasjon?.aktiv.shouldBeEqualTo(true)
+            behandler.godkjenninger[0].autorisasjon?.oid.shouldBeEqualTo(7704)
+            behandler.godkjenninger[0].autorisasjon?.verdi.shouldBeEqualTo("1")
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt fnr sender feilmelding videre til konsumenten`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
+            routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws
                 (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage(
                     "fault",
                 ))
-            with(
-                handleRequest(HttpMethod.Get, "/behandler") {
-                    addHeader("behandlerFnr", "fnr")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.InternalServerError)
-                val feil: Feilmelding =
-                    objectMapper.readValue(response.content!!, Feilmelding::class.java)
 
-                feil.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
-                feil.message.shouldBeEqualTo("fault")
-            }
+            val response =
+                client.get("/behandler") {
+                    header("behandlerFnr", "fnr")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
+            val feil: Feilmelding =
+                objectMapper.readValue(response.bodyAsText(), Feilmelding::class.java)
+
+            feil.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
+            feil.message.shouldBeEqualTo("fault")
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt fnr should return 404 when personnr ikke funnet`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
+            routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws
                 (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage(
                     "ArgumentException: Personnummer ikke funnet",
                 ))
-            with(
-                handleRequest(HttpMethod.Get, "/behandler") {
-                    addHeader("behandlerFnr", "fnr")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.NotFound)
-                val feil: String = response.content!!
-                feil shouldBeEqualTo "Fant ikke behandler"
-            }
+
+            val response =
+                client.get("/behandler") {
+                    header("behandlerFnr", "fnr")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.NotFound)
+            val feil: String = response.bodyAsText()
+            feil shouldBeEqualTo "Fant ikke behandler"
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt hpr-nummer henter riktig info for behandler`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
-            with(
-                handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
-                    addHeader("hprNummer", "1234")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.OK)
-                val behandler: Behandler =
-                    objectMapper.readValue(response.content!!, Behandler::class.java)
-                behandler.godkjenninger.size.shouldBeEqualTo(1)
-                behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
-                behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
-                behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
-                behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
+            routing { registerBehandlerApi(helsePersonService) }
+            val response =
+                client.get("/behandlerMedHprNummer") {
+                    header("hprNummer", "1234")
+                    header("Nav-CallId", "callId")
+                }
 
-                behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
-                behandler.godkjenninger[0].autorisasjon?.aktiv.shouldBeEqualTo(true)
-                behandler.godkjenninger[0].autorisasjon?.oid.shouldBeEqualTo(7704)
-                behandler.godkjenninger[0].autorisasjon?.verdi.shouldBeEqualTo("1")
-                behandler.fornavn.shouldBeEqualTo("Fornavn")
-                behandler.mellomnavn.shouldBeNull()
-                behandler.etternavn.shouldBeEqualTo("Etternavn")
-                behandler.fnr.shouldBeEqualTo("12345678910")
-            }
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
+            val behandler: Behandler =
+                objectMapper.readValue(response.bodyAsText(), Behandler::class.java)
+            behandler.godkjenninger.size.shouldBeEqualTo(1)
+            behandler.godkjenninger[0].helsepersonellkategori.shouldNotBeNull()
+            behandler.godkjenninger[0].helsepersonellkategori?.aktiv.shouldBeEqualTo(true)
+            behandler.godkjenninger[0].helsepersonellkategori?.oid.shouldBeEqualTo(10)
+            behandler.godkjenninger[0].helsepersonellkategori?.verdi.shouldBeNull()
+
+            behandler.godkjenninger[0].autorisasjon.shouldNotBeNull()
+            behandler.godkjenninger[0].autorisasjon?.aktiv.shouldBeEqualTo(true)
+            behandler.godkjenninger[0].autorisasjon?.oid.shouldBeEqualTo(7704)
+            behandler.godkjenninger[0].autorisasjon?.verdi.shouldBeEqualTo("1")
+            behandler.fornavn.shouldBeEqualTo("Fornavn")
+            behandler.mellomnavn.shouldBeNull()
+            behandler.etternavn.shouldBeEqualTo("Etternavn")
+            behandler.fnr.shouldBeEqualTo("12345678910")
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt hpr-nummer sender feilmelding videre til konsumenten`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
+            routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPerson(any(), any()) } throws
                 (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage("fault"))
-            with(
-                handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
-                    addHeader("hprNummer", "1234")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.InternalServerError)
-                val feil: Feilmelding =
-                    objectMapper.readValue(response.content!!, Feilmelding::class.java)
 
-                feil.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
-                feil.message.shouldBeEqualTo("fault")
-            }
+            val response =
+                client.get("/behandlerMedHprNummer") {
+                    header("hprNummer", "1234")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
+            val feil: Feilmelding =
+                objectMapper.readValue(response.bodyAsText(), Feilmelding::class.java)
+
+            feil.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
+            feil.message.shouldBeEqualTo("fault")
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt hpr-nummer return 404 when HPR-nr is not found`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
+            routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPerson(any(), any()) } throws
                 (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage(
                     "ArgumentException: HPR-nummer ikke funnet",
                 ))
-            with(
-                handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
-                    addHeader("hprNummer", "1234")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.NotFound)
-                response.content shouldBeEqualTo "Fant ikke behandler fra HPR-nummer"
-            }
+            val response =
+                client.get("/behandlerMedHprNummer") {
+                    header("hprNummer", "1234")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.NotFound)
+            response.bodyAsText() shouldBeEqualTo "Fant ikke behandler fra HPR-nummer"
         }
     }
 
     @Test
     internal fun `Helsepersonell gitt hpr-nummer return 404 when HPR-nr ikke er oppgitt`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerBehandlerApi(helsePersonService) }
+            routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPerson(any(), any()) } throws
                 (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage(
                     "ArgumentException: HPR-nummer må oppgis",
                 ))
-            with(
-                handleRequest(HttpMethod.Get, "/behandlerMedHprNummer") {
-                    addHeader("hprNummer", "1234")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.NotFound)
-                response.content shouldBeEqualTo "Fant ikke behandler fra HPR-nummer"
-            }
+            val response =
+                client.get("/behandlerMedHprNummer") {
+                    header("hprNummer", "1234")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.NotFound)
+            response.bodyAsText() shouldBeEqualTo "Fant ikke behandler fra HPR-nummer"
         }
     }
 }

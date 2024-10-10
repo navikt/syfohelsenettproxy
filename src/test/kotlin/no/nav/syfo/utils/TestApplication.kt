@@ -11,11 +11,11 @@ import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
-import io.ktor.server.plugins.callloging.CallLogging
+import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
-import io.ktor.server.testing.TestApplicationEngine
+import io.ktor.server.testing.*
 import java.nio.file.Paths
 import java.util.UUID
 import no.nav.syfo.Environment
@@ -23,29 +23,30 @@ import no.nav.syfo.helsepersonell.HelsepersonellException
 import no.nav.syfo.plugins.harTilgang
 import no.nav.syfo.plugins.unauthorized
 
-fun TestApplicationEngine.setUpTestApplication() {
-    start(true)
-    application.install(CallLogging) {
-        mdc("Nav-Callid") { call ->
-            call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
+fun ApplicationTestBuilder.setUpTestApplication() {
+    application {
+        install(CallLogging) {
+            mdc("Nav-Callid") { call ->
+                call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
+            }
         }
-    }
-    application.install(StatusPages) {
-        exception<HelsepersonellException> { call, e ->
-            call.respond(HttpStatusCode.InternalServerError, e.feilmelding)
+        install(StatusPages) {
+            exception<HelsepersonellException> { call, e ->
+                call.respond(HttpStatusCode.InternalServerError, e.feilmelding)
+            }
         }
-    }
-    application.install(ContentNegotiation) {
-        jackson {
-            registerKotlinModule()
-            registerModule(JavaTimeModule())
-            configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-            configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+        install(ContentNegotiation) {
+            jackson {
+                registerKotlinModule()
+                registerModule(JavaTimeModule())
+                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            }
         }
     }
 }
 
-fun TestApplicationEngine.setUpAuth(): Environment {
+fun ApplicationTestBuilder.setUpAuth(): Environment {
     val env =
         Environment(
             helsepersonellv1EndpointURL = "http://url",
@@ -61,16 +62,19 @@ fun TestApplicationEngine.setUpAuth(): Environment {
     val uri = Paths.get(path).toUri().toURL()
     val jwkProvider = JwkProviderBuilder(uri).build()
 
-    application.install(Authentication) {
-        jwt(name = "servicebrukerAADv2") {
-            verifier(jwkProvider, env.jwtIssuerV2)
-            validate { credentials ->
-                when {
-                    harTilgang(credentials, env.clientIdV2) -> JWTPrincipal(credentials.payload)
-                    else -> unauthorized(credentials)
+    application {
+        install(Authentication) {
+            jwt(name = "servicebrukerAADv2") {
+                verifier(jwkProvider, env.jwtIssuerV2)
+                validate { credentials ->
+                    when {
+                        harTilgang(credentials, env.clientIdV2) -> JWTPrincipal(credentials.payload)
+                        else -> unauthorized(credentials)
+                    }
                 }
             }
         }
     }
+
     return env
 }
