@@ -1,8 +1,8 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import io.ktor.http.HttpMethod
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.routing.routing
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
@@ -23,38 +23,35 @@ class FastlegeinformasjonApiTest {
 
     @Test
     internal fun `ExportGPContracts returnerer faar bytearray`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
-            with(
-                handleRequest(HttpMethod.Get, "/fastlegeinformasjon") {
-                    addHeader("kommunenr", "0301")
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.OK)
-                val byteArray = response.content!!
+            routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
 
-                byteArray.shouldBeEqualTo("Hello")
-            }
+            val response =
+                client.get("/fastlegeinformasjon") {
+                    header("kommunenr", "0301")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
+            val byteArray = response.bodyAsText()
+
+            byteArray.shouldBeEqualTo("Hello")
         }
     }
 
     @Test
     internal fun `ExportGPContracts returnerer badrequest ved mangledene header kommunenr`() {
-        with(TestApplicationEngine()) {
+        testApplication {
             setUpTestApplication()
-            application.routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
-            with(
-                handleRequest(HttpMethod.Get, "/fastlegeinformasjon") {
-                    addHeader("Nav-CallId", "callId")
-                },
-            ) {
-                response.status()?.shouldBeEqualTo(HttpStatusCode.BadRequest)
-                val response = response.content!!
+            routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
 
-                response.shouldBeEqualTo("Mangler header `kommunenr` med kommunenr")
-            }
+            val response = client.get("/fastlegeinformasjon") { header("Nav-CallId", "callId") }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.BadRequest)
+            val responsebody = response.bodyAsText()
+
+            responsebody.shouldBeEqualTo("Mangler header `kommunenr` med kommunenr")
         }
     }
 }
