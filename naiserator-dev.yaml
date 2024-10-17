@@ -94,6 +94,9 @@ spec:
         - application: helse-arbeidsforhold-standalone
           namespace: tsm
           cluster: dev-gcp
+        - application: airflow
+          namespace: team-disykefravar-dev-jlyb
+          cluster: knada  
     outbound:
       external:
         - host: ws.test.nhn.no
