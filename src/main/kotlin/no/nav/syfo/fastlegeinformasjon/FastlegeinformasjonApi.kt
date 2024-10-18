@@ -1,11 +1,9 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
-import io.ktor.server.request.header
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
+import io.ktor.http.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.nav.syfo.logger
 
 fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: FastlegeinformasjonService) {
@@ -24,15 +22,11 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
         val fastlegeinformasjonexport =
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
-        if (fastlegeinformasjonexport == null) {
-            call.respond(
-                HttpStatusCode.NotFound,
-                "Fant ikke fastlegeinformasjonexport for kommunenr: $kommunenr",
-            )
-        } else {
-            logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+        logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+        logger.info(
+            "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024}} KB)"
+        )
 
-            call.respond(fastlegeinformasjonexport)
-        }
+        call.respondBytes(fastlegeinformasjonexport)
     }
 }
