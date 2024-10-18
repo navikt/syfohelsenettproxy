@@ -31,6 +31,7 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
             )
         } else {
             logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+            // TODO zip
 
             call.respond(fastlegeinformasjonexport)
         }
