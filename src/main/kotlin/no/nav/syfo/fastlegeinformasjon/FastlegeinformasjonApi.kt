@@ -23,6 +23,9 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
         logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+        logger.info(
+            "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024}} KB)"
+        )
 
         call.respond(fastlegeinformasjonexport)
     }
