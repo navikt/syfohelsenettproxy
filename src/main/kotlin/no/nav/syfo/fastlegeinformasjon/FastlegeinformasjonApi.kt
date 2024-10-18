@@ -20,8 +20,10 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                     return@get
                 }
 
+        /*
         val fastlegeinformasjonexport =
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
+
 
         if (fastlegeinformasjonexport == null) {
             call.respond(
@@ -34,5 +36,7 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
             call.respond(byteArrayOf(0x48, 101, 108, 108, 111))
             // call.respond(fastlegeinformasjonexport)
         }
+        */
+        call.respond(byteArrayOf(0x48, 101, 108, 108, 111))
     }
 }
