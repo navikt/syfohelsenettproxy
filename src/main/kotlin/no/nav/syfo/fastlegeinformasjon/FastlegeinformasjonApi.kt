@@ -1,7 +1,6 @@
 package no.nav.syfo.fastlegeinformasjon
 
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.call
 import io.ktor.server.request.header
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
