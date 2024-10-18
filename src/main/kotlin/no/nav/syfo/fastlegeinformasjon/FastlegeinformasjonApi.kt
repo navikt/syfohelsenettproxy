@@ -1,11 +1,11 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.request.header
-import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
-import io.ktor.server.routing.get
+import io.ktor.http.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.nav.syfo.logger
+import java.io.File
 
 fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: FastlegeinformasjonService) {
     get("/fastlegeinformasjon") {
@@ -20,23 +20,26 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                     return@get
                 }
 
-        /*
         val fastlegeinformasjonexport =
             fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
+        logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
 
-        if (fastlegeinformasjonexport == null) {
-            call.respond(
-                HttpStatusCode.NotFound,
-                "Fant ikke fastlegeinformasjonexport for kommunenr: $kommunenr",
-            )
-        } else {
-            logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
-            // TODO zip
-            call.respond(byteArrayOf(0x48, 101, 108, 108, 111))
-            // call.respond(fastlegeinformasjonexport)
-        }
-        */
-        call.respond(byteArrayOf(0x48, 101, 108, 108, 111))
+        val fileName = "fil_fra_$kommunenr.zip"
+        val file = File(fileName)
+        file.writeBytes(fastlegeinformasjonexport)
+
+        logger.info("Har lagret fil $fileName (${fastlegeinformasjonexport.size / 1024}} KB)")
+
+        call.response.header(
+            HttpHeaders.ContentDisposition,
+            ContentDisposition.Attachment.withParameter(
+                    ContentDisposition.Parameters.FileName,
+                    fileName,
+                )
+                .toString(),
+        )
+
+        call.respondFile(file)
     }
 }
