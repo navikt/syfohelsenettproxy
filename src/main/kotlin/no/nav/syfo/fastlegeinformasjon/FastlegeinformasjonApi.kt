@@ -27,6 +27,6 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
             "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024}} KB)"
         )
 
-        call.respond(fastlegeinformasjonexport)
+        call.respondBytes(fastlegeinformasjonexport)
     }
 }
