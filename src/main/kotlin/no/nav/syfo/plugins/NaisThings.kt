@@ -5,7 +5,9 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.install
 import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.compression.*
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.*
 import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
 import java.util.UUID
@@ -34,6 +36,8 @@ fun Application.configureNaisThings() {
             throw cause
         }
     }
+    install(Compression) { gzip { condition { request.uri == "/api/v2/fastlegeinformasjon" } } }
+
     routing { registerNaisApi(applicationState) }
     intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
 }
