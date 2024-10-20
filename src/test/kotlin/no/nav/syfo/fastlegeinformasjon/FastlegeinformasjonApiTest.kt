@@ -54,4 +54,24 @@ class FastlegeinformasjonApiTest {
             responsebody.shouldBeEqualTo("Mangler header `kommunenr` med kommunenr")
         }
     }
+
+    @Test
+    internal fun `ExportGPContracts returnerer ok fil over 300 MB`() {
+        val byteArray = ByteArray(400000000)
+
+        every { wsMock.exportGPContracts(any()) } returns byteArray
+
+        testApplication {
+            setUpTestApplication()
+            routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
+
+            val response =
+                client.get("/fastlegeinformasjon") {
+                    header("kommunenr", "0301")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
+        }
+    }
 }
