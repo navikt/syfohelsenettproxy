@@ -56,7 +56,7 @@ class FastlegeinformasjonApiTest {
         }
     }
 
-    @Disabled("Some oom issue with ktor client")
+    @Disabled("Some oom issue with ktor client test")
     @Test
     internal fun `ExportGPContracts returnerer ok fil over 300 MB`() {
         val byteArray = ByteArray(400000000)
