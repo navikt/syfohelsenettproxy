@@ -5,13 +5,10 @@ import io.ktor.server.request.header
 import io.ktor.server.response.*
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import no.nav.syfo.logger
 
 fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: FastlegeinformasjonService) {
     get("/fastlegeinformasjon") {
-        withContext(Dispatchers.IO.limitedParallelism(1)) {
             val kommunenr = call.request.header("kommunenr")
 
             if (kommunenr == null) {
@@ -31,6 +28,5 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
 
                 call.respondBytes(fastlegeinformasjonexport)
             }
-        }
     }
 }
