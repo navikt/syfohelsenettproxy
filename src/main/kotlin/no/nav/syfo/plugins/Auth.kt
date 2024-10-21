@@ -18,7 +18,6 @@ import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.Principal
 import io.ktor.server.auth.jwt.JWTCredential
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
@@ -86,7 +85,7 @@ fun finnFnrFraToken(principal: JWTPrincipal): String {
 data class BrukerPrincipal(
     val fnr: String,
     val principal: JWTPrincipal,
-) : Principal
+)
 
 fun erNiva4(credentials: JWTCredential): Boolean {
     return "Level4" == credentials.payload.getClaim("acr").asString()
@@ -141,7 +140,7 @@ fun harTilgang(credentials: JWTCredential, clientId: String): Boolean {
     return credentials.payload.audience.contains(clientId)
 }
 
-fun unauthorized(credentials: JWTCredential): Principal? {
+fun unauthorized(credentials: JWTCredential): Unit? {
     logger.warn(
         "Auth: Unexpected audience for jwt {}, {}",
         StructuredArguments.keyValue("issuer", credentials.payload.issuer),
