@@ -25,14 +25,108 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
 
         logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
         logger.info(
-            "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024}} KB)",
+            "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB)",
         )
 
-       call.respondOutputStream {
-                     write(fastlegeinformasjonexport)
-                        
-                    }
-                
-    }
+        call.respondBytes(fastlegeinformasjonexport)
 
+        /*
+        call.respond(
+            object : OutgoingContent.WriteChannelContent() {
+                val chunks1MB = fastlegeinformasjonexport.toList().chunked(1024 * 1024);
+
+
+                chunks1MB.forEach {
+
+                }
+            }
+
+        )
+
+         */
+
+        /*
+
+        call.respond(
+            object : OutgoingContent.WriteChannelContent() {
+                override suspend fun writeTo(channel: ByteWriteChannel) {
+                    logger.info("start")
+                    while (startIndex < endIndex) {
+                        var tempEndIndex = startIndex + chuckSize
+                        if (tempEndIndex > endIndex) {
+                            tempEndIndex = endIndex
+                        }
+                        logger.info("${tempEndIndex / (1024 * 1024)}")
+                        channel.writeFully(fastlegeinformasjonexport.sliceArray(startIndex until tempEndIndex))
+                        channel.flush()
+                        startIndex = tempEndIndex
+                    }
+                    channel.flushAndClose()
+                }
+            },
+        )
+
+         */
+
+        /*call.respond(
+            ByteArrayContent(
+                bytes = fastlegeinformasjonexport,
+                contentType = ContentType.Application.OctetStream,
+                status = HttpStatusCode.OK,
+            ),
+        )
+                client.("/fastlegeinformasjon") {
+
+         */
+
+        /*
+        var startIndex = 0
+        val chuckSize = 1024 * 1024
+        val endIndex = fastlegeinformasjonexport.size
+
+        call.respondBytesWriter(contentType = ContentType.Application.OctetStream) {
+
+            logger.info("start")
+            while (startIndex < endIndex) {
+                var tempEndIndex = startIndex + chuckSize
+                if (tempEndIndex > endIndex) {
+                    tempEndIndex = endIndex
+                }
+                logger.info("${tempEndIndex / (1024 * 1024)}")
+                writeFully(fastlegeinformasjonexport.sliceArray(startIndex until tempEndIndex))
+                flush()
+                startIndex = tempEndIndex
+            }
+            flushAndClose()
+
+        }
+
+         */
+
+        /*
+        call.respondOutputStream(
+            contentType = ContentType.Application.OctetStream,
+            status = HttpStatusCode.OK,
+        ) {
+            ByteArrayOutputStream().write(fastlegeinformasjonexport)
+        }
+
+         */
+
+        /*
+        call.respondOutputStream{
+            withContext(Dispatchers.IO.limitedParallelism(1)) {
+                ByteArrayOutputStream().writeBytes(fastlegeinformasjonexport)
+            }
+        }
+        */
+
+        /*
+        call.respondBytesWriter {
+            writeByteArray(fastlegeinformasjonexport)
+           // ByteArrayOutputStream().write(fastlegeinformasjonexport)
+        }
+
+        */
+    }
 }

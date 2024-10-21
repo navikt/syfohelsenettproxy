@@ -3,3 +3,6 @@
 out
 build
 .gradle
+
+# Kotlin 2.0
+.kotlin/
