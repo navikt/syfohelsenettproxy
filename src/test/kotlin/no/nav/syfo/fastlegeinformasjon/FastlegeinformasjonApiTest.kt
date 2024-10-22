@@ -10,6 +10,7 @@ import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class FastlegeinformasjonApiTest {
@@ -52,6 +53,27 @@ class FastlegeinformasjonApiTest {
             val responsebody = response.bodyAsText()
 
             responsebody.shouldBeEqualTo("Mangler header `kommunenr` med kommunenr")
+        }
+    }
+
+    @Disabled("Some oom issue with ktor client test")
+    @Test
+    internal fun `ExportGPContracts returnerer ok fil over 300 MB`() {
+        val byteArray = ByteArray(400000000)
+
+        every { wsMock.exportGPContracts(any()) } returns byteArray
+
+        testApplication {
+            setUpTestApplication()
+            routing { registerFastlegeinformasjonApi(fastlegeinformasjonService) }
+
+            val response =
+                client.get("/fastlegeinformasjon") {
+                    header("kommunenr", "0301")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
         }
     }
 }
