@@ -5,6 +5,9 @@ metadata:
   namespace: teamsykmelding
   labels:
     team: teamsykmelding
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "800k"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "720"
 spec:
   image: {{ image }}
   replicas:
@@ -32,10 +35,10 @@ spec:
       runtime: java
   resources:
     limits:
-      memory: 4096Mi
+      memory: 5096Mi
     requests:
       cpu: 100m
-      memory: 2024Mi
+      memory: 4024Mi
   azure:
     application:
       enabled: true
