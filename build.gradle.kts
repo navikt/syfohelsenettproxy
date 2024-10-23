@@ -203,6 +203,8 @@ tasks {
     }
 
     test {
+        minHeapSize = "4096m"
+        maxHeapSize = "5120m"
         useJUnitPlatform {}
         testLogging {
             events("skipped", "failed")

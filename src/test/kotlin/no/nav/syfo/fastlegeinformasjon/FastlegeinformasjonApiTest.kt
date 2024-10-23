@@ -10,7 +10,6 @@ import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 class FastlegeinformasjonApiTest {
@@ -56,10 +55,9 @@ class FastlegeinformasjonApiTest {
         }
     }
 
-    @Disabled("Some oom issue with ktor client test")
     @Test
-    internal fun `ExportGPContracts returnerer ok fil over 300 MB`() {
-        val byteArray = ByteArray(400000000)
+    internal fun `ExportGPContracts returnerer ok fil over 200 MB`() {
+        val byteArray = ByteArray(250000000)
 
         every { wsMock.exportGPContracts(any()) } returns byteArray
 
