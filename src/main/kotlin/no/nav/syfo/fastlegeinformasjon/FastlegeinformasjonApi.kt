@@ -9,24 +9,24 @@ import no.nav.syfo.logger
 
 fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: FastlegeinformasjonService) {
     get("/fastlegeinformasjon") {
-            val kommunenr = call.request.header("kommunenr")
+        val kommunenr = call.request.header("kommunenr")
 
-            if (kommunenr == null) {
-                logger.warn("Mottatt kall som mangler header kommunenr")
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    "Mangler header `kommunenr` med kommunenr",
-                )
-            } else {
-                val fastlegeinformasjonexport =
-                    fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
+        if (kommunenr == null) {
+            logger.warn("Mottatt kall som mangler header kommunenr")
+            call.respond(
+                HttpStatusCode.BadRequest,
+                "Mangler header `kommunenr` med kommunenr",
+            )
+        } else {
+            val fastlegeinformasjonexport =
+                fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
-                logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
-                logger.info(
-                    "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB)",
-                )
+            logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr")
+            logger.info(
+                "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB)",
+            )
 
-                call.respondBytes(fastlegeinformasjonexport)
-            }
+            call.respondBytes(fastlegeinformasjonexport)
+        }
     }
 }
