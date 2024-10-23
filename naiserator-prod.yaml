@@ -97,6 +97,8 @@ spec:
     outbound:
       external:
         - host: ws.nhn.no
+  ingresses:
+    - "https://syfohelsenettproxy.intern.nav.no"
   secureLogs:
     enabled: true
   tokenx:
