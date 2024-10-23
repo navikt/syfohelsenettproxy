@@ -5,6 +5,9 @@ metadata:
   namespace: teamsykmelding
   labels:
     team: teamsykmelding
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "800k"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "360"
 spec:
   image: {{ image }}
   replicas:
