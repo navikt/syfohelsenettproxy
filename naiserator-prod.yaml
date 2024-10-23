@@ -91,6 +91,9 @@ spec:
         - application: journalforing-frontend
           namespace: isa
           cluster: prod-gcp
+        - application: airflow
+          namespace: disykefravar-x4wt
+          cluster: knada  
     outbound:
       external:
         - host: ws.nhn.no
