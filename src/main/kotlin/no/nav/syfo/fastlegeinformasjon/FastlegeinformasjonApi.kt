@@ -20,11 +20,15 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                 "Mangler header `kommunenr` med kommunenr",
             )
         } else {
-            logger.info("Mottatt kall til /fastlegeinformasjon for kommunenr: $kommunenr med Nav-Callid: $callId")
+            logger.info(
+                "Mottatt kall til /fastlegeinformasjon for kommunenr: $kommunenr med Nav-Callid: $callId"
+            )
             val fastlegeinformasjonexport =
                 fastlegeinformasjonService.hentFastlegeinformasjonExport(kommunenr)
 
-            logger.info("Hentet fastlegeinformasjonexport for kommunenr: $kommunenr med Nav-Callid: $callId")
+            logger.info(
+                "Hentet fastlegeinformasjonexport for kommunenr: $kommunenr med Nav-Callid: $callId"
+            )
             logger.info(
                 "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB) med Nav-Callid: $callId",
             )
