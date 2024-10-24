@@ -4,6 +4,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.install
+import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
@@ -20,11 +21,14 @@ import org.slf4j.event.Level
 fun Application.configureNaisThings() {
     val applicationState by inject<ApplicationState>()
 
+    install(CallId) {
+        retrieve { it.request.queryParameters["Nav-Callid"] }
+        retrieveFromHeader("Nav-Callid")
+        generate { UUID.randomUUID().toString() }
+    }
     install(CallLogging) {
         level = Level.TRACE
-        mdc("Nav-Callid") { call ->
-            call.request.queryParameters["Nav-Callid"] ?: UUID.randomUUID().toString()
-        }
+        mdc("Nav-Callid") { it.callId }
     }
     install(StatusPages) {
         exception<Throwable> { call, cause ->
