@@ -65,7 +65,7 @@ fun fastlegeinformasjonV2(
     createPort<IFlrExportOperations>(endpointUrl) {
         proxy {
             features.add(WSAddressingFeature())
-            features.add(TimeoutFeature(1000 * 60 * 5))
+            features.add(TimeoutFeature(1000 * 60 * 7))
         }
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
