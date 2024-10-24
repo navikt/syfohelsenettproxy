@@ -92,7 +92,7 @@ spec:
           namespace: isa
           cluster: prod-gcp
         - application: airflow
-          namespace: disykefravar-x4wt
+          namespace: team-disykefravar-x4wt
           cluster: knada  
     outbound:
       external:
