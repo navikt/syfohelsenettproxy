@@ -44,6 +44,8 @@ class FastlegeinformasjonService(
         val kode = Code()
         kode.codeValue = kommuneNr
         kode.simpleType = "kommune"
+        kode.isActive = true
+        kode.oid = 3402
 
         val arrayOfCode = ArrayOfCode()
         arrayOfCode.code.add(kode)
