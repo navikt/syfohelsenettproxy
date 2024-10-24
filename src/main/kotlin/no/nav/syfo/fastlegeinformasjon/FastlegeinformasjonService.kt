@@ -41,21 +41,9 @@ class FastlegeinformasjonService(
 
     private fun createContractsQueryParameters(kommuneNr: String): ContractsQueryParameters {
 
-        /*
         val kode = Code()
         kode.codeValue = kommuneNr
         kode.simpleType = "kommune"
-        kode.isActive = true
-        kode.oid = 3402
-
-         */
-
-        val kode = Code()
-        kode.codeText = "Austevoll"
-        kode.codeValue = "4625"
-        kode.simpleType = "kommune"
-        kode.isActive = true
-        kode.oid = 3402
 
         val arrayOfCode = ArrayOfCode()
         arrayOfCode.code.add(kode)
