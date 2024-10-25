@@ -49,7 +49,7 @@ class FastlegeinformasjonService(
             JAXBElement(
                 QName("http://register.nhn.no/Common2", "CodeValue"),
                 String::class.java,
-                "4625",
+                kommuneNr,
             )
         val simpleTypeJax: JAXBElement<String> =
             JAXBElement(
