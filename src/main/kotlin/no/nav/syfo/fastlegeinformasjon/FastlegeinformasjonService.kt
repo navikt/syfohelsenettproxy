@@ -47,13 +47,13 @@ class FastlegeinformasjonService(
         val kode = Code()
         val codeValueJax: JAXBElement<String> =
             JAXBElement(
-                QName("http://register.nhn.no/Common2", "CodeValue"),
+                QName("http://register.nhn.no/Common", "CodeValue"),
                 String::class.java,
                 kommuneNr,
             )
         val simpleTypeJax: JAXBElement<String> =
             JAXBElement(
-                QName("http://register.nhn.no/Common2", "SimpleType"),
+                QName("http://register.nhn.no/Common", "SimpleType"),
                 String::class.java,
                 "kommune",
             )
