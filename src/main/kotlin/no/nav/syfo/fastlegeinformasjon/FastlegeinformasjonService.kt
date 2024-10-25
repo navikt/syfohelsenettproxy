@@ -26,10 +26,6 @@ class FastlegeinformasjonService(
                 kommuneNr = kommuneNr,
             )
 
-        logger.info(
-            "contractsQueryParameters: ${objectMapper.writeValueAsString(contractsQueryParameters.municipalities)}"
-        )
-
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
