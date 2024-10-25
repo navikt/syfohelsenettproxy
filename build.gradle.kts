@@ -175,7 +175,6 @@ tasks {
         wsdl2java {
             register("fastlegeinformasjonEksport") {
                 wsdl.set(file("$projectDir/src/main/resources/wsdl/fastlegeinformasjonregisteret.wsdl"))
-                bindingFiles.add("$projectDir/src/main/resources/xjb/binding.xml")
             }
         }
     }

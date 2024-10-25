@@ -1,7 +1,10 @@
 package no.nav.syfo.fastlegeinformasjon
 
+import javax.xml.bind.JAXBElement
+import javax.xml.namespace.QName
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
+import no.nav.syfo.objectMapper
 import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
@@ -9,6 +12,7 @@ import no.nhn.register.common2.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.flr.ObjectFactory
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 
 class FastlegeinformasjonService(
@@ -21,6 +25,10 @@ class FastlegeinformasjonService(
             createContractsQueryParameters(
                 kommuneNr = kommuneNr,
             )
+
+        logger.info(
+            "contractsQueryParameters: ${objectMapper.writeValueAsString(contractsQueryParameters.municipalities)}"
+        )
 
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
@@ -42,16 +50,32 @@ class FastlegeinformasjonService(
     private fun createContractsQueryParameters(kommuneNr: String): ContractsQueryParameters {
 
         val kode = Code()
-        kode.codeValue = kommuneNr
-        kode.simpleType = "kommune"
+        val codeValueJax: JAXBElement<String> =
+            JAXBElement<String>(
+                QName("http://register.nhn.no/Common", "CodeValue"),
+                String::class.java,
+                kommuneNr,
+            )
+        val simpleTypeJax: JAXBElement<String> =
+            JAXBElement<String>(
+                QName("http://register.nhn.no/Common", "SimpleType"),
+                String::class.java,
+                "kommune",
+            )
+        kode.codeValue = codeValueJax
+        kode.simpleType = simpleTypeJax
 
         val arrayOfCode = ArrayOfCode()
         arrayOfCode.code.add(kode)
 
+        val objectFactory = ObjectFactory()
+        val arrayOfCodeJAXBElement =
+            objectFactory.createContractsQueryParametersMunicipalities(arrayOfCode)
+
         val contractsQueryParameters = ContractsQueryParameters()
         contractsQueryParameters.isGetFullPersonInfo = false
         contractsQueryParameters.isGetHistoricalData = false
-        contractsQueryParameters.municipalities = arrayOfCode
+        contractsQueryParameters.municipalities = arrayOfCodeJAXBElement
 
         return contractsQueryParameters
     }
