@@ -4,7 +4,6 @@ import javax.xml.bind.JAXBElement
 import javax.xml.namespace.QName
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
-import no.nav.syfo.objectMapper
 import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
 import no.nhn.register.common2.ArrayOfCode
@@ -25,10 +24,6 @@ class FastlegeinformasjonService(
             createContractsQueryParameters(
                 kommuneNr = kommuneNr,
             )
-
-        logger.info(
-            "contractsQueryParameters: ${objectMapper.writeValueAsString(contractsQueryParameters.municipalities)}"
-        )
 
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
@@ -51,19 +46,30 @@ class FastlegeinformasjonService(
 
         val kode = Code()
         val codeValueJax: JAXBElement<String> =
-            JAXBElement<String>(
+            JAXBElement(
                 QName("http://register.nhn.no/Common", "CodeValue"),
                 String::class.java,
-                kommuneNr,
+                "4625",
             )
         val simpleTypeJax: JAXBElement<String> =
-            JAXBElement<String>(
+            JAXBElement(
                 QName("http://register.nhn.no/Common", "SimpleType"),
                 String::class.java,
                 "kommune",
             )
+
+        val codeTextJax: JAXBElement<String> =
+            JAXBElement(
+                QName("http://register.nhn.no/Common", "CodeText"),
+                String::class.java,
+                "Austevoll",
+            )
+
         kode.codeValue = codeValueJax
         kode.simpleType = simpleTypeJax
+        kode.codeText = codeTextJax
+        kode.isActive = true
+        kode.oid = 3402
 
         val arrayOfCode = ArrayOfCode()
         arrayOfCode.code.add(kode)
