@@ -46,7 +46,7 @@
 	<wsdl:types>
 		<xs:schema elementFormDefault="qualified" targetNamespace="http://schemas.nhn.no/reg/flr"
 				   xmlns:xs="http://www.w3.org/2001/XMLSchema">
-			<xs:import namespace="http://register.nhn.no/Common2"/>
+			<xs:import namespace="http://register.nhn.no/Common"/>
 			<xs:import namespace="http://schemas.microsoft.com/Message"/>
 			<xs:element name="ExportGPContracts">
 				<xs:complexType>
@@ -61,7 +61,7 @@
 					<xs:element minOccurs="0" name="GetFullPersonInfo" type="xs:boolean"/>
 					<xs:element minOccurs="0" name="GetHistoricalData" type="xs:boolean"/>
 					<xs:element minOccurs="0" name="Municipalities" nillable="true" type="q1:ArrayOfCode"
-								xmlns:q1="http://register.nhn.no/Common2"/>
+								xmlns:q1="http://register.nhn.no/Common"/>
 				</xs:sequence>
 			</xs:complexType>
 			<xs:element name="ContractsQueryParameters" nillable="true" type="tns:ContractsQueryParameters"/>
@@ -118,8 +118,8 @@
 			<xs:attribute name="Id" type="xs:ID"/>
 			<xs:attribute name="Ref" type="xs:IDREF"/>
 		</xs:schema>
-		<xs:schema elementFormDefault="qualified" targetNamespace="http://register.nhn.no/Common2"
-				   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://register.nhn.no/Common2">
+		<xs:schema elementFormDefault="qualified" targetNamespace="http://register.nhn.no/Common"
+				   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://register.nhn.no/Common">
 			<xs:complexType name="ArrayOfCode">
 				<xs:sequence>
 					<xs:element minOccurs="0" maxOccurs="unbounded" name="Code" nillable="true" type="tns:Code"/>
@@ -158,7 +158,7 @@
 		<wsdl:part name="parameters" element="tns:ExportGPContractsResponse"/>
 	</wsdl:message>
 	<wsdl:message name="IFlrExportOperations_ExportGPContracts_GenericFaultFault_FaultMessage">
-		<wsdl:part name="detail" element="q1:GenericFault" xmlns:q1="http://register.nhn.no/Common2"/>
+		<wsdl:part name="detail" element="q1:GenericFault" xmlns:q1="http://register.nhn.no/Common"/>
 	</wsdl:message>
 	<wsdl:portType name="IFlrExportOperations">
 		<wsdl:operation name="ExportGPContracts">

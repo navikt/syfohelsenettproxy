@@ -6,8 +6,8 @@ import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
 import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
-import no.nhn.register.common2.ArrayOfCode
-import no.nhn.register.common2.Code
+import no.nhn.register.common.ArrayOfCode
+import no.nhn.register.common.Code
 import no.nhn.schemas.reg.flr.ContractsQueryParameters
 import no.nhn.schemas.reg.flr.IFlrExportOperations
 import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage
