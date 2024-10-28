@@ -75,9 +75,9 @@
 			</xs:element>
 		</xs:schema>
 		<xs:schema attributeFormDefault="qualified" elementFormDefault="qualified"
-				   targetNamespace="http://schemas.microsoft.com/2003/10/Serialization2/"
+				   targetNamespace="http://schemas.microsoft.com/2003/10/Serialization/"
 				   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-				   xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization2/">
+				   xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/">
 			<xs:element name="anyType" nillable="true" type="xs:anyType"/>
 			<xs:element name="anyURI" nillable="true" type="xs:anyURI"/>
 			<xs:element name="base64Binary" nillable="true" type="xs:base64Binary"/>
