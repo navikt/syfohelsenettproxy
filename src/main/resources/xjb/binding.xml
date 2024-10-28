@@ -1,5 +1,27 @@
-<jaxb:bindings version="2.1" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb">
-    <jaxb:bindings>
-        <jaxb:globalBindings generateElementProperty="false" />
-    </jaxb:bindings>
-</jaxb:bindings>
+<jaxws:bindings version="1.0"
+                xmlns="http://java.sun.com/xml/ns/jaxws"
+                xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+                xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                wsdlLocation="../wsdl/helsepersonellregisteret.wsdl">
+    <jxb:globalBindings generateElementProperty="false"/>
+    <jaxws:bindings node="wsdl:definitions/wsdl:types/xs:schema">
+        <jxb:globalBindings generateElementProperty="false">
+        </jxb:globalBindings>
+    </jaxws:bindings>
+
+    <jaxws:bindings node="wsdl:definitions/wsdl:types/xs:schema[@targetNamespace='http://schemas.microsoft.com/2003/10/Serialization/']">
+        <jxb:schemaBindings>
+            <jxb:package name="com.microsoft.schemas._2003._10.serialization2"/>
+        </jxb:schemaBindings>
+    </jaxws:bindings>
+
+
+    <jaxws:bindings node="wsdl:definitions/wsdl:types/xs:schema[@targetNamespace='http://register.nhn.no/Common']">
+        <jxb:schemaBindings>
+            <jxb:package name="no.nhn.register.hpr.common"/>
+        </jxb:schemaBindings>
+    </jaxws:bindings>
+
+</jaxws:bindings>
