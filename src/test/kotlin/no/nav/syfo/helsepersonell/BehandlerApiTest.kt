@@ -257,4 +257,21 @@ internal class BehandlerApiTest {
             response.bodyAsText() shouldBeEqualTo "Fant ikke behandler fra HPR-nummer"
         }
     }
+
+    @Test
+    internal fun `Helsepersonell gitt hpr-nummer return 400 when HPR-nr er tom string`() {
+        testApplication {
+            setUpTestApplication()
+            routing { registerBehandlerApi(helsePersonService) }
+
+            val response =
+                client.get("/behandlerMedHprNummer") {
+                    header("hprNummer", "")
+                    header("Nav-CallId", "callId")
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.BadRequest)
+            response.bodyAsText() shouldBeEqualTo "`hprNummer` er ein tom string"
+        }
+    }
 }

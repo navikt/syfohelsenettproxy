@@ -32,19 +32,27 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
                 ?: run {
                     call.respond(
                         HttpStatusCode.BadRequest,
-                        "Mangler header `hprNummer` med HPR-nummer"
+                        "Mangler header `hprNummer` med HPR-nummer",
                     )
                     logger.warn("Mottatt kall som mangler header hprNummer")
                     return@get
                 }
 
-        if (!hprNummer.all { Character.isDigit(it) }) {
-            call.respond(HttpStatusCode.NotFound, "Fant ikke behandler for $hprNummer")
+        if (hprNummer.isBlank()) {
+            call.respond(HttpStatusCode.BadRequest, "`hprNummer` er ein tom string")
         } else {
-            when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
-                null -> call.respond(HttpStatusCode.NotFound, "Fant ikke behandler fra HPR-nummer")
-                else -> {
-                    call.respond(behandler)
+            if (!hprNummer.all { Character.isDigit(it) }) {
+                call.respond(HttpStatusCode.NotFound, "Fant ikke behandler for $hprNummer")
+            } else {
+                when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
+                    null ->
+                        call.respond(
+                            HttpStatusCode.NotFound,
+                            "Fant ikke behandler fra HPR-nummer",
+                        )
+                    else -> {
+                        call.respond(behandler)
+                    }
                 }
             }
         }
