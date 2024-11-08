@@ -99,7 +99,10 @@ spec:
           cluster: dev-gcp
         - application: airflow
           namespace: team-disykefravar-dev-jlyb
-          cluster: knada  
+          cluster: knada
+        - application: syk-dig-backend
+          namespace: teamsykmelding
+          cluster: dev-gcp
     outbound:
       external:
         - host: ws.test.nhn.no

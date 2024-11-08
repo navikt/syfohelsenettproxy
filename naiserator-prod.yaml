@@ -93,7 +93,10 @@ spec:
           cluster: prod-gcp
         - application: airflow
           namespace: team-disykefravar-x4wt
-          cluster: knada  
+          cluster: knada
+        - application: syk-dig-backend
+          namespace: teamsykmelding
+          cluster: prod-gcp
     outbound:
       external:
         - host: ws.nhn.no
