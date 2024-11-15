@@ -97,6 +97,9 @@ spec:
         - application: syk-dig-backend
           namespace: teamsykmelding
           cluster: prod-gcp
+        - application: syk-inn-api
+          namespace: tsm
+          cluster: prod-gcp
     outbound:
       external:
         - host: ws.nhn.no
