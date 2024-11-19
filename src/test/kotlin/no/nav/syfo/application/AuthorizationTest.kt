@@ -41,6 +41,7 @@ internal class AuthorizationTest {
             val response = client.get("/testApi")
 
             response.status.shouldBeEqualTo(HttpStatusCode.Unauthorized)
+            response.bodyAsText().shouldBeEqualTo("servicebrukerAADv2 token validation failed")
         }
     }
 
@@ -60,6 +61,7 @@ internal class AuthorizationTest {
                 }
 
             response.status.shouldBeEqualTo(HttpStatusCode.Unauthorized)
+            response.bodyAsText().shouldBeEqualTo("servicebrukerAADv2 token validation failed")
         }
     }
 
@@ -83,6 +85,7 @@ internal class AuthorizationTest {
                 }
 
             response.status.shouldBeEqualTo(HttpStatusCode.Unauthorized)
+            response.bodyAsText().shouldBeEqualTo("servicebrukerAADv2 token validation failed")
         }
     }
 
@@ -99,23 +102,6 @@ internal class AuthorizationTest {
             val response =
                 client.get("/testApi") { header(Authorization, "Bearer ${genereateJWT()}") }
             response.status.shouldBeEqualTo(HttpStatusCode.OK)
-        }
-    }
-
-    @Test
-    internal fun `Uten token gir 401 Unauthorized`() {
-        testApplication {
-            setUpTestApplication()
-            setUpAuth()
-            routing {
-                authenticate("servicebrukerAADv2") {
-                    get("/testApi") { call.respond(HttpStatusCode.OK) }
-                }
-            }
-            val response =
-                client.get("/testApi")
-            response.status.shouldBeEqualTo(HttpStatusCode.Unauthorized)
-            response.bodyAsText().shouldBeEqualTo("Token is not valid or has expired")
         }
     }
 }
