@@ -14,6 +14,7 @@ import io.ktor.client.engine.apache.Apache
 import io.ktor.client.engine.apache.ApacheEngineConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -21,6 +22,7 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTCredential
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
+import io.ktor.server.response.respond
 import java.net.URI
 import java.time.Duration
 import java.util.concurrent.TimeUnit
@@ -64,6 +66,9 @@ fun Application.configureAuth() {
                     harTilgang(credentials, aadConfig.clientId) -> JWTPrincipal(credentials.payload)
                     else -> unauthorized(credentials)
                 }
+            }
+            challenge { _, _ ->
+                call.respond(HttpStatusCode.Unauthorized,"Token is not valid or has expired")
             }
         }
     }

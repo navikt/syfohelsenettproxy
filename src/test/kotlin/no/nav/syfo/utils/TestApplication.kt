@@ -72,6 +72,9 @@ fun ApplicationTestBuilder.setUpAuth(): Environment {
                         else -> unauthorized(credentials)
                     }
                 }
+                challenge { _, _ ->
+                    call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                }
             }
         }
     }
