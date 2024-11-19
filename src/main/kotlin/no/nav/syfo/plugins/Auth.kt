@@ -69,7 +69,10 @@ fun Application.configureAuth() {
             }
             challenge { _, _ ->
                 logger.warn("servicebrukerAADv2 token validation failed")
-                call.respond(HttpStatusCode.Unauthorized,"servicebrukerAADv2 token validation failed")
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    "servicebrukerAADv2 token validation failed"
+                )
             }
         }
     }
