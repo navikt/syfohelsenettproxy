@@ -42,14 +42,17 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
             call.respond(HttpStatusCode.BadRequest, "`hprNummer` er ein tom string")
         } else {
             if (!hprNummer.all { Character.isDigit(it) }) {
+                logger.info("Fant ikke behandler for $hprNummer")
                 call.respond(HttpStatusCode.NotFound, "Fant ikke behandler for $hprNummer")
             } else {
                 when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
                     null ->
-                        call.respond(
-                            HttpStatusCode.NotFound,
-                            "Fant ikke behandler fra HPR-nummer",
-                        )
+                        call
+                            .respond(
+                                HttpStatusCode.NotFound,
+                                "Fant ikke behandler fra HPR-nummer",
+                            )
+                            .also { logger.info("Fant ikke behandler fra HPR-nummer: $hprNummer") }
                     else -> {
                         call.respond(behandler)
                     }

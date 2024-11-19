@@ -73,7 +73,10 @@ fun ApplicationTestBuilder.setUpAuth(): Environment {
                     }
                 }
                 challenge { _, _ ->
-                    call.respond(HttpStatusCode.Unauthorized, "servicebrukerAADv2 token validation failed")
+                    call.respond(
+                        HttpStatusCode.Unauthorized,
+                        "servicebrukerAADv2 token validation failed"
+                    )
                 }
             }
         }
