@@ -68,6 +68,7 @@ fun Application.configureAuth() {
                 }
             }
             challenge { _, _ ->
+                logger.warn("servicebrukerAADv2 Token is not valid or has expired")
                 call.respond(HttpStatusCode.Unauthorized,"Token is not valid or has expired")
             }
         }
