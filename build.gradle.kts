@@ -5,7 +5,7 @@ group = "no.nav.syfo"
 version = "1.0.0"
 
 val coroutinesVersion = "1.9.0"
-val jacksonVersion = "2.18.1"
+val jacksonVersion = "2.18.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
@@ -24,7 +24,7 @@ val jedisVersion = "5.2.0"
 val testcontainersVersion = "1.20.4"
 val mockkVersion = "1.13.13"
 val nimbusdsVersion = "9.47"
-val kotlinVersion = "2.0.21"
+val kotlinVersion = "2.1.0"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -38,7 +38,7 @@ val javaVersion = JvmTarget.JVM_21
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.1.0"
     id("com.diffplug.spotless") version "6.25.0"
     id("com.gradleup.shadow") version "8.3.5"
 }
