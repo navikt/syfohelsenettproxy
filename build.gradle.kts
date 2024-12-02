@@ -4,6 +4,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 group = "no.nav.syfo"
 version = "1.0.0"
 
+val javaVersion = JvmTarget.JVM_21
+
+
 val coroutinesVersion = "1.9.0"
 val jacksonVersion = "2.18.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
@@ -30,10 +33,12 @@ val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.11.3"
-val jsonVersion = "20240303"
 val koinVersion = "4.0.0"
+
+///Due to vulnerabilities
 val commonsCompressVersion = "1.27.1"
-val javaVersion = JvmTarget.JVM_21
+val nettycommonVersion = "4.1.115.Final"
+val jsonVersion = "20240303"
 
 plugins {
     id("application")
@@ -95,6 +100,11 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    constraints {
+        implementation("io.netty:netty-common:$nettycommonVersion") {
+            because("Due to vulnerabilities in io.ktor:ktor-server-netty")
+        }
+    }
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
