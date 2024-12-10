@@ -37,8 +37,9 @@ val koinVersion = "4.0.0"
 
 ///Due to vulnerabilities
 val commonsCompressVersion = "1.27.1"
-val nettycommonVersion = "4.1.115.Final"
 val jsonVersion = "20240303"
+val bcprovJdk18onVersion = "1.79"
+val guavaVersion = "33.3.1-jre"
 
 plugins {
     id("application")
@@ -73,10 +74,6 @@ repositories {
     }
 }
 
-val navWsdl = configurations.create("navWsdl") {
-    isTransitive = false
-}
-
 dependencies {
     cxfCodegen("javax.annotation:javax.annotation-api:$javaxAnnotationApiVersion")
     cxfCodegen("javax.activation:activation:$javaxActivationVersion")
@@ -100,11 +97,6 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    constraints {
-        implementation("io.netty:netty-common:$nettycommonVersion") {
-            because("Due to vulnerabilities in io.ktor:ktor-server-netty")
-        }
-    }
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
@@ -133,6 +125,17 @@ dependencies {
     implementation("org.apache.cxf:cxf-rt-ws-security:$cxfVersion") {
         exclude(group = "org.apache.velocity", module = "velocity")
     }
+    constraints {
+        implementation("org.bouncycastle:bcprov-jdk18on:$bcprovJdk18onVersion"){
+            because("override transient from org.apache.cxf:cxf-rt-ws-security")
+        }
+    }
+    constraints {
+        implementation("com.google.guava:guava:$guavaVersion"){
+            because("override transient from org.apache.cxf:cxf-rt-ws-security")
+        }
+    }
+
 
     implementation("javax.xml.ws:jaxws-api:$jaxwsApiVersion")
     implementation("javax.xml.bind:jaxb-api:$jaxbApiVersion")
@@ -191,7 +194,7 @@ tasks {
 
 
     compileKotlin {
-       dependsOn("wsdl2javaHelsepersonellregisteret")
+        dependsOn("wsdl2javaHelsepersonellregisteret")
         dependsOn("wsdl2javaFastlegeinformasjonEksport")
     }
 
@@ -213,8 +216,6 @@ tasks {
     }
 
     test {
-        minHeapSize = "4096m"
-        maxHeapSize = "5120m"
         useJUnitPlatform {}
         testLogging {
             events("skipped", "failed")
