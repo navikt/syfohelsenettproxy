@@ -32,14 +32,14 @@ val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion="5.11.3"
+val junitJupiterVersion="5.11.4"
 val koinVersion = "4.0.0"
 
 ///Due to vulnerabilities
 val commonsCompressVersion = "1.27.1"
 val jsonVersion = "20240303"
 val bcprovJdk18onVersion = "1.79"
-val guavaVersion = "33.3.1-jre"
+val guavaVersion = "33.4.0-jre"
 
 plugins {
     id("application")
