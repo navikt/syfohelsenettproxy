@@ -7,13 +7,13 @@ version = "1.0.0"
 val javaVersion = JvmTarget.JVM_21
 
 
-val coroutinesVersion = "1.9.0"
+val coroutinesVersion = "1.10.0"
 val jacksonVersion = "2.18.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
-val ktorVersion = "3.0.2"
-val logbackVersion = "1.5.12"
+val ktorVersion = "3.0.3"
+val logbackVersion = "1.5.14"
 val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "3.6.4"
@@ -32,14 +32,14 @@ val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion="5.11.3"
+val junitJupiterVersion="5.11.4"
 val koinVersion = "4.0.0"
 
 ///Due to vulnerabilities
 val commonsCompressVersion = "1.27.1"
 val jsonVersion = "20240303"
 val bcprovJdk18onVersion = "1.79"
-val guavaVersion = "33.3.1-jre"
+val guavaVersion = "33.4.0-jre"
 
 plugins {
     id("application")
