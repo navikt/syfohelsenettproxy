@@ -4,13 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
-import io.ktor.server.application.call
-import io.ktor.server.engine.*
-import io.ktor.server.netty.Netty
-import io.ktor.server.netty.NettyApplicationEngine
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
 import java.io.IOException
 import java.text.ParseException
 import java.time.LocalDateTime
@@ -19,20 +12,6 @@ import java.util.Date
 import java.util.UUID
 
 const val keyId = "localhost-signer"
-
-/* Brukes for til å hente ut pubkeyen som brukes til å validere tokens. Denne er noe som tilbyder av tokens (AzureAd)
-  normalt tilbyr.
-*/
-fun fakeJWTApi(
-    randomPort: Int
-): EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration> {
-    return embeddedServer(Netty, randomPort) {
-            routing {
-                get("/fake.jwt") { call.respond(getFileAsString("src/test/resources/jwkset.json")) }
-            }
-        }
-        .start(wait = false)
-}
 
 /* Utsteder en Bearer-token (En slik vi ber AzureAd om). OBS: Det er viktig at KeyId matcher kid i jwkset.json
  */
