@@ -38,6 +38,7 @@ val koinVersion = "4.0.1"
 ///Due to vulnerabilities
 val bcprovJdk18onVersion = "1.79"
 val guavaVersion = "33.4.0-jre"
+val commonsCompressVersion = "1.27.1"
 
 plugins {
     id("application")
@@ -153,6 +154,11 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+      constraints {
+        implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
+            because("Due to vulnerabilities, see CVE-2024-26308")
+        }
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
