@@ -33,7 +33,7 @@ val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.11.4"
-val koinVersion = "4.0.1"
+val koinVersion = "4.0.2"
 
 ///Due to vulnerabilities
 val bcprovJdk18onVersion = "1.80"
