@@ -13,7 +13,7 @@ val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
 val ktorVersion = "3.0.3"
-val logbackVersion = "1.5.15"
+val logbackVersion = "1.5.16"
 val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "3.6.4"
@@ -25,25 +25,26 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.3.0"
 val testcontainersVersion = "1.20.4"
-val mockkVersion = "1.13.14"
-val nimbusdsVersion = "9.47"
+val mockkVersion = "1.13.16"
+val nimbusdsVersion = "10.0.1"
 val kotlinVersion = "2.1.0"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion="5.11.4"
-val koinVersion = "4.0.1"
+val koinVersion = "4.0.2"
 
 ///Due to vulnerabilities
-val bcprovJdk18onVersion = "1.79"
+val bcprovJdk18onVersion = "1.80"
 val guavaVersion = "33.4.0-jre"
+val commonsCompressVersion = "1.27.1"
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
     kotlin("jvm") version "2.1.0"
-    id("com.diffplug.spotless") version "6.25.0"
+    id("com.diffplug.spotless") version "7.0.2"
     id("com.gradleup.shadow") version "8.3.5"
 }
 
@@ -153,6 +154,11 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
+      constraints {
+        implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
+            because("Due to vulnerabilities, see CVE-2024-26308")
+        }
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
