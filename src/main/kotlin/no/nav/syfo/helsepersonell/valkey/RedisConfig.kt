@@ -8,7 +8,7 @@ import no.nav.syfo.getEnvVar
 
 class ValkeyConfig(
     valkeyUri: URI = URI(getEnvVar("VALKEY_URI_SYFOHELSENETTPROXY")),
-    val valkeyUsername: String = getEnvVar("VALKEY__USERNAME_SYFOHELSENETTPROXY"),
+    val valkeyUsername: String = getEnvVar("VALKEY_USERNAME_SYFOHELSENETTPROXY"),
     val valkeyPassword: String = getEnvVar("VALKEY_PASSWORD_SYFOHELSENETTPROXY"),
     val ssl: Boolean = true
 ) {
