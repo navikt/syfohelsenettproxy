@@ -6,8 +6,8 @@ import java.time.ZoneOffset
 import java.util.GregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
-import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
-import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
+import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
+import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nav.syfo.logger
 import no.nav.syfo.securelog
 import no.nav.syfo.ws.createPort
@@ -23,7 +23,7 @@ import org.apache.cxf.phase.Phase
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
-    private val helsepersonellRedis: HelsepersonellRedis
+    private val helsepersonellValkey: HelsepersonellValkey
 ) {
     companion object {
         const val CACHE_TIME_HOURS = 1L
@@ -34,9 +34,9 @@ class HelsepersonellService(
     private val HPR_NR_IKKE_OPPGITT = "ArgumentException: HPR-nummer må oppgis"
 
     fun finnBehandler(behandlersPersonnummer: String): Behandler? {
-        val fromRedis = helsepersonellRedis.getFromFnr(behandlersPersonnummer)
-        if (fromRedis != null && shouldUseRedisModel(fromRedis)) {
-            return fromRedis.behandler
+        val fromValkey = helsepersonellValkey.getFromFnr(behandlersPersonnummer)
+        if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            return fromValkey.behandler
         }
         return try {
             helsepersonellV1
@@ -48,7 +48,7 @@ class HelsepersonellService(
                 .also {
                     logger.info("Hentet behandler for personnummer")
                     securelog.info("Hentet behandler for personnummer behandler objekt: $it")
-                    helsepersonellRedis.save(it)
+                    helsepersonellValkey.save(it)
                 }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
@@ -58,19 +58,19 @@ class HelsepersonellService(
                 }
                 else -> {
                     logger.error("Helsenett gir feilmelding: {}", e.message)
-                    returnJedisOrThrow(fromRedis, e)
+                    returnJedisOrThrow(fromValkey, e)
                 }
             }
         } catch (e: SOAPFaultException) {
             logger.error("Helsenett gir feilmelding: {}", e.message)
-            return returnJedisOrThrow(fromRedis, e)
+            return returnJedisOrThrow(fromValkey, e)
         }
     }
 
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
-        val fromRedis = helsepersonellRedis.getFromHpr(hprNummer)
-        if (fromRedis != null && shouldUseRedisModel(fromRedis)) {
-            return fromRedis.behandler
+        val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
+        if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            return fromValkey.behandler
         }
         try {
             return helsepersonellV1
@@ -82,7 +82,7 @@ class HelsepersonellService(
                 .also {
                     logger.info("Hentet behandler for HPR-nummer")
                     securelog.info("Hentet behandler for HPR-nummer behandler objekt: $it")
-                    helsepersonellRedis.save(it)
+                    helsepersonellValkey.save(it)
                 }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             return when {
@@ -92,12 +92,12 @@ class HelsepersonellService(
                 }
                 else -> {
                     logger.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
-                    returnJedisOrThrow(fromRedis, e)
+                    returnJedisOrThrow(fromValkey, e)
                 }
             }
         } catch (e: SOAPFaultException) {
             logger.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
-            return returnJedisOrThrow(fromRedis, e)
+            return returnJedisOrThrow(fromValkey, e)
         }
     }
 
@@ -120,8 +120,8 @@ class HelsepersonellService(
         }
             ?: throw HelsepersonellException(message = e.message, cause = e.cause)
 
-    private fun shouldUseRedisModel(redisBehandlerModel: JedisBehandlerModel): Boolean {
-        return redisBehandlerModel.timestamp.isAfter(
+    private fun shouldUseValkeyModel(jedisBehandlerModel: JedisBehandlerModel): Boolean {
+        return jedisBehandlerModel.timestamp.isAfter(
             OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS),
         )
     }

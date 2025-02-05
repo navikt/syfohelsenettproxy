@@ -43,7 +43,7 @@ spec:
     application:
       enabled: true
       tenant: trygdeetaten.no
-  redis:
+  valkey:
     - instance: syfohelsenettproxy
       access: readwrite
   accessPolicy:

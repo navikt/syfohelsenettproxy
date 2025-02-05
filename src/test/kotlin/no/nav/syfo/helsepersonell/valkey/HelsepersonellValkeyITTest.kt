@@ -1,4 +1,4 @@
-package no.nav.syfo.helsepersonell.redis
+package no.nav.syfo.helsepersonell.valkey
 
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -13,11 +13,11 @@ import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class HelsepersonellRedisITTest {
-    val helsepesronellRedis = mockkClass(HelsepersonellRedis::class, relaxed = true)
+    val helsepesronellValkey = mockkClass(HelsepersonellValkey::class, relaxed = true)
 
     @BeforeAll
     internal fun setup() {
-        clearMocks(helsepesronellRedis)
+        clearMocks(helsepesronellValkey)
     }
 
     @Test
@@ -26,13 +26,13 @@ internal class HelsepersonellRedisITTest {
 
         val offsetDateTimeNow = OffsetDateTime.now(ZoneOffset.UTC)
 
-        coEvery { helsepesronellRedis.getFromFnr(any()) } returns null
-        coEvery { helsepesronellRedis.getFromHpr(any()) } returns
+        coEvery { helsepesronellValkey.getFromFnr(any()) } returns null
+        coEvery { helsepesronellValkey.getFromHpr(any()) } returns
             JedisBehandlerModel(timestamp = offsetDateTimeNow, behandler = behandler)
 
-        helsepesronellRedis.save(behandler, offsetDateTimeNow)
-        val cachedBehandlerFnr = helsepesronellRedis.getFromFnr(behandler.fnr!!)
-        val cachedBehandlerHpr = helsepesronellRedis.getFromHpr("${behandler.hprNummer}")
+        helsepesronellValkey.save(behandler, offsetDateTimeNow)
+        val cachedBehandlerFnr = helsepesronellValkey.getFromFnr(behandler.fnr!!)
+        val cachedBehandlerHpr = helsepesronellValkey.getFromHpr("${behandler.hprNummer}")
 
         cachedBehandlerFnr shouldBeEqualTo null
         cachedBehandlerHpr shouldBeEqualTo
@@ -44,14 +44,14 @@ internal class HelsepersonellRedisITTest {
 
     @Test
     internal fun `Should not save when hprNummer = null`() {
-        coEvery { helsepesronellRedis.getFromFnr(any()) } returns null
-        coEvery { helsepesronellRedis.getFromHpr(any()) } returns null
+        coEvery { helsepesronellValkey.getFromFnr(any()) } returns null
+        coEvery { helsepesronellValkey.getFromHpr(any()) } returns null
 
         val behandler = behandler().copy(hprNummer = null)
 
-        helsepesronellRedis.save(behandler)
-        val cachedBehandlerFnr = helsepesronellRedis.getFromFnr(behandler.fnr!!)
-        val cachedBehandlerHpr = helsepesronellRedis.getFromHpr("${behandler.hprNummer}")
+        helsepesronellValkey.save(behandler)
+        val cachedBehandlerFnr = helsepesronellValkey.getFromFnr(behandler.fnr!!)
+        val cachedBehandlerHpr = helsepesronellValkey.getFromHpr("${behandler.hprNummer}")
 
         cachedBehandlerFnr shouldBeEqualTo null
         cachedBehandlerHpr shouldBeEqualTo null
@@ -59,25 +59,25 @@ internal class HelsepersonellRedisITTest {
 
     @Test
     internal fun `should get null behandler`() {
-        coEvery { helsepesronellRedis.getFromHpr(any()) } returns null
+        coEvery { helsepesronellValkey.getFromHpr(any()) } returns null
 
-        val behandler = helsepesronellRedis.getFromHpr("10000001")
+        val behandler = helsepesronellValkey.getFromHpr("10000001")
         behandler shouldBeEqualTo null
     }
 
     @Test
     internal fun `Should update when redis is older than 1 Hour`() {
         val timestamp = OffsetDateTime.now(ZoneOffset.UTC)
-        coEvery { helsepesronellRedis.getFromHpr(any()) } returns
+        coEvery { helsepesronellValkey.getFromHpr(any()) } returns
             JedisBehandlerModel(timestamp, behandler())
 
-        helsepesronellRedis.save(
+        helsepesronellValkey.save(
             behandler(),
             timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(1),
         )
-        helsepesronellRedis.save(behandler(), timestamp)
+        helsepesronellValkey.save(behandler(), timestamp)
 
-        helsepesronellRedis.getFromHpr("${behandler().hprNummer}") shouldBeEqualTo
+        helsepesronellValkey.getFromHpr("${behandler().hprNummer}") shouldBeEqualTo
             JedisBehandlerModel(timestamp, behandler())
     }
 }

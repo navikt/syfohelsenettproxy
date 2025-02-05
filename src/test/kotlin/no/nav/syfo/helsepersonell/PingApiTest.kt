@@ -6,7 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
+import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import org.amshove.kluent.shouldBeEqualTo
@@ -17,16 +17,16 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class PingApiTest {
     val wsMock = mockk<IHPR2Service>()
-    val redis = mockk<HelsepersonellRedis>()
-    val helsePersonService = HelsepersonellService(wsMock, redis)
+    val valkey = mockk<HelsepersonellValkey>()
+    val helsePersonService = HelsepersonellService(wsMock, valkey)
 
     @BeforeAll
     internal fun setup() {
         every { wsMock.ping("1") } returns "pong"
         every { wsMock.ping("2") } returns null
-        every { redis.getFromHpr(any()) } returns null
-        every { redis.getFromFnr(any()) } returns null
-        every { redis.save(any(), any()) } returns Unit
+        every { valkey.getFromHpr(any()) } returns null
+        every { valkey.getFromFnr(any()) } returns null
+        every { valkey.save(any(), any()) } returns Unit
     }
 
     @Test

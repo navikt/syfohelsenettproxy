@@ -7,7 +7,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
+import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.objectMapper
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.common.no.Kode
@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test
 
 internal class BehandlerApiTest {
     private val wsMock = mockk<IHPR2Service>()
-    private val redis = mockk<HelsepersonellRedis>()
-    private val helsePersonService = HelsepersonellService(wsMock, redis)
+    private val valkey = mockk<HelsepersonellValkey>()
+    private val helsePersonService = HelsepersonellService(wsMock, valkey)
 
     @BeforeEach
     fun beforeEach() {
@@ -84,9 +84,9 @@ internal class BehandlerApiTest {
                 nin = "12345678910"
             }
 
-        every { redis.getFromHpr(any()) } returns null
-        every { redis.getFromFnr(any()) } returns null
-        every { redis.save(any(), any()) } returns Unit
+        every { valkey.getFromHpr(any()) } returns null
+        every { valkey.getFromFnr(any()) } returns null
+        every { valkey.save(any(), any()) } returns Unit
     }
 
     @Test
