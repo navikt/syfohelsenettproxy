@@ -70,6 +70,7 @@ class HelsepersonellService(
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            logger.info("Returning behandler found in valkey")
             return fromValkey.behandler
         }
         try {
