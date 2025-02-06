@@ -173,6 +173,10 @@ kotlin {
 
 tasks {
 
+    build {
+        dependsOn("shadowJar")
+    }
+
     cxfCodegen {
         wsdl2java {
             register("helsepersonellregisteret") {
