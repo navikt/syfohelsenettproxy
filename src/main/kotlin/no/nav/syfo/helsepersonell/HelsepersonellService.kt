@@ -114,9 +114,9 @@ class HelsepersonellService(
         }
     }
 
-    private fun returnJedisOrThrow(fromRedis: JedisBehandlerModel?, e: Exception) =
-        fromRedis?.behandler.let {
-            logger.info("Returning behandler found in REDIS")
+    private fun returnJedisOrThrow(fromvalkey: JedisBehandlerModel?, e: Exception) =
+        fromvalkey?.behandler.let {
+            logger.info("Returning behandler found in valkey")
             it
         }
             ?: throw HelsepersonellException(message = e.message, cause = e.cause)

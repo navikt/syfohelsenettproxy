@@ -29,7 +29,7 @@ class HelsepersonellValkey(var jedisPool: JedisPool) {
                 false -> logger.error("Behandler does not have HPR-number")
             }
         } catch (ex: Exception) {
-            logger.error("Could not save behandler in Redis", ex)
+            logger.error("Could not save behandler in valkey", ex)
         } finally {
             jedis?.close()
         }
@@ -39,14 +39,14 @@ class HelsepersonellValkey(var jedisPool: JedisPool) {
         return when (fnr.isNotBlank()) {
             true ->
                 initJedis() { jedis ->
-                    jedis.get("fnr:$fnr")?.let { getBehandlerFromRedis(jedis, it) }
+                    jedis.get("fnr:$fnr")?.let { getBehandlerFromValkey(jedis, it) }
                 }
             false -> null
         }
     }
 
     fun getFromHpr(hprNummer: String): JedisBehandlerModel? {
-        return initJedis { jedis -> getBehandlerFromRedis(jedis, hprNummer) }
+        return initJedis { jedis -> getBehandlerFromValkey(jedis, hprNummer) }
     }
 
     private fun initJedis(block: (jedis: Jedis) -> JedisBehandlerModel?): JedisBehandlerModel? {
@@ -55,14 +55,14 @@ class HelsepersonellValkey(var jedisPool: JedisPool) {
             jedis = jedisPool.resource
             block.invoke(jedis)
         } catch (ex: Exception) {
-            logger.error("Could not get behandler in Redis", ex)
+            logger.error("Could not get behandler in valkey", ex)
             null
         } finally {
             jedis?.close()
         }
     }
 
-    private fun getBehandlerFromRedis(jedis: Jedis, hprNummer: String): JedisBehandlerModel? {
+    private fun getBehandlerFromValkey(jedis: Jedis, hprNummer: String): JedisBehandlerModel? {
         val behandlerString = jedis.get("hpr:$hprNummer")
         return when (behandlerString.isNullOrBlank()) {
             true -> null

@@ -58,7 +58,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler fra redis`() {
+    internal fun `Henter behandler fra valkey`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
@@ -72,7 +72,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler og lagrer i redis`() {
+    internal fun `Henter behandler og lagrer i valkey`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
@@ -88,7 +88,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler fra redis med HPR`() {
+    internal fun `Henter behandler fra valkey med HPR`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromHpr("1000001") } returns null
         val behandler = service.finnBehandlerFraHprNummer("1000001")
@@ -99,7 +99,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter paa nytt fra WS om redis timestamp er gammelt`() {
+    internal fun `Henter paa nytt fra WS om valkey timestamp er gammelt`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
@@ -114,7 +114,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter ikke paa nytt redist timestamp er nytt`() {
+    internal fun `Henter ikke paa nytt valkey timestamp er nytt`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
@@ -129,7 +129,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke redis om det feiler mot helsenett for hpr`() {
+    internal fun `Skal bruke valkey om det feiler mot helsenett for hpr`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
 
         every { helsepersonellValkey.getFromHpr("1000001") } returns
@@ -148,7 +148,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke redis om det feiler mot helsenett for fnr`() {
+    internal fun `Skal bruke valkey om det feiler mot helsenett for fnr`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
@@ -166,7 +166,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke redis ved SOAPFaultException for FNR`() {
+    internal fun `Skal bruke valkey ved SOAPFaultException for FNR`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
@@ -184,7 +184,7 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke redis ved SOAPFaultException for HPR`() {
+    internal fun `Skal bruke valkey ved SOAPFaultException for HPR`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-internal class HelsepersonellRedisITTest {
+internal class HelsepersonellValkeyITTest {
     val helsepesronellValkey = mockkClass(HelsepersonellValkey::class, relaxed = true)
 
     @BeforeAll
@@ -66,7 +66,7 @@ internal class HelsepersonellRedisITTest {
     }
 
     @Test
-    internal fun `Should update when redis is older than 1 Hour`() {
+    internal fun `Should update when valkey is older than 1 Hour`() {
         val timestamp = OffsetDateTime.now(ZoneOffset.UTC)
         coEvery { helsepesronellValkey.getFromHpr(any()) } returns
             JedisBehandlerModel(timestamp, behandler())

@@ -8,15 +8,15 @@ import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 
 internal class HelsepersonellValkeyTest {
-    private val redis = mockk<JedisPool>()
+    private val jedisPool = mockk<JedisPool>()
     private val helseperonellValkey =
         HelsepersonellValkey(
-            redis,
+            jedisPool,
         )
 
     @Test
     internal fun `Should not fail when could not get connect from pool`() {
-        every { redis.resource } throws
+        every { jedisPool.resource } throws
             JedisConnectionException("Could not get a resource from the pool")
         helseperonellValkey.save(behandler())
         helseperonellValkey.getFromHpr("10000001") shouldBeEqualTo null
