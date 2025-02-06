@@ -1,12 +1,12 @@
 package no.nav.syfo.helsepersonell.valkey
 
-import io.valkey.Jedis
-import io.valkey.JedisPool
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.logger
 import no.nav.syfo.objectMapper
+import redis.clients.jedis.Jedis
+import redis.clients.jedis.JedisPool
 
 class HelsepersonellValkey(var jedisPool: JedisPool) {
 
