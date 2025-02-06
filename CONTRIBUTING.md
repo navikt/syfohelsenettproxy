@@ -18,6 +18,6 @@ Dette vil kjøre alle trinnene som er definert i `build.gradle.kts` filen.
 Hvis du legger til en ny funksjon eller feilretting, sørg for at det er riktig testdekning.
 
 ## Pull Request
-Hvis du har en branch på ein forken som er klar til å slås merged, 
+Hvis du har en branch på ein fork som er klar til å merge, 
 vennligst opprett en ny pull-request. Vedlikeholdsansvarlige vil gjennomgå for å sikre at retningslinjene ovenfor er fulgt, 
 og hvis endringene er nyttige for alle bibliotekbrukere, vil de bli merged.
