@@ -2,10 +2,10 @@ package no.nav.syfo.helsepersonell.valkey
 
 import io.mockk.every
 import io.mockk.mockk
-import io.valkey.JedisPool
-import io.valkey.exceptions.JedisConnectionException
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
+import redis.clients.jedis.JedisPool
+import redis.clients.jedis.exceptions.JedisConnectionException
 
 internal class HelsepersonellValkeyTest {
     private val jedisPool = mockk<JedisPool>()

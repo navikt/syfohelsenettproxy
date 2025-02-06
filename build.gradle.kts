@@ -23,7 +23,7 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val valkeyVersion = "5.3.0"
+val jedisVersion = "5.2.0"
 val testcontainersVersion = "1.20.4"
 val mockkVersion = "1.13.16"
 val nimbusdsVersion = "10.0.1"
@@ -144,7 +144,7 @@ dependencies {
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
-    implementation("io.valkey:valkey-java:$valkeyVersion")
+    implementation("redis.clients:jedis:$jedisVersion")
 
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")

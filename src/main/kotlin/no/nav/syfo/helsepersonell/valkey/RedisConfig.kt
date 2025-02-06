@@ -1,10 +1,10 @@
 package no.nav.syfo.helsepersonell.valkey
 
-import io.valkey.DefaultJedisClientConfig
-import io.valkey.HostAndPort
-import io.valkey.JedisPool
-import io.valkey.JedisPoolConfig
 import no.nav.syfo.getEnvVar
+import redis.clients.jedis.DefaultJedisClientConfig
+import redis.clients.jedis.HostAndPort
+import redis.clients.jedis.JedisPool
+import redis.clients.jedis.JedisPoolConfig
 
 class ValkeyConfig(
     val valkeyUsername: String = getEnvVar("VALKEY_USERNAME_SYFOHELSENETTPROXY"),
