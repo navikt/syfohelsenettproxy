@@ -36,6 +36,7 @@ class HelsepersonellService(
     fun finnBehandler(behandlersPersonnummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromFnr(behandlersPersonnummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            logger.info("Returning behandler fnr found in valkey")
             return fromValkey.behandler
         }
         return try {
@@ -70,7 +71,7 @@ class HelsepersonellService(
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
-            logger.info("Returning behandler found in valkey")
+            logger.info("Returning behandler hpr found in valkey")
             return fromValkey.behandler
         }
         try {
