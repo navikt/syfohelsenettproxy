@@ -9,8 +9,8 @@ import no.nav.syfo.fastlegeinformasjon.FastlegeinformasjonService
 import no.nav.syfo.fastlegeinformasjon.fastlegeinformasjonV2
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.helsepersonellV1
-import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
-import no.nav.syfo.helsepersonell.redis.createJedisPool
+import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
+import no.nav.syfo.helsepersonell.valkey.createJedisPool
 import no.nav.syfo.sfs.SykmelderService
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -52,7 +52,7 @@ val helsepersonellModule = module {
             serviceUser.serviceuserPassword,
         )
     }
-    single { HelsepersonellRedis(get()) }
+    single { HelsepersonellValkey(get()) }
     single { HelsepersonellService(get(), get()) }
 }
 

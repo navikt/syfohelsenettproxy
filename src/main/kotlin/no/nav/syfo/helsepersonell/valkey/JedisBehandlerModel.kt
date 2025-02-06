@@ -1,4 +1,4 @@
-package no.nav.syfo.helsepersonell.redis
+package no.nav.syfo.helsepersonell.valkey
 
 import java.time.OffsetDateTime
 import no.nav.syfo.helsepersonell.Behandler

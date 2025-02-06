@@ -12,8 +12,8 @@ import java.util.GregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
-import no.nav.syfo.helsepersonell.redis.HelsepersonellRedis
-import no.nav.syfo.helsepersonell.redis.JedisBehandlerModel
+import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
+import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.common.no.Periode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
@@ -32,7 +32,7 @@ import org.junit.jupiter.api.TestInstance
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class HelsepersonellServiceTest {
     private val mock = mockk<IHPR2Service>()
-    private val helsepersonellRedis = mockk<HelsepersonellRedis>(relaxed = true)
+    private val helsepersonellValkey = mockk<HelsepersonellValkey>(relaxed = true)
 
     @BeforeEach
     internal fun setup() {
@@ -43,38 +43,38 @@ internal class HelsepersonellServiceTest {
 
     @Test
     internal fun `Should not save when fnr is empty`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromFnr(any()) } returns null
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromFnr(any()) } returns null
 
         val behandler = service.finnBehandler("fnr")
         val idag = now()
         val slot = slot<XMLGregorianCalendar>()
         verify { mock.hentPersonMedPersonnummer("fnr", capture(slot)) }
-        verify(exactly = 1) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 1) { helsepersonellValkey.getFromFnr("fnr") }
 
         val cal = slot.captured
         cal.toGregorianCalendar().toZonedDateTime().toLocalDate().shouldBeEqualTo(idag)
     }
 
     @Test
-    internal fun `Henter behandler fra redis`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromFnr("fnr") } returns
+    internal fun `Henter behandler fra valkey`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 behandler = getBehandler(),
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC),
             )
         val behandler = service.finnBehandler("fnr")
         verify(exactly = 0) { mock.hentPersonMedPersonnummer(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 1) { helsepersonellValkey.getFromFnr("fnr") }
     }
 
     @Test
-    internal fun `Henter behandler og lagrer i redis`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromHpr("1000001") } returns
+    internal fun `Henter behandler og lagrer i valkey`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 behandler = getBehandler(),
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC),
@@ -82,57 +82,57 @@ internal class HelsepersonellServiceTest {
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         verify(exactly = 0) { mock.hentPersonMedPersonnummer(any(), any()) }
         verify(exactly = 0) { mock.hentPerson(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Henter behandler fra redis med HPR`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromHpr("1000001") } returns null
+    internal fun `Henter behandler fra valkey med HPR`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromHpr("1000001") } returns null
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         verify(exactly = 1) { mock.hentPerson(any(), any()) }
-        verify(exactly = 1) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 1) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Henter paa nytt fra WS om redis timestamp er gammelt`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromHpr("1000001") } returns
+    internal fun `Henter paa nytt fra WS om valkey timestamp er gammelt`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(61),
                 behandler = getBehandler(),
             )
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         verify(exactly = 1) { mock.hentPerson(any(), any()) }
-        verify(exactly = 1) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 1) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Henter ikke paa nytt redist timestamp er nytt`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromHpr("1000001") } returns
+    internal fun `Henter ikke paa nytt valkey timestamp er nytt`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(59),
                 behandler = getBehandler(),
             )
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         verify(exactly = 0) { mock.hentPerson(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Skal bruke redis om det feiler mot helsenett for hpr`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
+    internal fun `Skal bruke valkey om det feiler mot helsenett for hpr`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
 
-        every { helsepersonellRedis.getFromHpr("1000001") } returns
+        every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
                 behandler = getBehandler(),
@@ -142,15 +142,15 @@ internal class HelsepersonellServiceTest {
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         behandler shouldBeEqualTo getBehandler()
         verify(exactly = 1) { mock.hentPerson(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!, any()) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!, any()) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Skal bruke redis om det feiler mot helsenett for fnr`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromFnr("fnr") } returns
+    internal fun `Skal bruke valkey om det feiler mot helsenett for fnr`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
                 behandler = getBehandler(),
@@ -160,15 +160,15 @@ internal class HelsepersonellServiceTest {
         val behandler = service.finnBehandler("fnr")
         behandler shouldBeEqualTo getBehandler()
         verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
-        verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!) }
+        verify(exactly = 1) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 0) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Skal bruke redis ved SOAPFaultException for FNR`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromFnr("fnr") } returns
+    internal fun `Skal bruke valkey ved SOAPFaultException for FNR`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
                 behandler = getBehandler(),
@@ -178,15 +178,15 @@ internal class HelsepersonellServiceTest {
         val behandler = service.finnBehandler("fnr")
         behandler shouldBeEqualTo getBehandler()
         verify(exactly = 1) { mock.hentPersonMedPersonnummer(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
-        verify(exactly = 1) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 0) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!) }
+        verify(exactly = 1) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 0) { helsepersonellValkey.getFromHpr("1000001") }
     }
 
     @Test
-    internal fun `Skal bruke redis ved SOAPFaultException for HPR`() {
-        val service = HelsepersonellService(mock, helsepersonellRedis)
-        every { helsepersonellRedis.getFromHpr("1000001") } returns
+    internal fun `Skal bruke valkey ved SOAPFaultException for HPR`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
                 behandler = getBehandler(),
@@ -195,9 +195,9 @@ internal class HelsepersonellServiceTest {
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         behandler shouldBeEqualTo getBehandler()
         verify(exactly = 1) { mock.hentPerson(any(), any()) }
-        verify(exactly = 0) { helsepersonellRedis.save(behandler!!) }
-        verify(exactly = 0) { helsepersonellRedis.getFromFnr("fnr") }
-        verify(exactly = 1) { helsepersonellRedis.getFromHpr("1000001") }
+        verify(exactly = 0) { helsepersonellValkey.save(behandler!!) }
+        verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
+        verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
     }
 }
 

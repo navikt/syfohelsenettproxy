@@ -23,11 +23,11 @@ val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
-val jedisVersion = "5.2.0"
+val valkeyVersion = "5.3.0"
 val testcontainersVersion = "1.20.4"
 val mockkVersion = "1.13.16"
 val nimbusdsVersion = "10.0.1"
-val kotlinVersion = "2.1.0"
+val kotlinVersion = "2.1.10"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -43,7 +43,7 @@ val commonsCompressVersion = "1.27.1"
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "1.0.2"
-    kotlin("jvm") version "2.1.0"
+    kotlin("jvm") version "2.1.10"
     id("com.diffplug.spotless") version "7.0.2"
     id("com.gradleup.shadow") version "8.3.5"
 }
@@ -144,7 +144,7 @@ dependencies {
     implementation("com.sun.xml.ws:jaxws-tools:$jaxwsToolsVersion") {
         exclude(group = "com.sun.xml.ws", module = "policy")
     }
-    implementation("redis.clients:jedis:$jedisVersion")
+    implementation("io.valkey:valkey-java:$valkeyVersion")
 
     implementation("io.insert-koin:koin-ktor:$koinVersion")
     implementation("io.insert-koin:koin-logger-slf4j:$koinVersion")
@@ -172,6 +172,10 @@ kotlin {
 }
 
 tasks {
+
+    build {
+        dependsOn("shadowJar")
+    }
 
     cxfCodegen {
         wsdl2java {

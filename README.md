@@ -25,7 +25,7 @@ Dette er det eit oversiktsbilde av flyten i applikasjonen
   flowchart LR
       syfohelsenettproxy <-- API --> random-application
       syfohelsenettproxy <---> azure-ad
-      syfohelsenettproxy <--> redis
+      syfohelsenettproxy <--> valkey
       syfohelsenettproxy <--> nhn;
  ```
 
@@ -61,6 +61,9 @@ Dette prosjeket er vedlikeholdt av [navikt/teamsykmelding](CODEOWNERS)
 
 Spørsmål knyttet til koden eller prosjektet kan stilles som
 [issues](https://github.com/navikt/syfohelsenettproxy/issues) her på GitHub
+
+## Bidra
+Vi er glade for bidrag, les mer om hvordan du kan bidra i [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### For NAV-ansatte
 Interne henvendelser kan sendes via Slack i kanalen [#team-sykmelding](https://nav-it.slack.com/archives/CMA3XV997)
