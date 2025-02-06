@@ -3,6 +3,7 @@ package no.nav.syfo.helsepersonell.valkey
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool
+import io.valkey.JedisPoolConfig
 import java.net.URI
 import no.nav.syfo.getEnvVar
 
@@ -18,6 +19,7 @@ class ValkeyConfig(
 
 fun createJedisPool(valkeyConfig: ValkeyConfig = ValkeyConfig()): JedisPool {
     return JedisPool(
+        JedisPoolConfig(),
         HostAndPort(valkeyConfig.host, valkeyConfig.port),
         DefaultJedisClientConfig.builder()
             .ssl(valkeyConfig.ssl)
