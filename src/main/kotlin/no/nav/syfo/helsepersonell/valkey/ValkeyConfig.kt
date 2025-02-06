@@ -7,10 +7,10 @@ import io.valkey.JedisPoolConfig
 import no.nav.syfo.getEnvVar
 
 class ValkeyConfig(
-    val valkeyUsername: String = getEnvVar("REDIS_USERNAME_SYFOHELSENETTPROXY"),
-    val valkeyPassword: String = getEnvVar("REDIS_PASSWORD_SYFOHELSENETTPROXY"),
-    val host: String = getEnvVar("REDIS_HOST_SYFOHELSENETTPROXY"),
-    val port: Int = getEnvVar("REDIS_PORT_SYFOHELSENETTPROXY").toInt(),
+    val valkeyUsername: String = getEnvVar("VALKEY_USERNAME_SYFOHELSENETTPROXY"),
+    val valkeyPassword: String = getEnvVar("VALKEY_PASSWORD_SYFOHELSENETTPROXY"),
+    val host: String = getEnvVar("VALKEY_HOST_SYFOHELSENETTPROXY"),
+    val port: Int = getEnvVar("VALKEY_PORT_SYFOHELSENETTPROXY").toInt(),
     val ssl: Boolean = true
 )
 
