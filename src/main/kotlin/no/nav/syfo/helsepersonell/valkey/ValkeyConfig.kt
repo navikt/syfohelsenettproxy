@@ -20,7 +20,7 @@ fun createJedisPool(valkeyConfig: ValkeyConfig = ValkeyConfig()): JedisPool {
         HostAndPort(valkeyConfig.host, valkeyConfig.port),
         DefaultJedisClientConfig.builder()
             .ssl(valkeyConfig.ssl)
-            .user(valkeyConfig.valkeyUsername)
+            .user("syfohelsenettproxy-rw")
             .password(valkeyConfig.valkeyPassword)
             .build()
     )
