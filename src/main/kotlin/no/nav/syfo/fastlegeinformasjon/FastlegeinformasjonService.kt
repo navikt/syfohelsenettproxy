@@ -1,8 +1,8 @@
 package no.nav.syfo.fastlegeinformasjon
 
-import javax.xml.bind.JAXBElement
+import jakarta.xml.bind.JAXBElement
+import jakarta.xml.ws.soap.SOAPFaultException
 import javax.xml.namespace.QName
-import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.logger
 import no.nav.syfo.ws.TimeoutFeature
 import no.nav.syfo.ws.createPort
