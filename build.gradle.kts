@@ -1,4 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
+import io.mateo.cxf.codegen.wsdl2java.Wsdl2Java
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 group = "no.nav.syfo"
@@ -16,7 +17,7 @@ val ktorVersion = "3.1.0"
 val logbackVersion = "1.5.16"
 val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
-val cxfVersion = "3.6.5"
+val cxfVersion = "4.0.6"
 val commonsTextVersion = "1.13.0"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
@@ -32,7 +33,7 @@ val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion="5.11.4"
+val junitJupiterVersion = "5.11.4"
 val koinVersion = "4.0.2"
 
 ///Due to vulnerabilities
@@ -42,7 +43,7 @@ val commonsCompressVersion = "1.27.1"
 
 plugins {
     id("application")
-    id("io.mateo.cxf-codegen") version "1.0.2"
+    id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.1.10"
     id("com.diffplug.spotless") version "7.0.2"
     id("com.gradleup.shadow") version "8.3.6"
@@ -70,6 +71,9 @@ repositories {
     mavenCentral()
     maven {
         url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
+    }
+    maven {
+        url = uri("https://repo.jenkins-ci.org/public")
     }
 }
 
@@ -125,12 +129,12 @@ dependencies {
         exclude(group = "org.apache.velocity", module = "velocity")
     }
     constraints {
-        implementation("org.bouncycastle:bcprov-jdk18on:$bcprovJdk18onVersion"){
+        implementation("org.bouncycastle:bcprov-jdk18on:$bcprovJdk18onVersion") {
             because("override transient from org.apache.cxf:cxf-rt-ws-security")
         }
     }
     constraints {
-        implementation("com.google.guava:guava:$guavaVersion"){
+        implementation("com.google.guava:guava:$guavaVersion") {
             because("override transient from org.apache.cxf:cxf-rt-ws-security")
         }
     }
@@ -154,7 +158,7 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.testcontainers:testcontainers:$testcontainersVersion")
-      constraints {
+    constraints {
         implementation("org.apache.commons:commons-compress:$commonsCompressVersion") {
             because("Due to vulnerabilities, see CVE-2024-26308")
         }
@@ -178,19 +182,19 @@ tasks {
     }
 
     cxfCodegen {
-        wsdl2java {
-            register("helsepersonellregisteret") {
-                wsdl.set(file("$projectDir/src/main/resources/wsdl/helsepersonellregisteret.wsdl"))
-                bindingFiles.add("$projectDir/src/main/resources/xjb/binding.xml")
+        register("wsdl2javaHelsepersonellregisteret", Wsdl2Java::class) {
+            toolOptions {
+                wsdl.set(layout.projectDirectory.file("src/main/resources/wsdl/helsepersonellregisteret.wsdl").asFile.toPath().toAbsolutePath().toString())
+                bindingFiles.add(layout.projectDirectory.file("src/main/resources/xjb/binding.xml").asFile.absolutePath)
             }
         }
-        wsdl2java {
-            register("fastlegeinformasjonEksport") {
-                wsdl.set(file("$projectDir/src/main/resources/wsdl/fastlegeinformasjonregisteret.wsdl"))
+
+        register("wsdl2javaFastlegeinformasjonEksport", Wsdl2Java::class) {
+            toolOptions {
+                wsdl.set(layout.projectDirectory.file("src/main/resources/wsdl/fastlegeinformasjonregisteret.wsdl").asFile.toPath().toAbsolutePath().toString())
             }
         }
     }
-
 
     compileKotlin {
         dependsOn("wsdl2javaHelsepersonellregisteret")
