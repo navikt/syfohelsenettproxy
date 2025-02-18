@@ -40,6 +40,7 @@ val koinVersion = "4.0.2"
 val bcprovJdk18onVersion = "1.80"
 val guavaVersion = "33.4.0-jre"
 val commonsCompressVersion = "1.27.1"
+val nettyHandlerVersion = "4.1.118.Final"
 
 plugins {
     id("application")
@@ -100,6 +101,13 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    {
+        constraints {
+            implementation("io.netty:netty-handler:$nettyHandlerVersion") {
+                because("Due to vulnerabilities in io.ktor:ktor-server-netty")
+            }
+        }
+    }
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
