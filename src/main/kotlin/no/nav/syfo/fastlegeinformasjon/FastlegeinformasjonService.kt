@@ -28,14 +28,14 @@ class FastlegeinformasjonService(
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
-            logger.error("Helsenett gir ein generisk feilmelding: {}", e.message)
+            logger.error("Helsenett gir ein generisk feilmelding, på kommunenr $kommuneNr: {}", e.message)
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
-            logger.error("Helsenett gir feilmelding: {}", e.message)
+            logger.error("Helsenett gir feilmelding, på kommunenr $kommuneNr: {}", e.message)
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: Exception) {
             logger.error(
-                "Generel feil oppstod i hentet exportGPContracts feilmelding: {}",
+                "Generel feil oppstod i hentet exportGPContracts feilmelding,  på kommunenr $kommuneNr: {}",
                 e.message,
             )
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
