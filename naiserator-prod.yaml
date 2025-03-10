@@ -34,8 +34,6 @@ spec:
       enabled: true
       runtime: java
   resources:
-    limits:
-      memory: 1048Mi
     requests:
       cpu: 100m
       memory: 512Mi
@@ -112,6 +110,8 @@ spec:
   envFrom:
     - secret: syfohelsenettproxy-secrets
   env:
+    - name: JAVA_TOOL_OPTIONS
+      value: "-Xms512m -Xmx2048m"
     - name: HELSEPERSONELL_V1_ENDPOINT_URL
       value: https://ws.nhn.no/v2/HPR/Basic
     - name: FASTLEGEINFORMASJON_V2_ENDPOINT_URL
