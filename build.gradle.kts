@@ -33,7 +33,7 @@ val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion = "5.12.0"
+val junitJupiterVersion = "5.12.1"
 val koinVersion = "4.0.2"
 
 ///Due to vulnerabilities
