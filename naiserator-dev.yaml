@@ -64,9 +64,6 @@ spec:
         - application: syfosmpapirmottak
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: smregistrering-backend
-          namespace: teamsykmelding
-          cluster: dev-gcp
         - application: pale-2-regler
           namespace: teamsykmelding
           cluster: dev-gcp
@@ -93,9 +90,6 @@ spec:
           cluster: dev-gcp
         - application: journalforing-frontend-q1
           namespace: isa
-          cluster: dev-gcp
-        - application: helse-arbeidsforhold-standalone
-          namespace: tsm
           cluster: dev-gcp
         - application: airflow
           namespace: team-disykefravar-dev-jlyb
