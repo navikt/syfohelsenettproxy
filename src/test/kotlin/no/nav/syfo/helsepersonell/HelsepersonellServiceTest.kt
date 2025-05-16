@@ -17,17 +17,20 @@ import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.common.no.Periode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
+import no.nhn.schemas.reg.hprv2.ArrayOfPerson
 import no.nhn.schemas.reg.hprv2.ArrayOfTilleggskompetanse
 import no.nhn.schemas.reg.hprv2.Godkjenning
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Tilleggskompetanse
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class HelsepersonellServiceTest {
@@ -39,6 +42,16 @@ internal class HelsepersonellServiceTest {
         clearAllMocks()
         every { mock.hentPersonMedPersonnummer("fnr", any()) } returns getPerson()
         every { mock.hentPerson(any(), any()) } returns getPerson()
+        every { mock.søk2(any()) } answers
+            {
+                val mockPerson = getPerson()
+                PaginertResultatsett().apply {
+                    personer = ArrayOfPerson().apply { person.add(mockPerson) }
+                    resultaterTotalt = 1
+                    resultaterPerSide = 1
+                    side = 1
+                }
+            }
     }
 
     @Test
@@ -198,6 +211,44 @@ internal class HelsepersonellServiceTest {
         verify(exactly = 0) { helsepersonellValkey.save(behandler!!) }
         verify(exactly = 0) { helsepersonellValkey.getFromFnr("fnr") }
         verify(exactly = 1) { helsepersonellValkey.getFromHpr("1000001") }
+    }
+
+    @Test
+    internal fun `Henter behandlere med gitte soekeparametre`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        val resultat = service.soekBehandlere(Soekeparametre(fornavn = "John", etternavn = "Bonde"))
+        resultat.behandlere.size shouldBeEqualTo 1
+        verify(exactly = 1) {
+            mock.søk2(
+                withArg {
+                    it.fornavn shouldBeEqualTo "John"
+                    it.etternavn shouldBeEqualTo "Bonde"
+                    it.mellomnavn shouldBeEqualTo null
+                    it.hprNummer shouldBeEqualTo null
+                },
+            )
+        }
+    }
+
+    @Test
+    internal fun `Henter behandlere med gitte soekeparametre og feiler`() {
+        val service = HelsepersonellService(mock, helsepersonellValkey)
+        every { mock.søk2(any()) } throws SOAPFaultException(mockk(relaxed = true))
+
+        assertThrows<SOAPFaultException> {
+            service.soekBehandlere(Soekeparametre(fornavn = "John", etternavn = "Bonde"))
+        }
+
+        verify(exactly = 1) {
+            mock.søk2(
+                withArg {
+                    it.fornavn shouldBeEqualTo "John"
+                    it.etternavn shouldBeEqualTo "Bonde"
+                    it.mellomnavn shouldBeEqualTo null
+                    it.hprNummer shouldBeEqualTo null
+                },
+            )
+        }
     }
 }
 

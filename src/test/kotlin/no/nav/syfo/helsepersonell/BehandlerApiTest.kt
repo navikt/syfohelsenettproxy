@@ -12,10 +12,13 @@ import no.nav.syfo.objectMapper
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.common.no.Kode
 import no.nhn.schemas.reg.hprv2.ArrayOfGodkjenning
+import no.nhn.schemas.reg.hprv2.ArrayOfPerson
 import no.nhn.schemas.reg.hprv2.Godkjenning
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.IHPR2ServiceSøk2GenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldBeNull
@@ -87,6 +90,44 @@ internal class BehandlerApiTest {
         every { valkey.getFromHpr(any()) } returns null
         every { valkey.getFromFnr(any()) } returns null
         every { valkey.save(any(), any()) } returns Unit
+
+        every { wsMock.søk2(any()) } answers
+            {
+                val mockPerson =
+                    Person().apply {
+                        godkjenninger =
+                            ArrayOfGodkjenning().apply {
+                                godkjenning.add(
+                                    Godkjenning().apply {
+                                        autorisasjon =
+                                            Kode()
+                                                .apply {
+                                                    isAktiv = true
+                                                    oid = 7704
+                                                    verdi = "1"
+                                                }
+                                                .apply {
+                                                    helsepersonellkategori =
+                                                        Kode().apply {
+                                                            isAktiv = true
+                                                            verdi = null
+                                                            oid = 10
+                                                        }
+                                                }
+                                    },
+                                )
+                            }
+                        fornavn = "Fornavn"
+                        etternavn = "Etternavn"
+                        nin = "12345678910"
+                    }
+                PaginertResultatsett().apply {
+                    personer = ArrayOfPerson().apply { person.add(mockPerson) }
+                    resultaterTotalt = 1
+                    resultaterPerSide = 1
+                    side = 1
+                }
+            }
     }
 
     @Test
@@ -272,6 +313,52 @@ internal class BehandlerApiTest {
 
             response.status.shouldBeEqualTo(HttpStatusCode.BadRequest)
             response.bodyAsText() shouldBeEqualTo "`hprNummer` er ein tom string"
+        }
+    }
+
+    @Test
+    internal fun `Helsepersonell gitt kriterie gir treff`() {
+        testApplication {
+            setUpTestApplication()
+            routing { registerBehandlerApi(helsePersonService) }
+            val response =
+                client.post("/behandlere") {
+                    header("Nav-CallId", "callId")
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        objectMapper.writeValueAsString(
+                            Soekeparametre(fornavn = "Jens", etternavn = "Bonde")
+                        )
+                    )
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.OK)
+            val behandlereresultat: Behandlereresultat =
+                objectMapper.readValue(response.bodyAsText(), Behandlereresultat::class.java)
+            behandlereresultat.behandlere.size shouldBeEqualTo (1)
+        }
+    }
+
+    @Test
+    internal fun `Helsepersonell gitt kriterie gir feilmelding`() {
+        testApplication {
+            setUpTestApplication()
+            routing { registerBehandlerApi(helsePersonService) }
+            every { wsMock.søk2(any()) } throws
+                IHPR2ServiceSøk2GenericFaultFaultFaultMessage("Feil med tjenesten")
+            val response =
+                client.post("/behandlere") {
+                    header("Nav-CallId", "callId")
+                    contentType(ContentType.Application.Json)
+                    setBody(
+                        objectMapper.writeValueAsString(
+                            Soekeparametre(fornavn = "Jens", etternavn = "Bonde")
+                        )
+                    )
+                }
+
+            response.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)
+            response.bodyAsText() shouldBeEqualTo "Feil med tjenesten"
         }
     }
 }

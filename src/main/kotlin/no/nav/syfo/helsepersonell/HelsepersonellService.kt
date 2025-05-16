@@ -15,7 +15,11 @@ import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.IHPR2ServicePingGenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.IHPR2ServiceSøk2GenericFaultFaultFaultMessage
+import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
+import no.nhn.schemas.reg.hprv2.Søkeparametre
+import org.apache.commons.lang3.StringUtils
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
@@ -28,6 +32,8 @@ class HelsepersonellService(
     companion object {
         const val CACHE_TIME_HOURS = 1L
     }
+
+    private val MAX_ANTALL_RESULTATER_PER_SIDE = 1000
 
     private val PERSONNR_IKKE_FUNNET = "ArgumentException: Personnummer ikke funnet"
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
@@ -101,6 +107,57 @@ class HelsepersonellService(
             logger.error("Helsenett gir feilmelding (HPR-nummer): {}", e.message)
             return returnJedisOrThrow(fromValkey, e)
         }
+    }
+
+    fun soekBehandlere(soekeparametre: Soekeparametre): Behandlereresultat {
+        var gjeldendeSide = 1
+        return try {
+            var soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide)
+            val behandlere = soekeresultat.personer.person.map { ws2Behandler(it) }
+            while (soekeresultat.resultaterPerSide == MAX_ANTALL_RESULTATER_PER_SIDE) {
+                gjeldendeSide++
+                soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide)
+                behandlere + soekeresultat.personer.person.map { ws2Behandler(it) }
+            }
+
+            Behandlereresultat(behandlere = behandlere)
+        } catch (e: IHPR2ServiceSøk2GenericFaultFaultFaultMessage) {
+            logger.warn(
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}"
+            )
+            throw e
+        } catch (e: SOAPFaultException) {
+            logger.error(
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}"
+            )
+            throw e
+        }
+    }
+
+    private fun soekBehandlere(
+        soekeparametre: Soekeparametre,
+        gjeldendeSide: Int
+    ): PaginertResultatsett {
+        return helsepersonellV1.søk2(
+            Søkeparametre().apply {
+                // paginering
+                resultaterPerSide = MAX_ANTALL_RESULTATER_PER_SIDE
+                side = gjeldendeSide
+
+                // søkekriterier
+                fornavn = soekeparametre.fornavn
+                etternavn = soekeparametre.etternavn
+                mellomnavn = soekeparametre.mellomnavn
+
+                // evt hprNummer
+                val hprNummerParameter = soekeparametre.hprNummer
+                if (
+                    !hprNummerParameter.isNullOrEmpty() && StringUtils.isNumeric(hprNummerParameter)
+                ) {
+                    hprNummer = hprNummerParameter.toInt()
+                }
+            }
+        )
     }
 
     fun ping(requestId: String): String? {
