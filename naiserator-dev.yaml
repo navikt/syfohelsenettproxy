@@ -100,6 +100,9 @@ spec:
         - application: syk-inn-api
           namespace: tsm
           cluster: dev-gcp
+        - application: yrkesskade-registerproxy
+          namespace: yrkesskade
+          cluster: dev-gcp
     outbound:
       external:
         - host: ws.test.nhn.no
