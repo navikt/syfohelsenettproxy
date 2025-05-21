@@ -121,14 +121,9 @@ class HelsepersonellService(
             }
 
             Behandlereresultat(behandlere = behandlere)
-        } catch (e: IHPR2ServiceSøk2GenericFaultFaultFaultMessage) {
+        } catch (e: Exception) {
             logger.warn(
                 "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}"
-            )
-            throw e
-        } catch (e: SOAPFaultException) {
-            logger.error(
-                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}"
             )
             throw e
         }
