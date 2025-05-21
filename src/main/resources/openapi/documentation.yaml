@@ -120,6 +120,32 @@ paths:
             '*/*':
               schema:
                 $ref: "#/components/schemas/Behandler"
+  /api/v2/behandlere:
+    post:
+      description: "Finn alle behandlere med kriterie. Søker på fornavn, mellomnavn, etternavn og HPR-nummer dersom kriterie er numerisk"
+      requestBody:
+        description: Søkekriterie
+        required: true
+        content:
+          '*/*':
+            schema:
+              $ref: "#/components/schemas/Soekeparametre"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Behandlereresultat"
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Søkekriterie er tom string"
   /api/v2/fastlegeinformasjon:
     get:
       description: ""
@@ -255,6 +281,12 @@ components:
           type: "string"
       required:
       - "godkjenninger"
+    Behandlereresultat:
+      type: "object"
+      properties:
+        behandlere:
+          type: "array"
+          items: "#/components/schema/Behandler"
     Person:
       type: "object"
       properties:
@@ -264,3 +296,14 @@ components:
           type: "string"
       required:
       - "navn"
+    Soekeparametre:
+      type: "object"
+      properties:
+        fornavn:
+          type: "string"
+        etternavn:
+          type: "string"
+        mellomnavn:
+          type: "string"
+        hprNummer:
+          type: "string"
