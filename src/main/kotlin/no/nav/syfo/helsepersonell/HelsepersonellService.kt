@@ -1,10 +1,5 @@
 package no.nav.syfo.helsepersonell
 
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.GregorianCalendar
-import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
@@ -19,11 +14,19 @@ import no.nhn.schemas.reg.hprv2.IHPR2ServiceSøk2GenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Søkeparametre
+import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
+import java.io.InputStream
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.*
+import javax.xml.ws.soap.SOAPFaultException
+
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
@@ -123,12 +126,12 @@ class HelsepersonellService(
             Behandlereresultat(behandlere = behandlere)
         } catch (e: IHPR2ServiceSøk2GenericFaultFaultFaultMessage) {
             logger.warn(
-                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}"
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}",
             )
             throw e
         } catch (e: SOAPFaultException) {
             logger.error(
-                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}"
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}",
             )
             throw e
         }
@@ -156,7 +159,7 @@ class HelsepersonellService(
                 ) {
                     hprNummer = hprNummerParameter.toInt()
                 }
-            }
+            },
         )
     }
 
@@ -293,23 +296,44 @@ fun helsepersonellV1(
                 object : AbstractSoapInterceptor(Phase.RECEIVE) {
                     override fun handleMessage(message: SoapMessage?) {
                         if (message != null) {
-                            message[Message.ENCODING] = "utf-8"
+                            message[Message.ENCODING] = Charsets.UTF_8
                         }
                     }
                 }
             inInterceptors.add(inboundInterceptor)
             inFaultInterceptors.add(inboundInterceptor)
 
-            val outboundInteceptor =
+            val preStreamInterceptor = object : AbstractSoapInterceptor(Phase.PRE_STREAM) {
+                override fun handleMessage(message: SoapMessage?) {
+                    if (message != null) {
+                        val content = message.getContent(InputStream::class.java)
+                        var contentString: String? = null
+                        try {
+                            contentString = IOUtils.toString(content, Charsets.UTF_8)
+                            contentString = contentString!!.replace("S?k", "Søk")
+                        } catch (e: java.lang.Exception) {
+                            throw RuntimeException(e)
+                        }
+
+                        message.setContent(
+                            InputStream::class.java,
+                            IOUtils.toInputStream(contentString, Charsets.UTF_8),
+                        )
+                    }
+                }
+            }
+
+            val outboundEncodingInteceptor =
                 object : AbstractSoapInterceptor(Phase.SEND) {
                     override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) {
-                            message[Message.ENCODING] = "utf-8"
+                        if (message != null) { message[Message.ENCODING] = Charsets.ISO_8859_1
                         }
                     }
                 }
-            outInterceptors.add(outboundInteceptor)
-            outFaultInterceptors.add(outboundInteceptor)
+            outInterceptors.add(preStreamInterceptor)
+            outFaultInterceptors.add(preStreamInterceptor)
+            outInterceptors.add(outboundEncodingInteceptor)
+            outFaultInterceptors.add(outboundEncodingInteceptor)
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
