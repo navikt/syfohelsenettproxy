@@ -289,7 +289,7 @@ fun helsepersonellV1(
             // TODO: Contact someone about this hacky workaround
             // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
             // payload
-            val interceptor =
+            val inboundInterceptor =
                 object : AbstractSoapInterceptor(Phase.RECEIVE) {
                     override fun handleMessage(message: SoapMessage?) {
                         if (message != null) {
@@ -297,8 +297,19 @@ fun helsepersonellV1(
                         }
                     }
                 }
-            inInterceptors.add(interceptor)
-            inFaultInterceptors.add(interceptor)
+            inInterceptors.add(inboundInterceptor)
+            inFaultInterceptors.add(inboundInterceptor)
+
+            val outboundInteceptor =
+                object : AbstractSoapInterceptor(Phase.SEND) {
+                    override fun handleMessage(message: SoapMessage?) {
+                        if (message != null) {
+                            message[Message.ENCODING] = "utf-8"
+                        }
+                    }
+                }
+            outInterceptors.add(outboundInteceptor)
+            outFaultInterceptors.add(outboundInteceptor)
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
