@@ -327,7 +327,7 @@ internal class BehandlerApiTest {
                     contentType(ContentType.Application.Json)
                     setBody(
                         objectMapper.writeValueAsString(
-                            Soekeparametre(fornavn = "Jens", etternavn = "Bonde")
+                            Soekeparametre(navn = "Jens Bonde")
                         )
                     )
                 }
@@ -352,7 +352,7 @@ internal class BehandlerApiTest {
                     contentType(ContentType.Application.Json)
                     setBody(
                         objectMapper.writeValueAsString(
-                            Soekeparametre(fornavn = "Jens", etternavn = "Bonde")
+                            Soekeparametre(navn = "Jens Bonde")
                         )
                     )
                 }

@@ -146,9 +146,9 @@ class HelsepersonellService(
                 side = gjeldendeSide
 
                 // søkekriterier
-                fornavn = soekeparametre.fornavn
-                etternavn = soekeparametre.etternavn
-                mellomnavn = soekeparametre.mellomnavn
+                if (soekeparametre.navn != null) {
+                    navn = soekeparametre.navn
+                }
 
                 // evt hprNummer
                 val hprNummerParameter = soekeparametre.hprNummer
