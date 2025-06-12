@@ -14,13 +14,11 @@ import no.nhn.schemas.reg.hprv2.IHPR2ServiceSøk2GenericFaultFaultFaultMessage
 import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Søkeparametre
-import org.apache.commons.io.IOUtils
 import org.apache.commons.lang3.StringUtils
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
-import java.io.InputStream
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
