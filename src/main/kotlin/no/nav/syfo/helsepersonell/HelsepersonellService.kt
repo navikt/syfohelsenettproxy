@@ -294,7 +294,7 @@ fun helsepersonellV1(
                 object : AbstractSoapInterceptor(Phase.RECEIVE) {
                     override fun handleMessage(message: SoapMessage?) {
                         if (message != null) {
-                            message[Message.ENCODING] = Charsets.UTF_8
+                            message[Message.ENCODING] = Charsets.UTF_8.name()
                         }
                     }
                 }
@@ -304,7 +304,7 @@ fun helsepersonellV1(
             val outboundEncodingInteceptor =
                 object : AbstractSoapInterceptor(Phase.SEND) {
                     override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) { message[Message.ENCODING] = Charsets.ISO_8859_1
+                        if (message != null) { message[Message.ENCODING] = Charsets.ISO_8859_1.name()
                         }
                     }
                 }
