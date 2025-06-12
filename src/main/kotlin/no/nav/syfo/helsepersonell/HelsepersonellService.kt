@@ -303,26 +303,6 @@ fun helsepersonellV1(
             inInterceptors.add(inboundInterceptor)
             inFaultInterceptors.add(inboundInterceptor)
 
-            val preStreamInterceptor = object : AbstractSoapInterceptor(Phase.PRE_STREAM) {
-                override fun handleMessage(message: SoapMessage?) {
-                    if (message != null) {
-                        val content = message.getContent(InputStream::class.java)
-                        var contentString: String? = null
-                        try {
-                            contentString = IOUtils.toString(content, Charsets.UTF_8)
-                            contentString = contentString!!.replace("S?k", "Søk")
-                        } catch (e: java.lang.Exception) {
-                            throw RuntimeException(e)
-                        }
-
-                        message.setContent(
-                            InputStream::class.java,
-                            IOUtils.toInputStream(contentString, Charsets.UTF_8),
-                        )
-                    }
-                }
-            }
-
             val outboundEncodingInteceptor =
                 object : AbstractSoapInterceptor(Phase.SEND) {
                     override fun handleMessage(message: SoapMessage?) {
@@ -330,8 +310,6 @@ fun helsepersonellV1(
                         }
                     }
                 }
-            outInterceptors.add(preStreamInterceptor)
-            outFaultInterceptors.add(preStreamInterceptor)
             outInterceptors.add(outboundEncodingInteceptor)
             outFaultInterceptors.add(outboundEncodingInteceptor)
         }

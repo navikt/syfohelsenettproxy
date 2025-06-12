@@ -19,7 +19,6 @@ val logstashEncoderVersion = "8.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "4.0.6"
 val commonsTextVersion = "1.13.0"
-val commonsIoVersion = "2.19.0"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
@@ -131,7 +130,6 @@ dependencies {
 
 
     implementation("org.apache.commons:commons-text:$commonsTextVersion")
-    implementation("commons-io:commons-io:$commonsIoVersion")
     implementation("org.apache.cxf:cxf-rt-frontend-jaxws:$cxfVersion")
     implementation("org.apache.cxf:cxf-rt-features-logging:$cxfVersion")
     implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
