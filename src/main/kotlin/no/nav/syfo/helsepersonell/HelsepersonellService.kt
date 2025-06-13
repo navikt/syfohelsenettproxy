@@ -17,8 +17,6 @@ import no.nhn.schemas.reg.hprv2.Søkeparametre
 import org.apache.commons.lang3.StringUtils
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
-import org.apache.cxf.ext.logging.LoggingInInterceptor
-import org.apache.cxf.ext.logging.LoggingOutInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import java.time.LocalDateTime
@@ -292,28 +290,16 @@ fun helsepersonellV1(
             // TODO: Contact someone about this hacky workaround
             // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
             // payload
-            val inboundInterceptor =
+            val interceptor =
                 object : AbstractSoapInterceptor(Phase.RECEIVE) {
                     override fun handleMessage(message: SoapMessage?) {
                         if (message != null) {
-                            message[Message.ENCODING] = Charsets.UTF_8.name()
+                            message[Message.ENCODING] = "utf-8"
                         }
                     }
                 }
-            inInterceptors.add(inboundInterceptor)
-            inInterceptors.add(LoggingInInterceptor())
-            inFaultInterceptors.add(inboundInterceptor)
-
-            val outboundEncodingInteceptor =
-                object : AbstractSoapInterceptor(Phase.SEND) {
-                    override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) { message[Message.ENCODING] = Charsets.ISO_8859_1.name()
-                        }
-                    }
-                }
-            outInterceptors.add(outboundEncodingInteceptor)
-            outFaultInterceptors.add(outboundEncodingInteceptor)
-            outInterceptors.add(LoggingOutInterceptor())
+            inInterceptors.add(interceptor)
+            inFaultInterceptors.add(interceptor)
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
