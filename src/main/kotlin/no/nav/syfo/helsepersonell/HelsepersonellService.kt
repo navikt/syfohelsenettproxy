@@ -17,6 +17,8 @@ import no.nhn.schemas.reg.hprv2.Søkeparametre
 import org.apache.commons.lang3.StringUtils
 import org.apache.cxf.binding.soap.SoapMessage
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
+import org.apache.cxf.ext.logging.LoggingInInterceptor
+import org.apache.cxf.ext.logging.LoggingOutInterceptor
 import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
 import java.time.LocalDateTime
@@ -299,6 +301,7 @@ fun helsepersonellV1(
                     }
                 }
             inInterceptors.add(inboundInterceptor)
+            inInterceptors.add(LoggingInInterceptor())
             inFaultInterceptors.add(inboundInterceptor)
 
             val outboundEncodingInteceptor =
@@ -310,6 +313,7 @@ fun helsepersonellV1(
                 }
             outInterceptors.add(outboundEncodingInteceptor)
             outFaultInterceptors.add(outboundEncodingInteceptor)
+            outInterceptors.add(LoggingOutInterceptor())
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
