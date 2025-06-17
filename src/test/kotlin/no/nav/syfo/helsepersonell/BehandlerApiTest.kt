@@ -3,7 +3,6 @@ package no.nav.syfo.helsepersonell
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
@@ -325,11 +324,7 @@ internal class BehandlerApiTest {
                 client.post("/behandlere") {
                     header("Nav-CallId", "callId")
                     contentType(ContentType.Application.Json)
-                    setBody(
-                        objectMapper.writeValueAsString(
-                            Soekeparametre(navn = "Jens Bonde")
-                        )
-                    )
+                    setBody(objectMapper.writeValueAsString(Soekeparametre(navn = "Jens Bonde")))
                 }
 
             response.status.shouldBeEqualTo(HttpStatusCode.OK)
@@ -350,11 +345,7 @@ internal class BehandlerApiTest {
                 client.post("/behandlere") {
                     header("Nav-CallId", "callId")
                     contentType(ContentType.Application.Json)
-                    setBody(
-                        objectMapper.writeValueAsString(
-                            Soekeparametre(navn = "Jens Bonde")
-                        )
-                    )
+                    setBody(objectMapper.writeValueAsString(Soekeparametre(navn = "Jens Bonde")))
                 }
 
             response.status.shouldBeEqualTo(HttpStatusCode.InternalServerError)

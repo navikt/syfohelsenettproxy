@@ -1,6 +1,8 @@
 package no.nav.syfo.helsepersonell
 
 import no.nav.syfo.datatypeFactory
+import no.nav.syfo.helsepersonell.interceptors.EncodingInterceptor
+import no.nav.syfo.helsepersonell.interceptors.ProtocolHeaderEncodingInterceptor
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nav.syfo.logger
@@ -114,11 +116,14 @@ class HelsepersonellService(
         var gjeldendeSide = 1
         return try {
             var soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide)
-            val behandlere = soekeresultat.personer.person.map { ws2Behandler(it) }
-            while (soekeresultat.resultaterPerSide == MAX_ANTALL_RESULTATER_PER_SIDE) {
+            var behandlere = soekeresultat.personer.person.map { ws2Behandler(it) }
+            var antallBehandlere = behandlere.size
+            while (soekeresultat.resultaterTotalt != antallBehandlere) {
                 gjeldendeSide++
-                soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide)
-                behandlere + soekeresultat.personer.person.map { ws2Behandler(it) }
+                soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide).also { sr ->
+                    behandlere = behandlere + (sr.personer.person.map { ws2Behandler(it) })
+                    antallBehandlere = behandlere.size
+                }
             }
 
             Behandlereresultat(behandlere = behandlere)
@@ -141,23 +146,24 @@ class HelsepersonellService(
     ): PaginertResultatsett {
         return helsepersonellV1.søk2(
             Søkeparametre().apply {
+                isKunBasisData = true
+
                 // paginering
                 resultaterPerSide = MAX_ANTALL_RESULTATER_PER_SIDE
                 side = gjeldendeSide
 
                 // søkekriterier
-                if (soekeparametre.navn != null) {
+                if (soekeparametre.navn != null && soekeparametre.navn.isNotEmpty()) {
                     navn = soekeparametre.navn
                 }
 
                 // evt hprNummer
                 val hprNummerParameter = soekeparametre.hprNummer
-                if (
-                    !hprNummerParameter.isNullOrEmpty() && StringUtils.isNumeric(hprNummerParameter)
-                ) {
+                if (!hprNummerParameter.isNullOrEmpty() && StringUtils.isNumeric(hprNummerParameter))
+                {
                     hprNummer = hprNummerParameter.toInt()
                 }
-            },
+            }
         )
     }
 
@@ -290,17 +296,14 @@ fun helsepersonellV1(
             // TODO: Contact someone about this hacky workaround
             // talk to HDIR about HPR about they claim to send a ISO-8859-1 but its really UTF-8
             // payload
-            val interceptor =
-                object : AbstractSoapInterceptor(Phase.RECEIVE) {
-                    override fun handleMessage(message: SoapMessage?) {
-                        if (message != null) {
-                            message[Message.ENCODING] = "utf-8"
-                        }
-                    }
-                }
-            inInterceptors.add(interceptor)
-            inFaultInterceptors.add(interceptor)
+            inInterceptors.add(EncodingInterceptor(Phase.RECEIVE))
+            inFaultInterceptors.add(EncodingInterceptor(Phase.RECEIVE))
+
+            outInterceptors.add(ProtocolHeaderEncodingInterceptor(Phase.PRE_STREAM))
+            outInterceptors.add(EncodingInterceptor(Phase.SEND))
+            outFaultInterceptors.add(EncodingInterceptor(Phase.SEND))
         }
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
+
