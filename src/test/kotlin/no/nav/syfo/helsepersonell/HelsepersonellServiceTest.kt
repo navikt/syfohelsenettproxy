@@ -216,14 +216,12 @@ internal class HelsepersonellServiceTest {
     @Test
     internal fun `Henter behandlere med gitte soekeparametre`() {
         val service = HelsepersonellService(mock, helsepersonellValkey)
-        val resultat = service.soekBehandlere(Soekeparametre(fornavn = "John", etternavn = "Bonde"))
+        val resultat = service.soekBehandlere(Soekeparametre(navn = "John Bonde"))
         resultat.behandlere.size shouldBeEqualTo 1
         verify(exactly = 1) {
             mock.søk2(
                 withArg {
-                    it.fornavn shouldBeEqualTo "John"
-                    it.etternavn shouldBeEqualTo "Bonde"
-                    it.mellomnavn shouldBeEqualTo null
+                    it.navn shouldBeEqualTo "John Bonde"
                     it.hprNummer shouldBeEqualTo null
                 },
             )
@@ -236,15 +234,13 @@ internal class HelsepersonellServiceTest {
         every { mock.søk2(any()) } throws SOAPFaultException(mockk(relaxed = true))
 
         assertThrows<SOAPFaultException> {
-            service.soekBehandlere(Soekeparametre(fornavn = "John", etternavn = "Bonde"))
+            service.soekBehandlere(Soekeparametre(navn = "John Bonde"))
         }
 
         verify(exactly = 1) {
             mock.søk2(
                 withArg {
-                    it.fornavn shouldBeEqualTo "John"
-                    it.etternavn shouldBeEqualTo "Bonde"
-                    it.mellomnavn shouldBeEqualTo null
+                    it.navn shouldBeEqualTo "John Bonde"
                     it.hprNummer shouldBeEqualTo null
                 },
             )
