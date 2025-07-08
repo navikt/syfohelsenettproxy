@@ -13,7 +13,7 @@ spec:
   replicas:
     min: 2
     max: 6
-    cpuThresholdPercentage: 80
+    cpuThresholdPercentage: 90
   port: 8080
   liveness:
     path: /internal/is_alive
@@ -34,11 +34,9 @@ spec:
       enabled: true
       runtime: java
   resources:
-    limits:
-      memory: 2048Mi
     requests:
-      cpu: 70m
-      memory: 1200Mi
+      cpu: 50m
+      memory: 1000Mi
   azure:
     application:
       enabled: true
