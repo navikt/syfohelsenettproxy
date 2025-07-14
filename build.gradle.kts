@@ -13,7 +13,7 @@ val jacksonVersion = "2.19.1"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
-val ktorVersion = "3.2.1"
+val ktorVersion = "3.2.2"
 val logbackVersion = "1.5.18"
 val logstashEncoderVersion = "8.1"
 val prometheusVersion = "0.16.0"
@@ -46,7 +46,7 @@ plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.0"
-    id("com.diffplug.spotless") version "7.0.4"
+    id("com.diffplug.spotless") version "7.1.0"
     id("com.gradleup.shadow") version "8.3.8"
 }
 
