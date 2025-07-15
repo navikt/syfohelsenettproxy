@@ -40,7 +40,7 @@ val koinVersion = "4.1.0"
 val bcprovJdk18onVersion = "1.81"
 val guavaVersion = "33.4.8-jre"
 val commonsCompressVersion = "1.27.1"
-val nettyHandlerVersion = "4.2.2.Final"
+val nettyHandlerVersion = "4.2.3.Final"
 
 plugins {
     id("application")
