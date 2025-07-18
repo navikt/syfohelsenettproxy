@@ -26,7 +26,7 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.4.0"
 val testcontainersVersion = "1.21.3"
-val mockkVersion = "1.14.4"
+val mockkVersion = "1.14.5"
 val nimbusdsVersion = "10.3.1"
 val kotlinVersion = "2.2.0"
 val jaxbImplVersion = "2.3.3"
@@ -40,7 +40,7 @@ val koinVersion = "4.1.0"
 val bcprovJdk18onVersion = "1.81"
 val guavaVersion = "33.4.8-jre"
 val commonsCompressVersion = "1.27.1"
-val nettyHandlerVersion = "4.2.2.Final"
+val nettyHandlerVersion = "4.2.3.Final"
 
 plugins {
     id("application")
