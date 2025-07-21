@@ -9,7 +9,7 @@ val javaVersion = JvmTarget.JVM_21
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.19.1"
+val jacksonVersion = "2.19.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
@@ -26,27 +26,27 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.4.0"
 val testcontainersVersion = "1.21.3"
-val mockkVersion = "1.14.4"
-val nimbusdsVersion = "10.3.1"
+val mockkVersion = "1.14.5"
+val nimbusdsVersion = "10.4"
 val kotlinVersion = "2.2.0"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion = "5.13.3"
+val junitJupiterVersion = "5.13.4"
 val koinVersion = "4.1.0"
 
 ///Due to vulnerabilities
 val bcprovJdk18onVersion = "1.81"
 val guavaVersion = "33.4.8-jre"
 val commonsCompressVersion = "1.27.1"
-val nettyHandlerVersion = "4.2.2.Final"
+val nettyHandlerVersion = "4.2.3.Final"
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.0"
-    id("com.diffplug.spotless") version "7.1.0"
+    id("com.diffplug.spotless") version "7.2.0"
     id("com.gradleup.shadow") version "8.3.8"
 }
 
