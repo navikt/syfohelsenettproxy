@@ -47,7 +47,7 @@ plugins {
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.0"
     id("com.diffplug.spotless") version "7.2.1"
-    id("com.gradleup.shadow") version "8.3.8"
+    id("com.gradleup.shadow") version "8.3.9"
 }
 
 application {
