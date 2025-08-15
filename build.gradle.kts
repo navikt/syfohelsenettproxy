@@ -211,9 +211,11 @@ tasks {
 
     shadowJar {
         transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
-        }
+    mergeServiceFiles {
+       path = "META-INF/cxf"
+       include = "bus-extensions.txt"
+       }
+            
         archiveBaseName.set("app")
         archiveClassifier.set("")
         isZip64 = true
