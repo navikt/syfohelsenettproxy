@@ -214,7 +214,7 @@ tasks {
     mergeServiceFiles {
        path = "META-INF/cxf"
        include = "bus-extensions.txt"
-       }
+       }}
             
         archiveBaseName.set("app")
         archiveClassifier.set("")
