@@ -211,8 +211,10 @@ tasks {
 
     shadowJar {
         transform(ServiceFileTransformer::class.java) {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE 
-        mergeServiceFiles() 
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE            mergeServiceFiles() 
+transform<PreserveFirstFoundResourceTransformer>() {
+    resources.add("bus-extensions.txt")
+  }
        }
             
         archiveBaseName.set("app")
