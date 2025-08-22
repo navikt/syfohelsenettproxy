@@ -211,8 +211,8 @@ tasks {
 
     shadowJar {
         transform(ServiceFileTransformer::class.java) {
-        duplicatesStrategy = DuplicatesStrategy.INCLUDE            mergeServiceFiles() 
-transform<PreserveFirstFoundResourceTransformer>() {
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE             mergeServiceFiles() 
+ transform<PreserveFirstFoundResourceTransformer>() {
     resources.add("bus-extensions.txt")
   }
        }
