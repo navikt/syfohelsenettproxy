@@ -211,10 +211,9 @@ tasks {
 
     shadowJar {
         transform(ServiceFileTransformer::class.java) {
-    mergeServiceFiles {
-       path = "META-INF/cxf"
-       include = "bus-extensions.txt"
-       }}
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE 
+        mergeServiceFiles() 
+       }
             
         archiveBaseName.set("app")
         archiveClassifier.set("")
