@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import io.mateo.cxf.codegen.wsdl2java.Wsdl2Java
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -47,7 +46,6 @@ plugins {
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.0"
     id("com.diffplug.spotless") version "7.2.1"
-    id("com.gradleup.shadow") version "8.3.8"
 }
 
 application {
@@ -186,7 +184,7 @@ kotlin {
 tasks {
 
     build {
-        dependsOn("shadowJar")
+        dependsOn("jar")
     }
 
     cxfCodegen {
@@ -209,24 +207,28 @@ tasks {
         dependsOn("wsdl2javaFastlegeinformasjonEksport")
     }
 
-    shadowJar {
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
-        }
+    withType<Jar> {
         archiveBaseName.set("app")
-        archiveClassifier.set("")
-        isZip64 = true
+
         manifest {
-            attributes(
-                mapOf(
-                    "Main-Class" to "no.nav.syfo.ApplicationKt",
-                ),
-            )
+            attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
+            attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(separator = " ") {
+                it.name
+            }
+        }
+
+        doLast {
+            configurations.runtimeClasspath.get().forEach {
+                val file = File("${layout.buildDirectory.get()}/libs/${it.name}")
+                if (!file.exists())
+                    it.copyTo(file)
+            }
         }
     }
 
-    test {
+  
+        withType<Test> {
+
         useJUnitPlatform {}
         testLogging {
             events("skipped", "failed")
