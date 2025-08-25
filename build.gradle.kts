@@ -26,8 +26,8 @@ val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.4.0"
 val testcontainersVersion = "1.21.3"
 val mockkVersion = "1.14.5"
-val nimbusdsVersion = "10.4"
-val kotlinVersion = "2.2.0"
+val nimbusdsVersion = "10.4.2"
+val kotlinVersion = "2.2.10"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -39,12 +39,12 @@ val koinVersion = "4.1.0"
 val bcprovJdk18onVersion = "1.81"
 val guavaVersion = "33.4.8-jre"
 val commonsCompressVersion = "1.28.0"
-val nettyHandlerVersion = "4.2.3.Final"
+val nettyHandlerVersion = "4.2.4.Final"
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
-    kotlin("jvm") version "2.2.0"
+    kotlin("jvm") version "2.2.10"
     id("com.diffplug.spotless") version "7.2.1"
 }
 
