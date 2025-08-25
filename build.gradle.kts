@@ -184,7 +184,7 @@ kotlin {
 tasks {
 
     build {
-        dependsOn("jar")
+        dependsOn("installDist")
     }
 
     cxfCodegen {
@@ -207,26 +207,7 @@ tasks {
         dependsOn("wsdl2javaFastlegeinformasjonEksport")
     }
 
-    withType<Jar> {
-        archiveBaseName.set("app")
 
-        manifest {
-            attributes["Main-Class"] = "no.nav.syfo.ApplicationKt"
-            attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(separator = " ") {
-                it.name
-            }
-        }
-
-        doLast {
-            configurations.runtimeClasspath.get().forEach {
-                val file = File("${layout.buildDirectory.get()}/libs/${it.name}")
-                if (!file.exists())
-                    it.copyTo(file)
-            }
-        }
-    }
-
-  
         withType<Test> {
 
         useJUnitPlatform {}
