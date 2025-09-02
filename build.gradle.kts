@@ -8,7 +8,7 @@ val javaVersion = JvmTarget.JVM_21
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.19.2"
+val jacksonVersion = "2.20.0"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
