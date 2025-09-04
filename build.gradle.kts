@@ -8,7 +8,7 @@ val javaVersion = JvmTarget.JVM_21
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.19.2"
+val jacksonVersion = "2.20.0"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
@@ -33,13 +33,13 @@ val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
 val junitJupiterVersion = "5.13.4"
-val koinVersion = "4.1.0"
+val koinVersion = "4.1.1"
 
 ///Due to vulnerabilities
 val bcprovJdk18onVersion = "1.81"
 val guavaVersion = "33.4.8-jre"
 val commonsCompressVersion = "1.28.0"
-val nettyHandlerVersion = "4.2.4.Final"
+val nettyHandlerVersion = "4.2.5.Final"
 
 plugins {
     id("application")
