@@ -14,6 +14,5 @@ class EncodingInterceptor(phase: String) : AbstractSoapInterceptor(phase) {
 
         message[Message.CONTENT_TRANSFER_ENCODING] = Charsets.UTF_8.name()
 
-        logger.info(message.toString())
     }
 }
