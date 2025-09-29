@@ -36,8 +36,8 @@ val junitJupiterVersion = "5.13.4"
 val koinVersion = "4.1.1"
 
 ///Due to vulnerabilities
-val bcprovJdk18onVersion = "1.81"
-val guavaVersion = "33.4.8-jre"
+val bcprovJdk18onVersion = "1.82"
+val guavaVersion = "33.5.0-jre"
 val commonsCompressVersion = "1.28.0"
 val nettyHandlerVersion = "4.2.6.Final"
 
@@ -45,7 +45,7 @@ plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.20"
-    id("com.diffplug.spotless") version "7.2.1"
+    id("com.diffplug.spotless") version "8.0.0"
 }
 
 application {
