@@ -66,9 +66,6 @@ spec:
         - application: syfosmpapirmottak
           namespace: teamsykmelding
           cluster: prod-gcp
-        - application: syfosmpapirregler
-          namespace: teamsykmelding
-          cluster: prod-gcp
         - application: pale-2-regler
           namespace: teamsykmelding
           cluster: prod-gcp

@@ -60,9 +60,6 @@ spec:
         - application: syfosminfotrygd
           namespace: teamsykmelding
           cluster: dev-gcp
-        - application: syfosmpapirregler
-          namespace: teamsykmelding
-          cluster: dev-gcp
         - application: syfosmpapirmottak
           namespace: teamsykmelding
           cluster: dev-gcp
