@@ -1,5 +1,10 @@
 package no.nav.syfo.helsepersonell
 
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
+import java.util.*
+import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
 import no.nav.syfo.helsepersonell.interceptors.EncodingInterceptor
 import no.nav.syfo.helsepersonell.interceptors.ProtocolHeaderEncodingInterceptor
@@ -17,16 +22,7 @@ import no.nhn.schemas.reg.hprv2.PaginertResultatsett
 import no.nhn.schemas.reg.hprv2.Person
 import no.nhn.schemas.reg.hprv2.Søkeparametre
 import org.apache.commons.lang3.StringUtils
-import org.apache.cxf.binding.soap.SoapMessage
-import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor
-import org.apache.cxf.message.Message
 import org.apache.cxf.phase.Phase
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneOffset
-import java.util.*
-import javax.xml.ws.soap.SOAPFaultException
-
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
@@ -120,10 +116,11 @@ class HelsepersonellService(
             var antallBehandlere = behandlere.size
             while (soekeresultat.resultaterTotalt != antallBehandlere) {
                 gjeldendeSide++
-                soekeresultat = soekBehandlere(soekeparametre, gjeldendeSide).also { sr ->
-                    behandlere = behandlere + (sr.personer.person.map { ws2Behandler(it) })
-                    antallBehandlere = behandlere.size
-                }
+                soekeresultat =
+                    soekBehandlere(soekeparametre, gjeldendeSide).also { sr ->
+                        behandlere = behandlere + (sr.personer.person.map { ws2Behandler(it) })
+                        antallBehandlere = behandlere.size
+                    }
             }
 
             Behandlereresultat(behandlere = behandlere)
@@ -159,8 +156,9 @@ class HelsepersonellService(
 
                 // evt hprNummer
                 val hprNummerParameter = soekeparametre.hprNummer
-                if (!hprNummerParameter.isNullOrEmpty() && StringUtils.isNumeric(hprNummerParameter))
-                {
+                if (
+                    !hprNummerParameter.isNullOrEmpty() && StringUtils.isNumeric(hprNummerParameter)
+                ) {
                     hprNummer = hprNummerParameter.toInt()
                 }
             }
@@ -306,4 +304,3 @@ fun helsepersonellV1(
 
         port { withBasicAuth(serviceuserUsername, serviceuserPassword) }
     }
-

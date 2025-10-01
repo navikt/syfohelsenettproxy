@@ -7,6 +7,7 @@ import org.junit.AfterClass
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.wait.strategy.Wait
 
 val valkeyContainer: GenericContainer<Nothing> = GenericContainer("valkey/valkey:8.0.2-alpine")
 
@@ -14,6 +15,7 @@ internal class ValkeyTest {
 
     init {
         valkeyContainer.withExposedPorts(6379)
+        valkeyContainer.waitingFor(Wait.forListeningPort())
         valkeyContainer.start()
     }
 

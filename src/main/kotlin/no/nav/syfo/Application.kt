@@ -16,6 +16,8 @@ import no.nav.syfo.plugins.configureModules
 import no.nav.syfo.plugins.configureNaisThings
 import no.nav.syfo.plugins.configureRouting
 import no.nav.syfo.plugins.configureSwagger
+import org.apache.cxf.common.logging.LogUtils
+import org.apache.cxf.common.logging.Slf4jLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -33,6 +35,7 @@ val objectMapper =
     }
 
 fun main() {
+    LogUtils.setLoggerClass(Slf4jLogger::class.java)
     DefaultExports.initialize()
     embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
 }
