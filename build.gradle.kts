@@ -13,7 +13,7 @@ val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
 val ktorVersion = "3.3.0"
-val logbackVersion = "1.5.18"
+val logbackVersion = "1.5.19"
 val logstashEncoderVersion = "8.1"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "4.0.6"
@@ -32,12 +32,12 @@ val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
 val ktfmtVersion = "0.44"
-val junitJupiterVersion = "5.13.4"
+val junitJupiterVersion = "6.0.0"
 val koinVersion = "4.1.1"
 
 ///Due to vulnerabilities
-val bcprovJdk18onVersion = "1.81"
-val guavaVersion = "33.4.8-jre"
+val bcprovJdk18onVersion = "1.82"
+val guavaVersion = "33.5.0-jre"
 val commonsCompressVersion = "1.28.0"
 val nettyHandlerVersion = "4.2.6.Final"
 
@@ -45,7 +45,7 @@ plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.2.20"
-    id("com.diffplug.spotless") version "7.2.1"
+    id("com.diffplug.spotless") version "8.0.0"
 }
 
 application {
