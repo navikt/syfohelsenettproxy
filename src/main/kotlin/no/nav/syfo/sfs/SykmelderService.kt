@@ -31,7 +31,6 @@ class SykmelderService(private val helsepersonellService: HelsepersonellService)
                         harGyldigTillegskompetanse(it)
                 }
 
-        securelog.info("Fant behandler: $behandler, erSykmelder: $erAktivSykmelder")
         return Person(erAktivSykmelder, getNavn(behandler))
     }
 
