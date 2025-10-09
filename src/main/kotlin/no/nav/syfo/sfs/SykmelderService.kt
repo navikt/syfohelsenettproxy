@@ -5,7 +5,6 @@ import no.nav.syfo.helsepersonell.Behandler
 import no.nav.syfo.helsepersonell.Godkjenning
 import no.nav.syfo.helsepersonell.HelsepersonellService
 import no.nav.syfo.helsepersonell.Tilleggskompetanse
-import no.nav.syfo.securelog
 
 private const val LEGE = "LE"
 private const val TANNLEGE = "TL"

@@ -11,7 +11,6 @@ import no.nav.syfo.helsepersonell.interceptors.ProtocolHeaderEncodingInterceptor
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nav.syfo.logger
-import no.nav.syfo.securelog
 import no.nav.syfo.ws.createPort
 import no.nhn.schemas.reg.hprv2.IHPR2Service
 import no.nhn.schemas.reg.hprv2.IHPR2ServiceHentPersonGenericFaultFaultFaultMessage
@@ -82,6 +81,7 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
+                .also { helsepersonellValkey.save(it) }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             return when {
                 behandlerNotFound(e.message) -> {
