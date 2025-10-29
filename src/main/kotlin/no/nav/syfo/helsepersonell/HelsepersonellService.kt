@@ -28,7 +28,7 @@ class HelsepersonellService(
     private val helsepersonellValkey: HelsepersonellValkey
 ) {
     companion object {
-        const val CACHE_TIME_HOURS = 1L
+        const val CACHE_TIME_HOURS = 12L
     }
 
     private val MAX_ANTALL_RESULTATER_PER_SIDE = 1000
@@ -49,9 +49,7 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also {
-                    helsepersonellValkey.save(it)
-                }
+                .also { helsepersonellValkey.save(it) }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
