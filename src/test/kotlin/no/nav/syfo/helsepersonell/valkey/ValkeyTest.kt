@@ -3,7 +3,7 @@ package no.nav.syfo.helsepersonell.valkey
 import io.valkey.JedisPool
 import io.valkey.JedisPoolConfig
 import no.nav.syfo.helsepersonell.Behandler
-import org.junit.AfterClass
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.testcontainers.containers.GenericContainer
@@ -48,7 +48,7 @@ internal class ValkeyTest {
 
     companion object {
         @JvmStatic
-        @AfterClass
+        @AfterAll
         fun stopValkey() {
             valkeyContainer.stop()
         }
