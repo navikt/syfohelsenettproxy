@@ -36,7 +36,7 @@ val junitJupiterVersion = "6.0.1"
 val koinVersion = "4.1.1"
 
 ///Due to vulnerabilities
-val bcprovJdk18onVersion = "1.82"
+val bcprovJdk18onVersion = "1.83"
 val guavaVersion = "33.5.0-jre"
 val commonsCompressVersion = "1.28.0"
 val nettyHandlerVersion = "4.2.7.Final"
