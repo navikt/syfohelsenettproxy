@@ -3,8 +3,9 @@ updates:
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 15
+      interval: "weekly"
+    cooldown:
+      default-days: 7
     ignore:
       - dependency-name: "org.glassfish.jaxb:jaxb-runtime"
       - dependency-name: "com.sun.xml.ws:jaxws-tools"
@@ -27,5 +28,6 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 15
+      interval: "weekly"
+    cooldown:
+      default-days: 7
