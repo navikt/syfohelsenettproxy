@@ -103,12 +103,13 @@ spec:
           namespace: yrkesskade
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: logging
+          namespace: nais-system
       external:
         - host: ws.test.nhn.no
   ingresses:
     - "https://syfohelsenettproxy.intern.dev.nav.no"
-  secureLogs:
-    enabled: true
   tokenx:
     enabled: true
   envFrom:
