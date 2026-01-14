@@ -39,7 +39,7 @@ spec:
     limits:
       memory: 1048Mi
     requests:
-      cpu: 80m
+      cpu: 50m
       memory: 512Mi
   azure:
     application:
