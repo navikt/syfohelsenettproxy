@@ -8,11 +8,11 @@ val javaVersion = JvmTarget.JVM_21
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.20.1"
+val jacksonVersion = "2.20.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
-val ktorVersion = "3.3.2"
+val ktorVersion = "3.4.0"
 val logbackVersion = "1.5.21"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
@@ -39,7 +39,6 @@ val koinVersion = "4.1.1"
 val bcprovJdk18onVersion = "1.82"
 val guavaVersion = "33.5.0-jre"
 val commonsCompressVersion = "1.28.0"
-val nettyHandlerVersion = "4.2.7.Final"
 
 plugins {
     id("application")
@@ -99,13 +98,6 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    {
-        constraints {
-            implementation("io.netty:netty-handler:$nettyHandlerVersion") {
-                because("Due to vulnerabilities in io.ktor:ktor-server-netty")
-            }
-        }
-    }
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")

@@ -49,9 +49,7 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also {
-                    helsepersonellValkey.save(it)
-                }
+                .also { helsepersonellValkey.save(it) }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
