@@ -99,6 +99,9 @@ spec:
         - application: yrkesskade-registerproxy
           namespace: yrkesskade
           cluster: prod-gcp
+        - application: zara
+          namespace: tsm
+          cluster: prod-gcp
     outbound:
       rules:
         - application: logging
