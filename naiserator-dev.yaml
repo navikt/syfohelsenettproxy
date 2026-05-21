@@ -47,6 +47,7 @@ spec:
       consumes:
         - name: "nhn:hpr/basic"
         - name: "nhn:hpr/extended"
+        - name: "nhn:hpr/export"
   azure:
     application:
       enabled: true
