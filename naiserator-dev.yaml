@@ -41,6 +41,12 @@ spec:
     requests:
       cpu: 50m
       memory: 512Mi
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "nhn:hpr/basic"
+        - name: "nhn:hpr/extended"
   azure:
     application:
       enabled: true
@@ -111,6 +117,7 @@ spec:
           namespace: nais-system
       external:
         - host: ws.test.nhn.no
+        - host: api.offentlig.test.hpr.nhn.no
   ingresses:
     - "https://syfohelsenettproxy.intern.dev.nav.no"
   tokenx:
