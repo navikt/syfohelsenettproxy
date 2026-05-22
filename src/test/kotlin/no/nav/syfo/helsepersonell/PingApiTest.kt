@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -18,7 +19,9 @@ import org.junit.jupiter.api.TestInstance
 internal class PingApiTest {
     val wsMock = mockk<IHPR2Service>()
     val valkey = mockk<HelsepersonellValkey>()
-    val helsePersonService = HelsepersonellService(wsMock, valkey)
+
+    val hprRestMock = mockk<HprRestClient>()
+    val helsePersonService = HelsepersonellService(wsMock, valkey, hprRestMock)
 
     @BeforeAll
     internal fun setup() {

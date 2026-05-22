@@ -6,6 +6,7 @@ import java.time.ZoneOffset
 import java.util.*
 import javax.xml.ws.soap.SOAPFaultException
 import no.nav.syfo.datatypeFactory
+import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.interceptors.EncodingInterceptor
 import no.nav.syfo.helsepersonell.interceptors.ProtocolHeaderEncodingInterceptor
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
@@ -25,7 +26,8 @@ import org.apache.cxf.phase.Phase
 
 class HelsepersonellService(
     private val helsepersonellV1: IHPR2Service,
-    private val helsepersonellValkey: HelsepersonellValkey
+    private val helsepersonellValkey: HelsepersonellValkey,
+    private val hprRestClient: HprRestClient,
 ) {
     companion object {
         const val CACHE_TIME_HOURS = 1L
@@ -37,11 +39,16 @@ class HelsepersonellService(
     private val HPR_NR_IKKE_FUNNET = "ArgumentException: HPR-nummer ikke funnet"
     private val HPR_NR_IKKE_OPPGITT = "ArgumentException: HPR-nummer må oppgis"
 
-    fun finnBehandler(behandlersPersonnummer: String): Behandler? {
+    suspend fun finnBehandler(behandlersPersonnummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromFnr(behandlersPersonnummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
             return fromValkey.behandler
         }
+        tryRest("ident") { hprRestClient?.getPersonFromIdent(behandlersPersonnummer) }
+            ?.let { restBehandler ->
+                helsepersonellValkey.save(restBehandler)
+                return restBehandler
+            }
         return try {
             helsepersonellV1
                 .hentPersonMedPersonnummer(
@@ -67,11 +74,16 @@ class HelsepersonellService(
         }
     }
 
-    fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
+    suspend fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
             return fromValkey.behandler
         }
+        tryRest("hpr=$hprNummer") { hprRestClient?.getPersonFromHpr(hprNummer) }
+            ?.let { restBehandler ->
+                helsepersonellValkey.save(restBehandler)
+                return restBehandler
+            }
         try {
             return helsepersonellV1
                 .hentPerson(
@@ -162,6 +174,18 @@ class HelsepersonellService(
             null
         } catch (e: SOAPFaultException) {
             logger.error("Helsenett gir feilmelding {}", e.message)
+            null
+        }
+    }
+
+    private suspend fun tryRest(context: String, block: suspend () -> Behandler?): Behandler? {
+        return try {
+            block()
+        } catch (e: Exception) {
+            logger.warn(
+                "HPR REST kall feilet for $context, faller tilbake til SOAP: {}",
+                e.message,
+            )
             null
         }
     }

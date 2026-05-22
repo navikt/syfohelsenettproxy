@@ -8,12 +8,11 @@ import no.nav.syfo.helsepersonell.Tilleggskompetanse
 
 private const val LEGE = "LE"
 private const val TANNLEGE = "TL"
-private const val FYSIO = "FT"
 private const val MANUELLTERAPEUT = "MT"
 private const val KIROPRAKTOR = "KI"
 
 class SykmelderService(private val helsepersonellService: HelsepersonellService) {
-    fun getPerson(fnr: String): Person {
+    suspend fun getPerson(fnr: String): Person {
         val behandler = helsepersonellService.finnBehandler(fnr) ?: return Person(false, "")
 
         val aktiveGodkjenninger =
@@ -23,10 +22,10 @@ class SykmelderService(private val helsepersonellService: HelsepersonellService)
 
         val erAktivSykmelder =
             aktiveGodkjenninger.any {
-                it.helsepersonellkategori?.verdi in listOf(LEGE, MANUELLTERAPEUT)
+                it.helsepersonellkategori?.verdi in listOf(LEGE, TANNLEGE, MANUELLTERAPEUT)
             } ||
                 aktiveGodkjenninger.any {
-                    it.helsepersonellkategori?.verdi in listOf(FYSIO, KIROPRAKTOR) &&
+                    it.helsepersonellkategori?.verdi in listOf(KIROPRAKTOR) &&
                         harGyldigTillegskompetanse(it)
                 }
 

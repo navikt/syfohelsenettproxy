@@ -11,7 +11,9 @@ import java.time.ZoneOffset
 import java.util.GregorianCalendar
 import javax.xml.datatype.XMLGregorianCalendar
 import javax.xml.ws.soap.SOAPFaultException
+import kotlinx.coroutines.test.runTest
 import no.nav.syfo.datatypeFactory
+import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.helsepersonell.valkey.JedisBehandlerModel
 import no.nhn.schemas.reg.common.no.Kode
@@ -37,6 +39,8 @@ internal class HelsepersonellServiceTest {
     private val mock = mockk<IHPR2Service>()
     private val helsepersonellValkey = mockk<HelsepersonellValkey>(relaxed = true)
 
+    private val hrpRestClient = mockk<HprRestClient>()
+
     @BeforeEach
     internal fun setup() {
         clearAllMocks()
@@ -55,8 +59,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Should not save when fnr is empty`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Should not save when fnr is empty`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr(any()) } returns null
 
         val behandler = service.finnBehandler("fnr")
@@ -71,8 +75,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler fra valkey`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Henter behandler fra valkey`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 behandler = getBehandler(),
@@ -85,8 +89,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler og lagrer i valkey`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Henter behandler og lagrer i valkey`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 behandler = getBehandler(),
@@ -101,8 +105,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter behandler fra valkey med HPR`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Henter behandler fra valkey med HPR`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns null
         val behandler = service.finnBehandlerFraHprNummer("1000001")
         verify(exactly = 1) { mock.hentPerson(any(), any()) }
@@ -112,8 +116,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter paa nytt fra WS om valkey timestamp er gammelt`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Henter paa nytt fra WS om valkey timestamp er gammelt`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(61),
@@ -127,8 +131,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Henter ikke paa nytt valkey timestamp er nytt`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Henter ikke paa nytt valkey timestamp er nytt`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(59),
@@ -142,8 +146,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke valkey om det feiler mot helsenett for hpr`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Skal bruke valkey om det feiler mot helsenett for hpr`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
 
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
@@ -161,8 +165,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke valkey om det feiler mot helsenett for fnr`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Skal bruke valkey om det feiler mot helsenett for fnr`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
@@ -179,8 +183,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke valkey ved SOAPFaultException for FNR`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Skal bruke valkey ved SOAPFaultException for FNR`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
@@ -197,8 +201,8 @@ internal class HelsepersonellServiceTest {
     }
 
     @Test
-    internal fun `Skal bruke valkey ved SOAPFaultException for HPR`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+    internal fun `Skal bruke valkey ved SOAPFaultException for HPR`() = runTest {
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
                 timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
@@ -215,7 +219,7 @@ internal class HelsepersonellServiceTest {
 
     @Test
     internal fun `Henter behandlere med gitte soekeparametre`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         val resultat = service.soekBehandlere(Soekeparametre(navn = "John Bonde"))
         resultat.behandlere.size shouldBeEqualTo 1
         verify(exactly = 1) {
@@ -230,7 +234,7 @@ internal class HelsepersonellServiceTest {
 
     @Test
     internal fun `Henter behandlere med gitte soekeparametre og feiler`() {
-        val service = HelsepersonellService(mock, helsepersonellValkey)
+        val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { mock.søk2(any()) } throws SOAPFaultException(mockk(relaxed = true))
 
         assertThrows<SOAPFaultException> {
