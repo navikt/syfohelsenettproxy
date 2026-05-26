@@ -2,6 +2,7 @@ package no.nav.syfo.plugins
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
 import io.ktor.client.engine.apache5.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -55,6 +56,7 @@ val helsepersonellModule = module {
                 jackson {
                     configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                     setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
+                    registerModule(JavaTimeModule())
                 }
             }
         }
