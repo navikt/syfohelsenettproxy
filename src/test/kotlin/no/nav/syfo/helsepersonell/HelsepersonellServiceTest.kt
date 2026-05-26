@@ -120,7 +120,7 @@ internal class HelsepersonellServiceTest {
         val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(61),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(13),
                 behandler = getBehandler(),
             )
         val behandler = service.finnBehandlerFraHprNummer("1000001")
@@ -135,7 +135,7 @@ internal class HelsepersonellServiceTest {
         val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(59),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(11),
                 behandler = getBehandler(),
             )
         val behandler = service.finnBehandlerFraHprNummer("1000001")
@@ -151,7 +151,7 @@ internal class HelsepersonellServiceTest {
 
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(13),
                 behandler = getBehandler(),
             )
         every { mock.hentPerson(any(), any()) } throws
@@ -169,7 +169,7 @@ internal class HelsepersonellServiceTest {
         val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(13),
                 behandler = getBehandler(),
             )
         every { mock.hentPersonMedPersonnummer(any(), any()) } throws
@@ -187,7 +187,7 @@ internal class HelsepersonellServiceTest {
         val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromFnr("fnr") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(13),
                 behandler = getBehandler(),
             )
         every { mock.hentPersonMedPersonnummer(any(), any()) } throws
@@ -205,7 +205,7 @@ internal class HelsepersonellServiceTest {
         val service = HelsepersonellService(mock, helsepersonellValkey, hrpRestClient)
         every { helsepersonellValkey.getFromHpr("1000001") } returns
             JedisBehandlerModel(
-                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusMinutes(120),
+                timestamp = OffsetDateTime.now(ZoneOffset.UTC).minusHours(13),
                 behandler = getBehandler(),
             )
         every { mock.hentPerson(any(), any()) } throws SOAPFaultException(mockk(relaxed = true))
