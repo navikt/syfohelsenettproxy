@@ -1,5 +1,6 @@
 package no.nav.syfo.plugins
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.client.*
 import io.ktor.client.engine.apache5.*
@@ -52,8 +53,8 @@ val helsepersonellModule = module {
         HttpClient(Apache5) {
             install(ContentNegotiation) {
                 jackson {
-                    configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false)
                     configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                    setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
                 }
             }
         }
