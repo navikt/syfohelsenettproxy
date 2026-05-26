@@ -30,7 +30,7 @@ class HelsepersonellService(
     private val hprRestClient: HprRestClient,
 ) {
     companion object {
-        const val CACHE_TIME_HOURS = 1L
+        const val CACHE_TIME_HOURS = 12L
     }
 
     private val MAX_ANTALL_RESULTATER_PER_SIDE = 1000
