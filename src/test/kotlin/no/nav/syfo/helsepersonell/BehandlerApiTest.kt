@@ -6,6 +6,7 @@ import io.ktor.http.*
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
+import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.objectMapper
 import no.nav.syfo.utils.setUpTestApplication
@@ -28,7 +29,9 @@ import org.junit.jupiter.api.Test
 internal class BehandlerApiTest {
     private val wsMock = mockk<IHPR2Service>()
     private val valkey = mockk<HelsepersonellValkey>()
-    private val helsePersonService = HelsepersonellService(wsMock, valkey)
+
+    private val hrpRest = mockk<HprRestClient>()
+    private val helsePersonService = HelsepersonellService(wsMock, valkey, hrpRest)
 
     @BeforeEach
     fun beforeEach() {

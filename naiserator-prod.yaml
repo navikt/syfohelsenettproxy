@@ -41,6 +41,13 @@ spec:
     requests:
       cpu: 150m
       memory: 1600Mi
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "nhn:hpr/basic"
+        - name: "nhn:hpr/extended"
+        - name: "nhn:hpr/export"
   azure:
     application:
       enabled: true
@@ -108,6 +115,7 @@ spec:
           namespace: nais-system
       external:
         - host: ws.nhn.no
+        - host: api.offentlig.hpr.nhn.no
   ingresses:
     - "https://syfohelsenettproxy.intern.nav.no"
   tokenx:
@@ -121,3 +129,9 @@ spec:
       value: https://ws.nhn.no/v2/HPR/Basic
     - name: FASTLEGEINFORMASJON_V2_ENDPOINT_URL
       value: https://ws.nhn.no/v2/flrexport
+    - name: HPR_REST_URL
+      value: https://api.offentlig.hpr.nhn.no
+    - name: HPR_REST_SCOPE
+      value: "nhn:hpr/basic nhn:hpr/extended"
+    - name: HPR_AUTH_TYPE
+      value: maskinporten

@@ -1,13 +1,18 @@
 package no.nav.syfo.plugins
 
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
+import com.fasterxml.jackson.databind.SerializationFeature
+import io.ktor.client.*
+import io.ktor.client.engine.apache5.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
 import no.nav.syfo.Environment
 import no.nav.syfo.ServiceUser
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.fastlegeinformasjon.FastlegeinformasjonService
 import no.nav.syfo.fastlegeinformasjon.fastlegeinformasjonV2
 import no.nav.syfo.helsepersonell.HelsepersonellService
+import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.helsepersonellV1
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.helsepersonell.valkey.createJedisPool
@@ -43,6 +48,30 @@ val authModule = module {
     single(named("TokenXAuthConfig")) { getTokenXAuthConfig(get()) }
 }
 val helsepersonellModule = module {
+    single<HttpClient>(named("hprHttpClient")) {
+        HttpClient(Apache5) {
+            install(ContentNegotiation) {
+                jackson {
+                    configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false)
+                    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                }
+            }
+        }
+    }
+
+    single {
+        val env: Environment = get()
+        HprAuthClient(
+            httpClient = get(named("hprHttpClient")),
+            hprAuthType = env.hprAuthType,
+            hprRestTargetScopes = env.hprRestTargetScopes,
+            texasUrl = env.texasUrl,
+        )
+    }
+    single {
+        val env = get<Environment>()
+        HprRestClient(get(), get(named("hprHttpClient")), env.hprRestUrl)
+    }
     single {
         val env = get<Environment>()
         val serviceUser = get<ServiceUser>()
@@ -53,7 +82,7 @@ val helsepersonellModule = module {
         )
     }
     single { HelsepersonellValkey(get()) }
-    single { HelsepersonellService(get(), get()) }
+    single { HelsepersonellService(get(), get(), get()) }
 }
 
 val fastlegeinformasjonModule = module {

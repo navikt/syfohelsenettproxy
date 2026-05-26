@@ -10,8 +10,8 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
-import io.ktor.client.engine.apache.Apache
-import io.ktor.client.engine.apache.ApacheEngineConfig
+import io.ktor.client.engine.apache5.Apache5
+import io.ktor.client.engine.apache5.Apache5EngineConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
@@ -159,7 +159,7 @@ fun unauthorized(credentials: JWTCredential): Unit? {
 }
 
 fun getWellKnownTokenX(wellKnownUrl: String) = runBlocking {
-    val config: HttpClientConfig<ApacheEngineConfig>.() -> Unit = {
+    val config: HttpClientConfig<Apache5EngineConfig>.() -> Unit = {
         install(ContentNegotiation) {
             jackson {
                 registerKotlinModule()
@@ -169,7 +169,7 @@ fun getWellKnownTokenX(wellKnownUrl: String) = runBlocking {
             }
         }
     }
-    HttpClient(Apache, config).get(wellKnownUrl).body<WellKnownTokenX>()
+    HttpClient(Apache5, config).get(wellKnownUrl).body<WellKnownTokenX>()
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

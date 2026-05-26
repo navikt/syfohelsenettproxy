@@ -10,6 +10,10 @@ data class Environment(
     val jwtIssuerV2: String = getEnvVar("AZURE_OPENID_CONFIG_ISSUER"),
     val tokenXWellKnownUrl: String = getEnvVar("TOKEN_X_WELL_KNOWN_URL"),
     val clientIdTokenX: String = getEnvVar("TOKEN_X_CLIENT_ID"),
+    val texasUrl: String = getEnvVar("NAIS_TOKEN_ENDPOINT"),
+    val hprRestUrl: String = getEnvVar("HPR_REST_URL"),
+    val hprRestTargetScopes: String = getEnvVar("HPR_REST_SCOPE"),
+    val hprAuthType: String = getEnvVar("HPR_AUTH_TYPE"),
 )
 
 data class ServiceUser(
