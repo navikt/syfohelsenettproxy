@@ -71,7 +71,9 @@ repositories {
         url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
     }
     maven {
-        url = uri("https://repo.jenkins-ci.org/public")
+        // Replaces repo.jenkins-ci.org that seems to now be broken/down.
+        // Others in Nav use this very :sus: repo as well.
+        url = uri("https://build.shibboleth.net/maven/releases")
     }
 }
 
