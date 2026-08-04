@@ -6,7 +6,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.*
 import io.mockk.every
 import io.mockk.mockk
-import no.nav.syfo.helsepersonell.client.HprRestClient
 import no.nav.syfo.helsepersonell.valkey.HelsepersonellValkey
 import no.nav.syfo.utils.setUpTestApplication
 import no.nhn.schemas.reg.hprv2.IHPR2Service
@@ -20,8 +19,7 @@ internal class PingApiTest {
     val wsMock = mockk<IHPR2Service>()
     val valkey = mockk<HelsepersonellValkey>()
 
-    val hprRestMock = mockk<HprRestClient>()
-    val helsePersonService = HelsepersonellService(wsMock, valkey, hprRestMock)
+    val helsePersonService = HelsepersonellService(wsMock, valkey)
 
     @BeforeAll
     internal fun setup() {

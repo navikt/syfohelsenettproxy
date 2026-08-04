@@ -58,9 +58,6 @@ fun ApplicationTestBuilder.setUpAuth(): Environment {
             fastlegeinformasjonv2EndpointURL = "http://url",
             applicationName = "string",
             texasUrl = "string",
-            hprRestUrl = "string",
-            hprRestTargetScopes = "string",
-            hprAuthType = "string",
         )
 
     val path = "src/test/resources/jwkset.json"
