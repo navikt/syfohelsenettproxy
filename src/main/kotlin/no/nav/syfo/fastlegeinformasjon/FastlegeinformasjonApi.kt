@@ -15,10 +15,7 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
 
         if (kommunenr == null) {
             logger.warn("Mottatt kall som mangler header kommunenr")
-            call.respond(
-                HttpStatusCode.BadRequest,
-                "Mangler header `kommunenr` med kommunenr",
-            )
+            call.respond(HttpStatusCode.BadRequest, "Mangler header `kommunenr` med kommunenr")
         } else {
             logger.info(
                 "Mottatt kall til /fastlegeinformasjon for kommunenr: $kommunenr med Nav-Callid: $callId"
@@ -30,7 +27,7 @@ fun Route.registerFastlegeinformasjonApi(fastlegeinformasjonService: Fastlegeinf
                 "Hentet fastlegeinformasjonexport for kommunenr: $kommunenr med Nav-Callid: $callId"
             )
             logger.info(
-                "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB) med Nav-Callid: $callId",
+                "Størrelse for kommunenr: $kommunenr er: (${fastlegeinformasjonexport.size / 1024} KB) med Nav-Callid: $callId"
             )
 
             call.respondBytes(fastlegeinformasjonexport)

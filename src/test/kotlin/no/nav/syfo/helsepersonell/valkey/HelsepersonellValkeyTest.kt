@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test
 
 internal class HelsepersonellValkeyTest {
     private val jedisPool = mockk<JedisPool>()
-    private val helseperonellValkey =
-        HelsepersonellValkey(
-            jedisPool,
-        )
+    private val helseperonellValkey = HelsepersonellValkey(jedisPool)
 
     @Test
     internal fun `Should not fail when could not get connect from pool`() {

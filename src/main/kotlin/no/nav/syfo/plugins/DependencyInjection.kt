@@ -1,12 +1,9 @@
 package no.nav.syfo.plugins
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.*
 import io.ktor.client.engine.apache5.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.jackson3.jackson
 import io.ktor.server.application.*
 import no.nav.syfo.Environment
 import no.nav.syfo.ServiceUser
@@ -50,15 +47,7 @@ val authModule = module {
 }
 val helsepersonellModule = module {
     single<HttpClient>(named("hprHttpClient")) {
-        HttpClient(Apache5) {
-            install(ContentNegotiation) {
-                jackson {
-                    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                    setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
-                    registerModule(JavaTimeModule())
-                }
-            }
-        }
+        HttpClient(Apache5) { install(ContentNegotiation) { jackson {} } }
     }
 
     single {

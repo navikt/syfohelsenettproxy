@@ -54,7 +54,7 @@ internal class BehandlerApiTest {
                                                     oid = 10
                                                 }
                                         }
-                            },
+                            }
                         )
                     }
             }
@@ -79,7 +79,7 @@ internal class BehandlerApiTest {
                                                     oid = 10
                                                 }
                                         }
-                            },
+                            }
                         )
                     }
                 fornavn = "Fornavn"
@@ -114,7 +114,7 @@ internal class BehandlerApiTest {
                                                             oid = 10
                                                         }
                                                 }
-                                    },
+                                    }
                                 )
                             }
                         fornavn = "Fornavn"
@@ -164,9 +164,7 @@ internal class BehandlerApiTest {
             setUpTestApplication()
             routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws
-                (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage(
-                    "fault",
-                ))
+                (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage("fault"))
 
             val response =
                 client.get("/behandler") {
@@ -190,7 +188,7 @@ internal class BehandlerApiTest {
             routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPersonMedPersonnummer(any(), any()) } throws
                 (IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage(
-                    "ArgumentException: Personnummer ikke funnet",
+                    "ArgumentException: Personnummer ikke funnet"
                 ))
 
             val response =
@@ -266,7 +264,7 @@ internal class BehandlerApiTest {
             routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPerson(any(), any()) } throws
                 (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage(
-                    "ArgumentException: HPR-nummer ikke funnet",
+                    "ArgumentException: HPR-nummer ikke funnet"
                 ))
             val response =
                 client.get("/behandlerMedHprNummer") {
@@ -286,7 +284,7 @@ internal class BehandlerApiTest {
             routing { registerBehandlerApi(helsePersonService) }
             every { wsMock.hentPerson(any(), any()) } throws
                 (IHPR2ServiceHentPersonGenericFaultFaultFaultMessage(
-                    "ArgumentException: HPR-nummer må oppgis",
+                    "ArgumentException: HPR-nummer må oppgis"
                 ))
             val response =
                 client.get("/behandlerMedHprNummer") {

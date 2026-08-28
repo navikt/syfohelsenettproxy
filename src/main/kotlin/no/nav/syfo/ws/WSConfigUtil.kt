@@ -30,7 +30,7 @@ class PortConfigurator<T> {
 
 inline fun <reified T> createPort(
     endpoint: String,
-    extraConfiguration: PortConfigurator<T>.() -> Unit = {}
+    extraConfiguration: PortConfigurator<T>.() -> Unit = {},
 ): T =
     PortConfigurator<T>().let { configurator ->
         extraConfiguration(configurator)

@@ -8,7 +8,7 @@ val javaVersion = JvmTarget.JVM_25
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.20.2"
+val jacksonVersion = "3.2.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
@@ -30,7 +30,7 @@ val nimbusdsVersion = "10.6"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
-val ktfmtVersion = "0.44"
+val ktfmtVersion = "0.56"
 val junitJupiterVersion = "6.1.3"
 val koinVersion = "4.2.2"
 
@@ -105,17 +105,16 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
 
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson3:$ktorVersion")
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("tools.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
+    implementation("tools.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("tools.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
 
 
     implementation("org.apache.commons:commons-text:$commonsTextVersion")

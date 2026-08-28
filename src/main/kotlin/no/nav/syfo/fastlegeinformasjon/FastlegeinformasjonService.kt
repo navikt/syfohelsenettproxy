@@ -14,23 +14,19 @@ import no.nhn.schemas.reg.flr.IFlrExportOperationsExportGPContractsGenericFaultF
 import no.nhn.schemas.reg.flr.ObjectFactory
 import org.apache.cxf.ws.addressing.WSAddressingFeature
 
-class FastlegeinformasjonService(
-    private val fastlegeInformsjonOperations: IFlrExportOperations,
-) {
+class FastlegeinformasjonService(private val fastlegeInformsjonOperations: IFlrExportOperations) {
 
     fun hentFastlegeinformasjonExport(kommuneNr: String): ByteArray {
 
         val contractsQueryParameters: ContractsQueryParameters =
-            createContractsQueryParameters(
-                kommuneNr = kommuneNr,
-            )
+            createContractsQueryParameters(kommuneNr = kommuneNr)
 
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
             logger.error(
                 "Helsenett gir ein generisk feilmelding, på kommunenr $kommuneNr: {}",
-                e.message
+                e.message,
             )
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
@@ -83,7 +79,7 @@ class FastlegeinformasjonService(
 fun fastlegeinformasjonV2(
     endpointUrl: String,
     serviceuserUsername: String,
-    serviceuserPassword: String
+    serviceuserPassword: String,
 ) =
     createPort<IFlrExportOperations>(endpointUrl) {
         proxy {

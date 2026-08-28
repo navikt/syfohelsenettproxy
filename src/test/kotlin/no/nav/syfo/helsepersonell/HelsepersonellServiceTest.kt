@@ -224,7 +224,7 @@ internal class HelsepersonellServiceTest {
                 withArg {
                     it.navn shouldBeEqualTo "John Bonde"
                     it.hprNummer shouldBeEqualTo null
-                },
+                }
             )
         }
     }
@@ -243,7 +243,7 @@ internal class HelsepersonellServiceTest {
                 withArg {
                     it.navn shouldBeEqualTo "John Bonde"
                     it.hprNummer shouldBeEqualTo null
-                },
+                }
             )
         }
     }
@@ -287,11 +287,11 @@ private fun getPerson(): Person {
                                             Periode().apply {
                                                 fra =
                                                     datatypeFactory.newXMLGregorianCalendar(
-                                                        GregorianCalendar(),
+                                                        GregorianCalendar()
                                                     )
                                                 til =
                                                     datatypeFactory.newXMLGregorianCalendar(
-                                                        GregorianCalendar(),
+                                                        GregorianCalendar()
                                                     )
                                             }
                                         id = 20
@@ -301,7 +301,7 @@ private fun getPerson(): Person {
                                                 verdi = "1"
                                                 oid = 7702
                                             }
-                                    },
+                                    }
                                 )
                                 tilleggskompetanse.add(
                                     Tilleggskompetanse().apply {
@@ -319,10 +319,10 @@ private fun getPerson(): Person {
                                                 verdi = "1"
                                                 oid = 7702
                                             }
-                                    },
+                                    }
                                 )
                             }
-                    },
+                    }
                 )
             }
     }

@@ -15,7 +15,7 @@ fun Routing.registerNaisApi(
     applicationState: ApplicationState,
     readynessCheck: () -> Boolean = { applicationState.ready },
     alivenessCheck: () -> Boolean = { applicationState.alive },
-    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry
+    collectorRegistry: CollectorRegistry = CollectorRegistry.defaultRegistry,
 ) {
     get("/internal/is_alive") {
         if (alivenessCheck()) {
@@ -30,7 +30,7 @@ fun Routing.registerNaisApi(
         } else {
             call.respondText(
                 "Please wait! I'm not ready :(",
-                status = HttpStatusCode.InternalServerError
+                status = HttpStatusCode.InternalServerError,
             )
         }
     }

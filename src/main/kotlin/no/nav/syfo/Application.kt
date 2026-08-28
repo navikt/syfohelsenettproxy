@@ -1,10 +1,5 @@
 package no.nav.syfo
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -20,19 +15,15 @@ import org.apache.cxf.common.logging.LogUtils
 import org.apache.cxf.common.logging.Slf4jLogger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.jacksonMapperBuilder
 
 val datatypeFactory: DatatypeFactory = DatatypeFactory.newInstance()
 
 val logger: Logger = LoggerFactory.getLogger("no.nav.syfo.syfohelsenettproxy")
 
 val securelog = LoggerFactory.getLogger("securelog")
-val objectMapper =
-    ObjectMapper().apply {
-        registerKotlinModule()
-        registerModule(JavaTimeModule())
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
+var objectMapper: JsonMapper = jacksonMapperBuilder().build()
 
 fun main() {
     LogUtils.setLoggerClass(Slf4jLogger::class.java)

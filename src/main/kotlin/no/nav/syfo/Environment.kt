@@ -15,9 +15,10 @@ data class Environment(
 
 data class ServiceUser(
     val serviceuserUsername: String = getEnvVar("SERVICEUSER_USERNAME"),
-    val serviceuserPassword: String = getEnvVar("SERVICEUSER_PASSWORD")
+    val serviceuserPassword: String = getEnvVar("SERVICEUSER_PASSWORD"),
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =
     System.getenv(varName)
-        ?: defaultValue ?: throw RuntimeException("Missing required variable \"$varName\"")
+        ?: defaultValue
+        ?: throw RuntimeException("Missing required variable \"$varName\"")

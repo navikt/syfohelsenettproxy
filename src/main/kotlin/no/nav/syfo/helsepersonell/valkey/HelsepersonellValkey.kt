@@ -19,7 +19,7 @@ class HelsepersonellValkey(var jedisPool: JedisPool) {
                     val jedisBehandlerModel = JedisBehandlerModel(timestamp, behandler)
                     jedis.set(
                         "hpr:${behandler.hprNummer}",
-                        objectMapper.writeValueAsString(jedisBehandlerModel)
+                        objectMapper.writeValueAsString(jedisBehandlerModel),
                     )
                     when (behandler.fnr.isNullOrBlank()) {
                         true -> logger.warn("Behandler does not have fnr from hpr")
