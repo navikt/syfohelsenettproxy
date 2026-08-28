@@ -7,7 +7,7 @@ version = "1.0.0"
 val javaVersion = JvmTarget.JVM_25
 
 
-val coroutinesVersion = "1.10.2"
+val coroutinesVersion = "1.11.0"
 val jacksonVersion = "3.2.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
@@ -17,16 +17,16 @@ val logbackVersion = "1.6.3"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "4.0.6"
-val commonsTextVersion = "1.14.0"
+val commonsTextVersion = "1.15.0"
 val javaxAnnotationApiVersion = "1.3.2"
 val jaxwsApiVersion = "2.3.1"
 val jaxwsToolsVersion = "2.3.2"
 val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.5.0"
-val testcontainersVersion = "2.0.2"
+val testcontainersVersion = "2.0.5"
 val mockkVersion = "1.14.11"
-val nimbusdsVersion = "10.6"
+val nimbusdsVersion = "10.9.1"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -35,15 +35,15 @@ val junitJupiterVersion = "6.1.3"
 val koinVersion = "4.2.2"
 
 ///Due to vulnerabilities
-val bcprovJdk18onVersion = "1.82"
-val guavaVersion = "33.5.0-jre"
+val bcprovJdk18onVersion = "1.85.2"
+val guavaVersion = "33.7.1-jre"
 val commonsCompressVersion = "1.28.0"
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.4.10"
-    id("com.diffplug.spotless") version "8.9.0"
+    id("com.diffplug.spotless") version "8.10.0"
 }
 
 application {
