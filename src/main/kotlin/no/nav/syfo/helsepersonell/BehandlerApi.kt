@@ -22,7 +22,7 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
         when (val behandler = helsepersonellService.finnBehandler(fnr)) {
             null -> call.respond(HttpStatusCode.NotFound, "Fant ikke behandler")
             else -> {
-                call.respond(behandler)
+                call.respond(behandler).also { logger.info("Fant behandler fra behandlerFnr") }
             }
         }
     }
@@ -49,13 +49,12 @@ fun Route.registerBehandlerApi(helsepersonellService: HelsepersonellService) {
                 when (val behandler = helsepersonellService.finnBehandlerFraHprNummer(hprNummer)) {
                     null ->
                         call
-                            .respond(
-                                HttpStatusCode.NotFound,
-                                "Fant ikke behandler fra HPR-nummer",
-                            )
+                            .respond(HttpStatusCode.NotFound, "Fant ikke behandler fra HPR-nummer")
                             .also { logger.info("Fant ikke behandler fra HPR-nummer: $hprNummer") }
                     else -> {
-                        call.respond(behandler)
+                        call.respond(behandler).also {
+                            logger.info("Fant fra HPR-nummer: $hprNummer")
+                        }
                     }
                 }
             }

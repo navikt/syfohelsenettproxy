@@ -18,7 +18,7 @@ const val keyId = "localhost-signer"
 fun genereateJWT(
     consumerClientId: String? = "consumerClientId",
     audience: String? = "helsenett-clientId-v2",
-    expiry: LocalDateTime? = LocalDateTime.now().plusHours(1)
+    expiry: LocalDateTime? = LocalDateTime.now().plusHours(1),
 ): String? {
     val now = Date()
     val key = getDefaultRSAKey()

@@ -50,7 +50,10 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also { helsepersonellValkey.save(it) }
+                .also {
+                    logger.info("Hentet behandler for personnummer")
+                    helsepersonellValkey.save(it)
+                }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
@@ -71,6 +74,7 @@ class HelsepersonellService(
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            logger.info("Returning behandler hpr found in valkey")
             return fromValkey.behandler
         }
 
@@ -81,7 +85,10 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also { helsepersonellValkey.save(it) }
+                .also {
+                    logger.info("Hentet behandler for HPR-nummer")
+                    helsepersonellValkey.save(it)
+                }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             return when {
                 behandlerNotFound(e.message) -> {
@@ -117,12 +124,12 @@ class HelsepersonellService(
             Behandlereresultat(behandlere = behandlere)
         } catch (e: IHPR2ServiceSøk2GenericFaultFaultFaultMessage) {
             logger.warn(
-                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}",
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide): ${e.message}"
             )
             throw e
         } catch (e: SOAPFaultException) {
             logger.error(
-                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}",
+                "Helsenett gir feilmelding (Søk, gjeldende side: $gjeldendeSide)): ${e.message}"
             )
             throw e
         }
@@ -130,7 +137,7 @@ class HelsepersonellService(
 
     private fun soekBehandlere(
         soekeparametre: Soekeparametre,
-        gjeldendeSide: Int
+        gjeldendeSide: Int,
     ): PaginertResultatsett {
         return helsepersonellV1.søk2(
             Søkeparametre().apply {
@@ -172,12 +179,11 @@ class HelsepersonellService(
         fromvalkey?.behandler.let {
             logger.info("Returning behandler found in valkey")
             it
-        }
-            ?: throw HelsepersonellException(message = e.message, cause = e.cause)
+        } ?: throw HelsepersonellException(message = e.message, cause = e.cause)
 
     private fun shouldUseValkeyModel(jedisBehandlerModel: JedisBehandlerModel): Boolean {
         return jedisBehandlerModel.timestamp.isAfter(
-            OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS),
+            OffsetDateTime.now(ZoneOffset.UTC).minusHours(CACHE_TIME_HOURS)
         )
     }
 
@@ -254,13 +260,13 @@ data class Behandler(
     val hprNummer: Int?,
     val fornavn: String?,
     val mellomnavn: String?,
-    val etternavn: String?
+    val etternavn: String?,
 )
 
 data class Godkjenning(
     val helsepersonellkategori: Kode? = null,
     val autorisasjon: Kode? = null,
-    val tillegskompetanse: List<Tilleggskompetanse>? = null
+    val tillegskompetanse: List<Tilleggskompetanse>? = null,
 )
 
 data class Kode(val aktiv: Boolean, val oid: Int, val verdi: String?)
@@ -270,7 +276,7 @@ data class Tilleggskompetanse(
     val eTag: String?,
     val gyldig: Periode?,
     val id: Int?,
-    val type: Kode?
+    val type: Kode?,
 )
 
 data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
@@ -278,7 +284,7 @@ data class Periode(val fra: LocalDateTime?, val til: LocalDateTime?)
 fun helsepersonellV1(
     endpointUrl: String,
     serviceuserUsername: String,
-    serviceuserPassword: String
+    serviceuserPassword: String,
 ) =
     createPort<IHPR2Service>(endpointUrl) {
         proxy {

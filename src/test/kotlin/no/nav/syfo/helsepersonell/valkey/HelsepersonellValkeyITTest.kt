@@ -36,10 +36,7 @@ internal class HelsepersonellValkeyITTest {
 
         cachedBehandlerFnr shouldBeEqualTo null
         cachedBehandlerHpr shouldBeEqualTo
-            JedisBehandlerModel(
-                timestamp = cachedBehandlerHpr!!.timestamp,
-                behandler = behandler,
-            )
+            JedisBehandlerModel(timestamp = cachedBehandlerHpr!!.timestamp, behandler = behandler)
     }
 
     @Test

@@ -9,5 +9,5 @@ class FastlegeinformasjonException(message: String?, cause: Throwable?) :
 
 data class Feilmelding(
     val status: HttpStatusCode = HttpStatusCode.InternalServerError,
-    val message: String?
+    val message: String?,
 )

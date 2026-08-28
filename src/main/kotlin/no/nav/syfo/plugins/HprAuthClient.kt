@@ -7,7 +7,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.serialization.jackson3.jackson
 import org.slf4j.LoggerFactory
 
 data class TexasToken(val token: String)
@@ -16,7 +16,7 @@ class HprAuthClient(
     httpClient: HttpClient,
     private val hprAuthType: String,
     private val hprRestTargetScopes: String,
-    private val texasUrl: String
+    private val texasUrl: String,
 ) {
     private val logger = LoggerFactory.getLogger(HprAuthClient::class.java)
 

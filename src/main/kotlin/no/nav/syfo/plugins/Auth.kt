@@ -3,10 +3,6 @@ package no.nav.syfo.plugins
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
@@ -15,7 +11,7 @@ import io.ktor.client.engine.apache5.Apache5EngineConfig
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson3.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -45,15 +41,10 @@ fun Application.configureAuth() {
             verifier(tokenXConfig.jwkProvider, tokenXConfig.issuer)
             validate { credentials ->
                 when {
-                    hasClientIdAudience(
-                        credentials,
-                        tokenXConfig.clientId,
-                    ) && erNiva4(credentials) -> {
+                    hasClientIdAudience(credentials, tokenXConfig.clientId) &&
+                        erNiva4(credentials) -> {
                         val principal = JWTPrincipal(credentials.payload)
-                        BrukerPrincipal(
-                            fnr = finnFnrFraToken(principal),
-                            principal = principal,
-                        )
+                        BrukerPrincipal(fnr = finnFnrFraToken(principal), principal = principal)
                     }
                     else -> unauthorized(credentials)
                 }
@@ -71,7 +62,7 @@ fun Application.configureAuth() {
                 logger.warn("servicebrukerAADv2 token validation failed")
                 call.respond(
                     HttpStatusCode.Unauthorized,
-                    "servicebrukerAADv2 token validation failed"
+                    "servicebrukerAADv2 token validation failed",
                 )
             }
         }
@@ -91,10 +82,7 @@ fun finnFnrFraToken(principal: JWTPrincipal): String {
     }
 }
 
-data class BrukerPrincipal(
-    val fnr: String,
-    val principal: JWTPrincipal,
-)
+data class BrukerPrincipal(val fnr: String, val principal: JWTPrincipal)
 
 fun erNiva4(credentials: JWTCredential): Boolean {
     return "Level4" == credentials.payload.getClaim("acr").asString()
@@ -104,11 +92,7 @@ fun hasClientIdAudience(credentials: JWTCredential, clientId: String): Boolean {
     return credentials.payload.audience.contains(clientId)
 }
 
-class AuthConfiguration(
-    val jwkProvider: JwkProvider,
-    val issuer: String,
-    val clientId: String,
-)
+class AuthConfiguration(val jwkProvider: JwkProvider, val issuer: String, val clientId: String)
 
 fun getAadAuthConfig(env: Environment): AuthConfiguration {
     val jwkProviderAadV2 =
@@ -160,21 +144,10 @@ fun unauthorized(credentials: JWTCredential): Unit? {
 
 fun getWellKnownTokenX(wellKnownUrl: String) = runBlocking {
     val config: HttpClientConfig<Apache5EngineConfig>.() -> Unit = {
-        install(ContentNegotiation) {
-            jackson {
-                registerKotlinModule()
-                registerModule(JavaTimeModule())
-                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }
+        install(ContentNegotiation) { jackson {} }
     }
     HttpClient(Apache5, config).get(wellKnownUrl).body<WellKnownTokenX>()
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class WellKnownTokenX(
-    val token_endpoint: String,
-    val jwks_uri: String,
-    val issuer: String,
-)
+data class WellKnownTokenX(val token_endpoint: String, val jwks_uri: String, val issuer: String)

@@ -4,16 +4,16 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 group = "no.nav.syfo"
 version = "1.0.0"
 
-val javaVersion = JvmTarget.JVM_21
+val javaVersion = JvmTarget.JVM_25
 
 
 val coroutinesVersion = "1.10.2"
-val jacksonVersion = "2.20.2"
+val jacksonVersion = "3.2.2"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
-val ktorVersion = "3.4.0"
-val logbackVersion = "1.5.21"
+val ktorVersion = "3.5.2"
+val logbackVersion = "1.6.3"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "4.0.6"
@@ -25,15 +25,14 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.5.0"
 val testcontainersVersion = "2.0.2"
-val mockkVersion = "1.14.6"
+val mockkVersion = "1.14.11"
 val nimbusdsVersion = "10.6"
-val kotlinVersion = "2.2.21"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
-val ktfmtVersion = "0.44"
-val junitJupiterVersion = "6.0.1"
-val koinVersion = "4.1.1"
+val ktfmtVersion = "0.56"
+val junitJupiterVersion = "6.1.3"
+val koinVersion = "4.2.2"
 
 ///Due to vulnerabilities
 val bcprovJdk18onVersion = "1.82"
@@ -43,8 +42,8 @@ val commonsCompressVersion = "1.28.0"
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
-    kotlin("jvm") version "2.2.21"
-    id("com.diffplug.spotless") version "8.1.0"
+    kotlin("jvm") version "2.4.10"
+    id("com.diffplug.spotless") version "8.9.0"
 }
 
 application {
@@ -92,8 +91,6 @@ dependencies {
     cxfCodegen("org.apache.commons:commons-text:$commonsTextVersion")
     cxfCodegen("org.apache.cxf:cxf-core:$cxfVersion")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
-
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
     implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
     implementation("io.prometheus:simpleclient_common:$prometheusVersion")
@@ -108,17 +105,16 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-server-call-id:$ktorVersion")
 
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-jackson3:$ktorVersion")
     implementation("io.ktor:ktor-client-apache5:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    implementation("tools.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
+    implementation("tools.jackson.module:jackson-module-kotlin:$jacksonVersion")
+    implementation("tools.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
 
 
     implementation("org.apache.commons:commons-text:$commonsTextVersion")

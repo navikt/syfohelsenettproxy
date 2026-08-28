@@ -1,12 +1,8 @@
 package no.nav.syfo.utils
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson3.jackson
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -35,14 +31,7 @@ fun ApplicationTestBuilder.setUpTestApplication() {
                 call.respond(HttpStatusCode.InternalServerError, e.feilmelding)
             }
         }
-        install(ContentNegotiation) {
-            jackson {
-                registerKotlinModule()
-                registerModule(JavaTimeModule())
-                configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            }
-        }
+        install(ContentNegotiation) { jackson {} }
     }
 }
 
@@ -77,7 +66,7 @@ fun ApplicationTestBuilder.setUpAuth(): Environment {
                 challenge { _, _ ->
                     call.respond(
                         HttpStatusCode.Unauthorized,
-                        "servicebrukerAADv2 token validation failed"
+                        "servicebrukerAADv2 token validation failed",
                     )
                 }
             }

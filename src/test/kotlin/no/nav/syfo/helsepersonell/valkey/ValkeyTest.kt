@@ -40,10 +40,7 @@ internal class ValkeyTest {
 
         val cachedBehandler = helsepersonellValkey.getFromFnr(behandler.fnr!!)
 
-        assertEquals(
-            behandler.fnr,
-            cachedBehandler?.behandler?.fnr,
-        )
+        assertEquals(behandler.fnr, cachedBehandler?.behandler?.fnr)
     }
 
     companion object {
