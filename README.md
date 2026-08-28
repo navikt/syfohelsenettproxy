@@ -13,7 +13,7 @@ REST-endepunkter som løser våre problemer, og holde ute datamodellene fra hels
 
 
 ## Forutsetninger
-Sørg for at du har Java JDK 21 installert
+Sørg for at du har Java JDK 25 installert
 Du kan sjekke hvilken versjon du har installert, ved å bruke denne kommandoen:
 ``` bash
 java -version
