@@ -50,7 +50,10 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also { helsepersonellValkey.save(it) }
+                .also {
+                    logger.info("Hentet behandler for personnummer")
+                    helsepersonellValkey.save(it)
+                }
         } catch (e: IHPR2ServiceHentPersonMedPersonnummerGenericFaultFaultFaultMessage) {
             return when (e.message) {
                 PERSONNR_IKKE_FUNNET -> {
@@ -71,6 +74,7 @@ class HelsepersonellService(
     fun finnBehandlerFraHprNummer(hprNummer: String): Behandler? {
         val fromValkey = helsepersonellValkey.getFromHpr(hprNummer)
         if (fromValkey != null && shouldUseValkeyModel(fromValkey)) {
+            logger.info("Returning behandler hpr found in valkey")
             return fromValkey.behandler
         }
 
@@ -81,7 +85,10 @@ class HelsepersonellService(
                     datatypeFactory.newXMLGregorianCalendar(GregorianCalendar()),
                 )
                 .let { ws2Behandler(it) }
-                .also { helsepersonellValkey.save(it) }
+                .also {
+                    logger.info("Hentet behandler for HPR-nummer")
+                    helsepersonellValkey.save(it)
+                }
         } catch (e: IHPR2ServiceHentPersonGenericFaultFaultFaultMessage) {
             return when {
                 behandlerNotFound(e.message) -> {
