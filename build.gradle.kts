@@ -43,7 +43,7 @@ plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.4.10"
-    id("com.diffplug.spotless") version "8.10.0"
+    id("com.diffplug.spotless") version "8.10.1"
 }
 
 application {
