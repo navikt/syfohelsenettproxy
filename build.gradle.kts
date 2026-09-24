@@ -38,13 +38,13 @@ val koinVersion = "4.2.2"
 val bcprovJdk18onVersion = "1.85.2"
 val guavaVersion = "33.7.1-jre"
 val commonsCompressVersion = "1.28.0"
-val nettyVersion = "4.2.17.Final"
+
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
-    kotlin("jvm") version "2.4.10"
-    id("com.diffplug.spotless") version "8.10.0"
+    kotlin("jvm") version "2.4.20"
+    id("com.diffplug.spotless") version "8.10.2"
 }
 
 application {
@@ -98,11 +98,6 @@ dependencies {
 
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
-    constraints {
-        implementation("io.netty:netty-handler:$nettyVersion") {
-            because("Due to vulnerabilitie CVE-2026-75595")
-        }
-    }
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
