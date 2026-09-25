@@ -26,7 +26,7 @@ val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.5.0"
 val testcontainersVersion = "2.0.5"
 val mockkVersion = "1.14.11"
-val nimbusdsVersion = "10.9.1"
+val nimbusdsVersion = "10.10"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
 val jakartaAnnotationApiVersion = "1.3.5"
@@ -35,7 +35,7 @@ val junitJupiterVersion = "6.1.3"
 val koinVersion = "4.2.2"
 
 // Included due vulnerabilities in this transitive dependency
-val bcprovJdk18onVersion = "1.85.2"
+val bcprovJdk18onVersion = "1.86"
 val guavaVersion = "33.7.1-jre"
 val commonsCompressVersion = "1.28.0"
 
