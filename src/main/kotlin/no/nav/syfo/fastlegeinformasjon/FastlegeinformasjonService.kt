@@ -24,7 +24,7 @@ class FastlegeinformasjonService(private val fastlegeInformsjonOperations: IFlrE
         return try {
             fastlegeInformsjonOperations.exportGPContracts(contractsQueryParameters)
         } catch (e: IFlrExportOperationsExportGPContractsGenericFaultFaultFaultMessage) {
-            logger.error(
+            logger.warn(
                 "Helsenett gir ein generisk feilmelding, på kommunenr $kommuneNr: {}",
                 e.message,
             )

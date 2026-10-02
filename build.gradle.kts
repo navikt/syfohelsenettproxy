@@ -8,7 +8,7 @@ val javaVersion = JvmTarget.JVM_25
 
 
 val coroutinesVersion = "1.11.0"
-val jacksonVersion = "3.2.2"
+val jacksonVersion = "3.2.3"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
@@ -44,7 +44,7 @@ plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.4.20"
-    id("com.diffplug.spotless") version "8.10.2"
+    id("com.diffplug.spotless") version "8.10.3"
 }
 
 application {

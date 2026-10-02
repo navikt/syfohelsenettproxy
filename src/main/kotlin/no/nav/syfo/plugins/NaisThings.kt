@@ -33,8 +33,8 @@ fun Application.configureNaisThings() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Unknown error")
-            logger.error("Caught exception ${cause.message}")
-            securelog.error("Caught exception", cause)
+            logger.error("Caught exception: ${cause.message}")
+            securelog.error("Caught exception:", cause)
             throw cause
         }
     }
