@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/java25-debian13@sha256:00cb938f4bae711dee23dab0b2fdb1ed36a5a242283193e49ec05d271ad8263c
+FROM gcr.io/distroless/java25-debian13@sha256:aea9b7c0ab3605df2a08bb71e865c9ddb5dcd00c25625605acb5d30bda1c1486
 WORKDIR /app
 COPY build/install/*/lib /lib
 ENV JAVA_OPTS="-Dlogback.configurationFile=logback.xml"
