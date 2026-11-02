@@ -30,7 +30,7 @@ class FastlegeinformasjonService(private val fastlegeInformsjonOperations: IFlrE
             )
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: SOAPFaultException) {
-            logger.error("Helsenett gir feilmelding, på kommunenr $kommuneNr: {}", e.message)
+            logger.warn("Helsenett gir feilmelding, på kommunenr $kommuneNr: {}", e.message)
             throw FastlegeinformasjonException(message = e.message, cause = e.cause)
         } catch (e: Exception) {
             logger.error(
