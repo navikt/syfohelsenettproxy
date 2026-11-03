@@ -1,8 +1,8 @@
 # Syfohelsenettproxy
-Denne appen fungerer som et skjold helsenett hvor fæle apier med særnorske tegn regjerer. Målet er å tilby konkrete
-REST-endepunkter som løser våre problemer, og holde ute datamodellene fra helsenett. 
+This app acts as a shield for the *Helsenett* (Norwegian health network),
+where nasty APIs—riddled with unique Norwegian characters—reign supreme. The goal is to provide concrete REST endpoints that solve our problems, while keeping the *Helsenett* data models at bay.
 
-## Teknologier
+## Technologies used
 * Kotlin
 * Ktor
 * Gradle
@@ -12,15 +12,26 @@ REST-endepunkter som løser våre problemer, og holde ute datamodellene fra hels
 * Docker
 
 
-## Forutsetninger
-Sørg for at du har Java JDK 25 installert
-Du kan sjekke hvilken versjon du har installert, ved å bruke denne kommandoen:
+## Requirements for developing the application
+#### Java
+Make sure you have the Java JDK 25 installed
+You can check which version you have installed using this command:
 ``` bash
 java -version
 ```
+or install it: https://sdkman.io/
 
-## Flytkart
-Dette er det eit oversiktsbilde av flyten i applikasjonen
+#### Docker
+Make sure you have docker installed using this command:
+You can check which version you have installed using this command:
+``` bash
+docker --version
+```
+or install it: https://docs.docker.com/engine/install/
+
+
+## Flowchart
+This is an overview of the flow in the application.
 ```mermaid
   flowchart LR
       syfohelsenettproxy <-- API --> random-application
@@ -29,41 +40,41 @@ Dette er det eit oversiktsbilde av flyten i applikasjonen
       syfohelsenettproxy <--> nhn;
  ```
 
-## Bygg & Deploy
-På grunn av særnorske tegn i klassenavn / encoding i WSDLen som vi baserer oss på bygger ikke dette prosjektet ut av 
-boksen på Windows. Det er en kjent feil, men vi har ikke funnet en god løsning på det enda. Appen bygges og deployes fra GHA
 
-
-#### Gradle kommandoer for bygg og test
-For å bygge lokalt og kjøre integrasjonstestene kan du ganske enkelt kjøre 
+### Building the application
+To build the application locally and run tests you can simply run
 ``` bash
 ./gradlew clean build
-```
-eller på Windows
-`gradlew.bat clean build`
-
-## Oppgradering av gradle wrapper
-Finn nyeste versjon av gradle her: https://gradle.org/releases/
-
+ ```
+or on Windows
 ``` bash
-./gradlew wrapper --gradle-version $gradleVersjon
+gradlew.bat clean build
+ ```
+
+### Upgrading the Gradle wrapper version to latest
+``` bash
+./gradlew :wrapper --gradle-version latest
 ```
 
-#### Api dokumtentasjon
+#### API documentation
 https://syfohelsenettproxy.intern.dev.nav.no/openapi
 
-#### NHN sin dokumentasjon av soap grensesnittet
+#### NHN’s documentation of the SOAP interface
  - Flrexport: https://register-web.test.nhn.no/docs/api/NHN.DtoContracts.Flr.Service.IFlrExportOperations.html
  - HPR: https://register-web.test.nhn.no/docs/api/NHN.Palantir.WebServices.Contracts.HPRv2.Service.IHPR2Service.html
 
-## Henvendelser
-Dette prosjeket er vedlikeholdt av [navikt/teamsykmelding](CODEOWNERS)
+## Contributing
 
-Spørsmål knyttet til koden eller prosjektet kan stilles som
-[issues](https://github.com/navikt/syfohelsenettproxy/issues) her på GitHub
+To get started, fork the repository and create a new branch.
 
-## Bidra
-Vi er glade for bidrag, les mer om hvordan du kan bidra i [CONTRIBUTING.md](CONTRIBUTING.md)
+See details in [CONTRIBUTING.md](CONTRIBUTING.md)
 
-### For NAV-ansatte
-Interne henvendelser kan sendes via Slack i kanalen [#team-sykmelding](https://nav-it.slack.com/archives/CMA3XV997)
+
+### Contact
+
+This project is maintained by [navikt/teamsykmelding](CODEOWNERS)
+
+Questions and/or feature requests? Please create an [issue](https://github.com/navikt/syfohelsenettproxy/issues)
+
+If you work in [@navikt](https://github.com/navikt) you can reach us at the Slack
+channel [#team-sykmelding](https://nav-it.slack.com/archives/CMA3XV997)
