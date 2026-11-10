@@ -38,6 +38,7 @@ val koinVersion = "4.2.2"
 val bcprovJdk18onVersion = "1.86"
 val guavaVersion = "33.7.2-jre"
 val commonsCompressVersion = "1.28.0"
+val httpclient5CacheVersion = "5.6.4"
 
 
 plugins {
@@ -129,6 +130,9 @@ dependencies {
         implementation("org.bouncycastle:bcprov-jdk18on:$bcprovJdk18onVersion") {
             because("override transient from org.apache.cxf:cxf-rt-ws-security")
         }
+        implementation("org.apache.httpcomponents.client5:httpclient5-cache:$httpclient5CacheVersion") {
+            because("Due to RHLW-2026-e56fd5f91f882db9 / CVE-2026-71290")
+        }
     }
     constraints {
         implementation("com.google.guava:guava:$guavaVersion") {
@@ -199,7 +203,7 @@ tasks {
     }
 
 
-        withType<Test> {
+    withType<Test> {
 
         useJUnitPlatform {}
         testLogging {
