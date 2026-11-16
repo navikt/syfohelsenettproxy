@@ -8,12 +8,12 @@ val javaVersion = JvmTarget.JVM_25
 
 
 val coroutinesVersion = "1.11.0"
-val jacksonVersion = "3.2.4"
+val jacksonVersion = "3.3.0"
 val jaxbApiVersion = "2.4.0-b180830.0359"
 val jaxbRuntimeVersion = "2.4.0-b180830.0438"
 val kluentVersion = "1.73"
-val ktorVersion = "3.6.0"
-val logbackVersion = "1.6.5"
+val ktorVersion = "3.6.1"
+val logbackVersion = "1.6.6"
 val logstashEncoderVersion = "9.0"
 val prometheusVersion = "0.16.0"
 val cxfVersion = "4.2.4"
@@ -25,7 +25,7 @@ val javaxJaxwsApiVersion = "2.2.1"
 val javaxActivationVersion = "1.1.1"
 val valkeyVersion = "5.5.0"
 val testcontainersVersion = "2.0.5"
-val mockkVersion = "1.14.11"
+val mockkVersion = "1.14.12"
 val nimbusdsVersion = "10.10"
 val jaxbImplVersion = "2.3.3"
 val wsApiVersion = "2.3.3"
@@ -36,16 +36,16 @@ val koinVersion = "4.2.2"
 
 // Included due vulnerabilities in this transitive dependency
 val bcprovJdk18onVersion = "1.86"
-val guavaVersion = "33.7.2-jre"
+val guavaVersion = "33.8.0-jre"
 val commonsCompressVersion = "1.28.0"
-val httpclient5CacheVersion = "5.6.4"
+val httpclient5CacheVersion = "5.6.5"
 
 
 plugins {
     id("application")
     id("io.mateo.cxf-codegen") version "2.4.1"
     kotlin("jvm") version "2.4.21"
-    id("com.diffplug.spotless") version "8.10.4"
+    id("com.diffplug.spotless") version "8.11.0"
 }
 
 application {
